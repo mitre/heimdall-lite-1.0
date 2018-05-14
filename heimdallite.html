@@ -403,15 +403,24 @@
           }
           return ''
         }
+        
+        function includes(string, myArray) {
+          for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i] == string) {
+              return true;
+            }
+          }
+          return false;
+        }
 
         function clk_status(control) {
           var status_list = control['status']
           result = ''
-          if (status_list.indexOf('failed')) {
+          if (includes('failed', status_list)) {
             result = 'Open';
-          } else if (status_list.indexOf('passed')) {
+          } else if (includes('passed', status_list)) {
             result = 'NotAFinding';
-          } else if (status_list.indexOf('skipped')) {
+          } else if (includes('skipped', status_list)) {
             result = 'Not_Reviewed';
           } else if (parseFloat(control['impact']) == 0) {
             result = 'Not_Applicable'
