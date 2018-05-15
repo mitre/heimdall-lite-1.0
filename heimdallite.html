@@ -20,6 +20,9 @@
     <link rel="stylesheet" type="text/html" href="https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/default.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.0/c3.min.css">
+    <link href="http://prismjs.com/themes/prism.css" rel="stylesheet" />
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css"> -->
 
     <style type="text/css" class="init">
     .floating {
@@ -462,6 +465,10 @@
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/metismenu"></script>
+    <script src="http://prismjs.com/prism.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-ruby.min.js"></script>
 
     <script>
     $(function() {
@@ -581,7 +588,7 @@
         '<div id="inpec_code" class="tab-pane fade">'+
           '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
-                '<td><pre><code class="ruby">'+d.code+'</code></pre></td>'+
+                '<td><pre><code class="language-ruby">'+Prism.highlight(d.code, Prism.languages.ruby, 'ruby')+'</code></pre></td>'+
             '</tr>'+
         '</table>'+
         '</div>';
