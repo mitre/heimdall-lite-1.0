@@ -276,7 +276,7 @@
             json = parse_json(json, profile_name);
             // $('#profile_title_label').html(profile_name.substring(0, profile_name.length - 5));
             $('#profile_title_label').html(json['profile_name'].split(":")[0]);
-            $('#profile_time_label').html(json['profile_name'].split(":")[1].split(" "));
+            $('#profile_time_label').html(json['profile_name'].split(":")[1].split(" ")[1]);
 
             raw_dataSet = json['controls'];
             raw_json = json
