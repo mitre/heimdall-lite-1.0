@@ -266,7 +266,7 @@
             json = parse_json(json, profile_name);
             
             // Render the title and the date on the screen
-            $('#profile_title_label').html(json['profile_name'].split(":")[0]);
+            $('#profile_title_label').html(json['profile_name'].split(":")[0].split(';')[1]);
             $('#profile_time_label').html(json['profile_name'].split(":")[1].split(" ")[1]);
 
             raw_dataSet = json['controls'];
@@ -338,13 +338,14 @@
           data[c_id]['code']           = String(control['code']) || DATA_NOT_FOUND_MESSAGE
 
           data[c_id]['status'] = []
-          data[c_id]['message'] = []
+          data[c_id]['message'] = ''
           if (control['results']) {
+            // Contanate all of the results messages
             control['results'].forEach(function(result) {
               data[c_id]['status'].push(result['status'])
-                if (result['status'] == 'skipped') { data[c_id]['message'].push('SKIP -- ' + result['skip_message'] + '\n') }
-                if (result['status'] == 'failed') { data[c_id]['message'].push('FAILED -- Test: ' + result['code_desc'] + '\nMessage: ' + result['message'] + '\n') }
-                if (result['status'] == 'passed') { data[c_id]['message'].push('PASS -- ' + result['code_desc'] + '\n') }
+              if (result['status'] == 'skipped') { data[c_id]['message'] += 'SKIP -- ' + result['skip_message'] + '\n' }
+              if (result['status'] == 'failed') { data[c_id]['message'] += 'FAILED -- Test: ' + result['code_desc'] + '\nMessage: ' + result['message'] + '\n' }
+              if (result['status'] == 'passed') { data[c_id]['message'] += 'PASS -- ' + result['code_desc'] + '\n' }
             });
           }
           if (parseFloat(data[c_id]['impact']) == 0) {
@@ -1326,7 +1327,6 @@
     function getAllNistControls(dataSet) {
         var controls = {};
         dataSet.forEach(function(test) {
-            // console.log(test);
             if (test.nist[0] != 'unmapped') {
               nist_tag = test.nist[0].match(/\w\w-\d*/)[0];
               if (controls.nist_tag != 1) {
