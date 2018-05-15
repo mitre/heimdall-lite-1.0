@@ -22,8 +22,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.0/c3.min.css">
     <link href="http://prismjs.com/themes/prism.css" rel="stylesheet" />
 
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css"> -->
-
     <style type="text/css" class="init">
     .floating {
         position: fixed;
@@ -588,7 +586,7 @@
         '<div id="inpec_code" class="tab-pane fade">'+
           '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
             '<tr>'+
-                '<td><pre><code class="language-ruby">'+Prism.highlight(d.code, Prism.languages.ruby, 'ruby')+'</code></pre></td>'+
+                '<td><pre class="line-numbers"><code class="language-ruby">'+Prism.highlight(d.code, Prism.languages.ruby, 'ruby')+'</code></pre></td>'+
             '</tr>'+
         '</table>'+
         '</div>';
@@ -859,7 +857,6 @@
         function myOnClickFunction() {
           if (results_json['profile_name'].split(';')[0] == 'result') {
             data_filter.nist_families = data.getFormattedValue(tree.getSelection()[0].row, 0);
-            // console.log(data.getFormattedValue(tree.getSelection()[0].row, 0));
             document.getElementById("clear_filters_button").style.visibility = "visible";
             load_all_but_tree_map();
             update_treemap_colors();
@@ -883,7 +880,6 @@
       $(window).resize(function() {
         drawChart();
       });
-
     }
 
 
@@ -896,7 +892,6 @@
             $(this).children('rect').css({
               fill: "#C8EFF1" //NA
             });
-
           } else if ($(this).children('rect').attr('fill') === '#ff0000') {
             $(this).children('rect').css({
               fill: "#FFC857" //NR
@@ -924,7 +919,6 @@
             $(this).children('rect').css({
               fill: "#C8EFF1" //NA // everything else
             });
-
           } else if ($(this).children('rect').attr('fill') === '#7f8000') {
             $(this).children('rect').css({
               fill: "#FFC857" //NR // everything else
@@ -962,9 +956,11 @@
             $(this).children('rect').css({
               fill: "#FF0029" //O
             });
-
-          }
-          else {
+          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
+            $(this).children('rect').css({
+              fill: "#FF0029" //O
+            });
+          } else {
           $(this).children('rect').css({
               fill: "#FFFFFF" // everything else
             });
@@ -973,19 +969,31 @@
       } else if (status_count['open_count'] > 0 )
       {
         $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#00ff00') {
+         if ($(this).children('rect').attr('fill') === '#00ff00') {
+            $(this).children('rect').css({
+              fill: "#FFC857" //NR
+            });
+
+          } else if ($(this).children('rect').attr('fill') === '#ff0000') {
+            $(this).children('rect').css({
+              fill: "#FFC857" //NR
+            });
+
+          } else if ($(this).children('rect').attr('fill') === '#7f8000') {
             $(this).children('rect').css({
               fill: "#FF0029" //O
             });
-
+          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
+            $(this).children('rect').css({
+              fill: "#FF0029" //O
+            });
           } else {
           $(this).children('rect').css({
               fill: "#FFFFFF" // everything else
             });
           }
         });
-      } else
-      {
+      } else {
         $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
           $(this).children('rect').css({
               fill: "#FFFFFF" // everything else
@@ -1014,8 +1022,7 @@
             $(this).children('rect').css({
               fill: "#FF0029" //O
             });
-          }
-          else {
+          } else {
           $(this).children('rect').css({
               fill: "#FFFFFF"
             });
