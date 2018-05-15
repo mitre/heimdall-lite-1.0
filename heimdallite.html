@@ -277,7 +277,7 @@
             json = JSON.parse(e.target.result);
             profile_name = file.name;
             json = parse_json(json, profile_name);
-            $('#profile_title_label').html(profile_name[0,-1]);
+            $('#profile_title_label').html(profile_name.substring(0, profile_name.length - 5));
             raw_dataSet = json['controls'];
             raw_json = json
             load_views();
@@ -405,7 +405,6 @@
         function clk_status(control) {
           var status_list = control['status']
           result = ''
-          console.log(control['impact']);
           if (parseFloat(control['impact']) == 0) {
             result = 'Not_Applicable';
           } else if (includes('failed', status_list)) {
