@@ -851,7 +851,8 @@
         };
         function myOnClickFunction() {
           if (results_json['profile_name'].split(';')[0] == 'result') {
-            data_filter.nist_families = data.getValue(tree.getSelection()[0].row, 0);
+            data_filter.nist_families = data.getFormattedValue(tree.getSelection()[0].row, 0);
+            // console.log(data.getFormattedValue(tree.getSelection()[0].row, 0));
             document.getElementById("clear_filters_button").style.visibility = "visible";
             load_all_but_tree_map();
             update_treemap_colors();
@@ -1086,7 +1087,6 @@
                     if (control.severity === DATA_NOT_FOUND_MESSAGE) {
                         record.push(1.2);
                     }
-
                     treeMapData.push(record);
                 }
             }
@@ -1153,17 +1153,18 @@
       if (data_filter.nist_families === 'NIST 800 53') {
         data_filter.nist_families = '*';
       }
-      if (data_filter.result != '*')
-      {
+      if (data_filter.result != '*') {
         dataSet = $(dataSet).filter(function (i,n){return n.result === data_filter.result ;});
       }
-      if (data_filter.severity != '*')
-      {
+      if (data_filter.severity != '*') {
         dataSet = $(dataSet).filter(function (i,n){return n.severity === data_filter.severity ;});
       }
-      if (data_filter.nist_families != '*')
-      {
-        dataSet = $(dataSet).filter(function (i,n){return n.nist[0].indexOf(data_filter.nist_families) != -1 ;});
+      if (data_filter.nist_families != '*') {
+        dataSet = $(dataSet).filter(function (i,n){ return n.nist[0].indexOf(data_filter.nist_families) != -1; });
+        if (dataSet[0] == undefined) { // If displaying only one control, filter by the gid/vuln_number
+          dataSet = raw_dataSet;
+          dataSet = $(dataSet).filter(function (i,n){ return n.gid.indexOf(data_filter.nist_families) != -1; });
+        }
       }
       return dataSet;
     }
