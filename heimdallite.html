@@ -75,11 +75,8 @@
 
         <div style="padding: 15px;">
             <ol class="breadcrumb">
-              <li style="font-size:200%;" class="breadcrumb-item">
-                <p id="profile_title_label"></p>
-                <!-- <a href="#">Dashboard</a> -->
-              </li>
-              <li style="font-size:200%;"  id = "profile_name" class="breadcrumb-item active"></li>
+              <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item active"></li>
+              <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
             </ol>
 
 
@@ -277,7 +274,10 @@
             json = JSON.parse(e.target.result);
             profile_name = file.name;
             json = parse_json(json, profile_name);
-            $('#profile_title_label').html(profile_name.substring(0, profile_name.length - 5));
+            // $('#profile_title_label').html(profile_name.substring(0, profile_name.length - 5));
+            $('#profile_title_label').html(json['profile_name'].split(":")[0]);
+            $('#profile_time_label').html(json['profile_name'].split(":")[1].split(" "));
+
             raw_dataSet = json['controls'];
             raw_json = json
             load_views();
@@ -384,7 +384,7 @@
 
         function grab_start_time(json) {
           for (var i = 0; i < json['profiles'].length; i++) {
-            for (var j = 0; j < json['profiles'][i]['controls']; j++) {
+            for (var j = 0; j < json['profiles'][i]['controls'].length; j++) {
               if (json['profiles'][i]['controls'][j] != {}) {
                 return json['profiles'][i]['controls'][j]['results'][0]['start_time']
               }
