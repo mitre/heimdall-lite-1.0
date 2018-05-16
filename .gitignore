@@ -50,3 +50,4 @@ build-iPhoneSimulator/
 .rvmrc
 .kitchen/
 .kitchen.local.yml
+**/.DS_Store

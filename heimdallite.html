@@ -886,6 +886,7 @@
     function update_treemap_colors() {
       // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
       // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
+      
       if (status_count['not_a_finding_count'] > 0 ) {
         $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
           if ($(this).children('rect').attr('fill') === '#7f8000') {
