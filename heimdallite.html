@@ -79,7 +79,7 @@
 
             <div class="row" id='status_labels_div_id' style='display:none;'>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-success">
+                    <div class="panel panel-green">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -91,10 +91,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-footer">
+                            (all tests passed)
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-danger">
+                    <div class="panel panel-red">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -106,10 +109,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-footer">
+                            (has tests that failed)
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-info">
+                    <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -127,7 +133,7 @@
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-warning">
+                    <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-xs-3">
@@ -175,7 +181,7 @@
                 <div class="col-lg-4" id='compliance_level_id'>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level (Not A finding / Not A Finding + Open + Not Reviewed)
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -634,7 +640,7 @@
               $('td:eq(0)', row).html( '<button class="btn btn-danger" style="width:120px">Open</button> ' );
             }
             if ( data.result ==  "Not_Applicable") {
-              $('td:eq(0)', row).html( '<button class="btn btn-info" style="width:120px">Not_Applicable</button> ' );
+              $('td:eq(0)', row).html( '<button class="btn btn-primary" style="width:120px">Not_Applicable</button> ' );
             }
             if ( data.result == "Not_Reviewed" ) {
               $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px">Not_Reviewed</button> ' );
@@ -731,7 +737,7 @@
             }
         },
         color: {
-          pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', 'rgb(0, 200, 241)', 'rgb(255, 200, 87)']
+          pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', '#4579B2', 'rgb(255, 200, 87)']
         },
         size: {
           height: 240
@@ -789,8 +795,11 @@
       });
     }
 
+    /*
+    * This function calculates the compliance level
+    */
     function score () {
-      return ((status_count['not_a_finding_count'] + status_count['not_applicable_count'])/dataSet.length)*100;
+      return (status_count['not_a_finding_count']/(dataSet.length - status_count['not_applicable_count']))*100;
     }
 
     function draw_compliance_pie_chart() {
@@ -840,18 +849,15 @@
           highlightOnMouseOver: true,
           maxDepth: 1,
           maxPostDepth: 2,
-          noColor: "#ffffff",
+          noColor: "#FFFFFF",
 
-          minColor: '#FFFFFF',
-          midColor: '#FF0000',
-          maxColor: '#00FF00',
+          minColor: '#FFFFFF', // WHITE
+          midColor: '#FF0000', // RED/OPEN , OLD '#FF0000',
+          maxColor: '#00FF00', // YELLOW/Not Reviewed, old'#00FF00',
           headerHeight: 15,
-          showScale: true,
+          showScale: false,
           // height: 300,
           // width: 880,
-          showScale: false  ,
-
-
           useWeightedAverageForAggregation: true
         };
         function myOnClickFunction() {
@@ -881,198 +887,126 @@
         drawChart();
       });
     }
-
-
+    
     function update_treemap_colors() {
       // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
       // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
-      
-      if (status_count['not_a_finding_count'] > 0 ) {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#7f8000') {
-            $(this).children('rect').css({
-              fill: "#C8EFF1" //NA
-            });
-          } else if ($(this).children('rect').attr('fill') === '#ff0000') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#89CC51" //NAF
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          }
-          else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF" // everything else
-            });
-          }
-        });
-      } else if (status_count['not_applicable_count'] > 0 ) {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#C8EFF1" //NA // everything else
-            });
-          } else if ($(this).children('rect').attr('fill') === '#7f8000') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR // everything else
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff0000') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O // everything else
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF" // everything else
-            });
-          }
-        });
-      } else if (status_count['not_reviewed_count'] > 0 )
-      {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-         if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff0000') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#7f8000') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF" // everything else
-            });
-          }
-        });
-      } else if (status_count['open_count'] > 0 )
-      {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-         if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff0000') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#7f8000') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else if ($(this).children('rect').attr('fill') === '#ff7f7f') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF" // everything else
-            });
-          }
-        });
-      } else {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          $(this).children('rect').css({
-              fill: "#FFFFFF" // everything else
-            });
-
-        });
-      }
+      $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
+        var default_block_color = $(this).children('rect').attr('fill');
+        switch(data_filter.result) {
+            case '*':
+                switch(default_block_color) {
+                    case '#7f8000': //Default Not Applicable
+                        $(this).children('rect').css({fill: '#4579B2'});
+                        break;
+                    case '#ff0000': //Default Not Reviewed
+                        $(this).children('rect').css({fill: '#ffC857'});
+                        break;
+                    case '#00ff00': //Default Not A Finding
+                        $(this).children('rect').css({fill: '#89cc51'});
+                        break;
+                    case '#ff7f7f': //Default Open
+                        $(this).children('rect').css({fill: '#ff0029'});
+                        break;
+                    default: // Everything else 
+                        $(this).children('rect').css({fill: '#FFFFFF'});
+                        break;
+                }
+                break;
+            case 'Open':
+                switch(default_block_color) {
+                    case '#00ff00': //Default Not A Finding
+                        $(this).children('rect').css({fill: '#ff0029'});
+                        break;
+                    default: // Everything else 
+                        $(this).children('rect').css({fill: '#FFFFFF'});
+                        break;
+                }
+                break;
+            case 'NotAFinding':
+                switch(default_block_color) {
+                    case '#00ff00': //Default Not A Finding
+                        $(this).children('rect').css({fill: '#89cc51'});
+                        break;
+                    default: // Everything else 
+                        $(this).children('rect').css({fill: '#FFFFFF'});
+                        break;
+                }
+                break;
+            case 'Not_Reviewed':
+                switch(default_block_color) {
+                    case '#00ff00': //Default Not A Finding
+                        $(this).children('rect').css({fill: '#ffC857'});
+                        break;
+                    default: // Everything else 
+                        $(this).children('rect').css({fill: '#FFFFFF'});
+                        break;
+                }
+                break;
+            case 'Not_Applicable':
+                switch(default_block_color) {
+                    case '#00ff00': //Default Not A Finding
+                        $(this).children('rect').css({fill: '#4579B2'});
+                        break;
+                    default: // Everything else 
+                        $(this).children('rect').css({fill: '#FFFFFF'});
+                        break;
+                }
+                break;
+        }
+      });
     }
-
-    function update_treemap_colors_profile() {
-      // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
-      // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
-      if (severity_count['CAT I'] > 0 ) {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#aa5500') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#ff5555') {
-            $(this).children('rect').css({
-              fill: "#89CC51" //NAF
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#FF0029" //O
-            });
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF"
-            });
+    
+    function getTreeMapData() {
+      // https://developers.google.com/chart/interactive/docs/gallery/treemap
+     var treeMapData = [['NIST 800 53',null,0],['AC','NIST 800 53',null],['AU','NIST 800 53',null],['AT','NIST 800 53',null],['CM','NIST 800 53',null],['CP','NIST 800 53',null],['IA','NIST 800 53',null],['IR','NIST 800 53',null],['MA','NIST 800 53',null],['MP','NIST 800 53',null],['PS','NIST 800 53',null],['PE','NIST 800 53',null],['PL','NIST 800 53',null],['PM','NIST 800 53',null],['RA','NIST 800 53',null],['CA','NIST 800 53',null],['SC','NIST 800 53',null],['SI','NIST 800 53',null],['SA','NIST 800 53',null],['UM','NIST 800 53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]]
+        var id = 1;
+        for (var i = 0; i < dataSet.length; i++) {
+          var control = dataSet[i];
+          if (control.nist) {
+            for(var j = 0; j < control.nist.length; j++) {
+              // standard nist style format is ['AC=1', 'Rev_4']
+              if (!control.nist[j].match(/Rev/)) {
+                var record = [];
+                var hash = {};
+                hash.v = (id++).toString();
+                hash.f = control.vuln_num;
+                record.push(hash);
+                
+                // if item does not match format 'AC-1' it is marked unmapped
+                nist_tag = control.nist[j].match(/[a-zA-Z][a-zA-Z]-\d+/);
+                if(nist_tag) {
+                  record.push(nist_tag[0]);
+                }
+                else {
+                  record.push('UM')
+                }
+                if (control.result === 'Not_Tested') {
+                    record.push(1.0);
+                }
+                if (control.result === 'NotAFinding') {
+                    record.push(1.4);
+                }
+                if (control.result === 'Not_Reviewed') {
+                    record.push(1.2);
+                }            
+                if (control.result === 'Open') {
+                    record.push(1.1);
+                }
+                if (control.result === 'Not_Applicable') {
+                    record.push(1.3);
+                }
+                treeMapData.push(record);
+              }
+            }
           }
-        });
-      } else if (severity_count['CAT II'] > 0 ) {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#FFC857" //NR
-            });
-
-          } else if ($(this).children('rect').attr('fill') === '#aa5500') {
-            $(this).children('rect').css({
-              fill: "#89CC51" //NAF
-            });
-
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF"
-            });
-          }
-        });
-      } else if (severity_count['CAT III'] > 0 ) {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          if ($(this).children('rect').attr('fill') === '#00ff00') {
-            $(this).children('rect').css({
-              fill: "#89CC51" //NAF
-            });
-
-          } else {
-          $(this).children('rect').css({
-              fill: "#FFFFFF"
-            });
-          }
-        });
-      } else {
-        $('#nist_treemap').children('div').children('div').children('div').children('svg').children('g').each(function() {
-          $(this).children('rect').css({
-              fill: "#FFFFFF"
-            });
-
-        });
-      }
+        }
+        return treeMapData
     }
 
     function getTreeMapDataProfile() {
       // https://developers.google.com/chart/interactive/docs/gallery/treemap
-     var treeMapData = [['NIST 800 53',null,0],['AC','NIST 800 53',null],['AU','NIST 800 53',null],['AT','NIST 800 53',null],['CM','NIST 800 53',null],['CP','NIST 800 53',null],['IA','NIST 800 53',null],['IR','NIST 800 53',null],['MA','NIST 800 53',null],['MP','NIST 800 53',null],['PS','NIST 800 53',null],['PE','NIST 800 53',null],['PL','NIST 800 53',null],['PM','NIST 800 53',null],['RA','NIST 800 53',null],['CA','NIST 800 53',null],['SC','NIST 800 53',null],['SI','NIST 800 53',null],['SA','NIST 800 53',null],['UM','NIST 800 53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]]
+     var treeMapData = [['NIST 800 53',null,0],['AC','NIST 800 53',null],['AU','NIST 800 53',null],['AT','NIST 800 53',null],['CM','NIST 800 53',null],['CP','NIST 800 53',null],['IA','NIST 800 53',null],['IR','NIST 800 53',null],['MA','NIST 800 53',null],['MP','NIST 800 53',null],['PS','NIST 800 53',null],['PE','NIST 800 53',null],['PL','NIST 800 53',null],['PM','NIST 800 53',null],['RA','NIST 800 53',null],['CA','NIST 800 53',null],['SC','NIST 800 53',null],['SI','NIST 800 53',null],['SA','NIST 800 53',null],['UM','NIST 800  53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]]
         var id = 1;
         for (var i = 0; i < dataSet.length; i++) {
             var control = dataSet[i];
@@ -1109,54 +1043,6 @@
         return treeMapData
     }
 
-    function getTreeMapData() {
-      // https://developers.google.com/chart/interactive/docs/gallery/treemap
-     var treeMapData = [['NIST 800 53',null,0],['AC','NIST 800 53',null],['AU','NIST 800 53',null],['AT','NIST 800 53',null],['CM','NIST 800 53',null],['CP','NIST 800 53',null],['IA','NIST 800 53',null],['IR','NIST 800 53',null],['MA','NIST 800 53',null],['MP','NIST 800 53',null],['PS','NIST 800 53',null],['PE','NIST 800 53',null],['PL','NIST 800 53',null],['PM','NIST 800 53',null],['RA','NIST 800 53',null],['CA','NIST 800 53',null],['SC','NIST 800 53',null],['SI','NIST 800 53',null],['SA','NIST 800 53',null],['UM','NIST 800 53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]]
-        var id = 1;
-        for (var i = 0; i < dataSet.length; i++) {
-          var control = dataSet[i];
-          if (control.nist) {
-            for(var j = 0; j < control.nist.length; j++) {
-              // standard nist style format is ['AC=1', 'Rev_4']
-              if (!control.nist[j].match(/Rev/)) {
-                var record = [];
-                var hash = {};
-                hash.v = (id++).toString();
-                hash.f = control.vuln_num;
-                record.push(hash);
-                // if item does not match format 'AC-1' it is marked unmapped
-                nist_tag = control.nist[j].match(/[a-zA-Z][a-zA-Z]-\d+/);
-                if(nist_tag) {
-                  record.push(nist_tag[0]);
-                }
-                else {
-                  record.push('UM')
-                }
-                if (control.result === 'NotAFinding') {
-                    record.push(1.4);
-                }
-                if (control.result === 'Open') {
-                    record.push(1.1);
-                }
-                if (control.result === 'Not_Applicable') {
-                    record.push(1.3);
-                }
-                if (control.result === 'Not_Reviewed') {
-                    record.push(1.2);
-                }
-                if (control.result === 'Not_Tested') {
-                    record.push(1.0);
-                }
-                treeMapData.push(record);
-              }
-            }
-          }
-        }
-        return treeMapData
-    }
-
-
-
     var data_filter = {
                         'result' : '*',
                         'severity' : '*',
@@ -1175,7 +1061,13 @@
         dataSet = $(dataSet).filter(function (i,n){return n.severity === data_filter.severity ;});
       }
       if (data_filter.nist_families != '*') {
-        dataSet = $(dataSet).filter(function (i,n){ return n.nist[0].indexOf(data_filter.nist_families) != -1; });
+        dataSet = $(dataSet).filter(function (i,n) { 
+          for (var j = 0; j < n.nist.length; j++) {
+            if (n.nist[j].indexOf(data_filter.nist_families) != -1) {
+              return true;
+            }
+          }
+        });
         if (dataSet[0] == undefined) { // If displaying only one control, filter by the gid/vuln_number
           dataSet = raw_dataSet;
           dataSet = $(dataSet).filter(function (i,n){ return n.gid.indexOf(data_filter.nist_families) != -1; });
