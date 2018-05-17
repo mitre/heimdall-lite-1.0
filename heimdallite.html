@@ -181,7 +181,7 @@
                 <div class="col-lg-4" id='compliance_level_id'>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level (Not A finding / Not A Finding + Open + Not Reviewed)
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level (Not A finding / Not A Finding + Open + Not Reviewed) * 100
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -273,8 +273,9 @@
             json = parse_json(json, profile_name);
             
             // Render the title and the date on the screen
+            console.log(json['profile_name']);
             $('#profile_title_label').html(json['profile_name'].split(":")[0].split(';')[1]);
-            $('#profile_time_label').html(json['profile_name'].split(":")[1].split(" ")[1]);
+            $('#profile_time_label').html(json['profile_name'].slice(json['profile_name'].indexOf(':') + 1, json['profile_name'].length));
 
             raw_dataSet = json['controls'];
             raw_json = json
