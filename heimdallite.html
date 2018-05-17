@@ -181,7 +181,7 @@
                 <div class="col-lg-4" id='compliance_level_id'>
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level (Not A finding / Not A Finding + Open + Not Reviewed) * 100
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed) * 100]
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -195,7 +195,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> NIST 800 53 Coverage
+                            <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -216,20 +216,20 @@
                             <thead>
                                 <tr>
                                     <th>Status</th>
-                                    <th>Control</th>
-                                    <th>Impact</th>
-                                    <th>NIST</th>
-                                    <th>Profile</th>
+                                    <th>Title</th>
+                                    <th>Control ID</th>
+                                    <th>Severity</th>
+                                    <th>NIST SP 800-53</th>
                                     <th class="hidden_column">Code</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
                                     <th>Status</th>
-                                    <th>Control</th>
-                                    <th>Impact</th>
-                                    <th>NIST</th>
-                                    <th>Profile</th>
+                                    <th>Title</th>
+                                    <th>Control ID</th>
+                                    <th>Severity</th>
+                                    <th>NIST SP 800-53</th>
                                     <th class="hidden_column">Code</th>
                                 </tr>
                             </tfoot>
@@ -663,6 +663,10 @@
                 },
                 {
                   // "className": 'table_row',
+                  "data": "rule_title"
+                },
+                {
+                  // "className": 'table_row',
                   "data": "vuln_num"
                 },
                 {
@@ -672,10 +676,6 @@
                 {
                   // "className": 'table_row',
                   "data": "nist"
-                },
-                {
-                  // "className": 'table_row',
-                  "data": "profile"
                 },
                 {
                   "className": 'hidden_column',
