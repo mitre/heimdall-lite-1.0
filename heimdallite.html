@@ -304,7 +304,6 @@
           json = parse_json(json, profile_name);
           
           // Render the title and the date on the screen
-          console.log(json['profile_name']);
           $('#profile_title_label').html(json['profile_name'].split(":")[0].split(';')[1]);
           $('#profile_time_label').html(json['profile_name'].slice(json['profile_name'].indexOf(':') + 1, json['profile_name'].length));
 
@@ -368,6 +367,9 @@
         data[c_id] = {}
         data[c_id]['profile']        = profile_name || DATA_NOT_FOUND_MESSAGE
         data[c_id]['vuln_num']       = control['id']    || DATA_NOT_FOUND_MESSAGE
+        if (data[c_id]['vuln_num'].match(/\d+\.\d+/)) {
+          data[c_id]['vuln_num'] = data[c_id]['vuln_num'].match(/\d+(\.\d+)*/)[0];
+        }
         data[c_id]['rule_title']     = control['title'] || DATA_NOT_FOUND_MESSAGE
         data[c_id]['vuln_discuss']   = control['desc'] || DATA_NOT_FOUND_MESSAGE
         data[c_id]['severity']       = control['tags']['severity'] || compute_severity(control['impact']) || DATA_NOT_FOUND_MESSAGE
@@ -708,15 +710,15 @@
                 "defaultContent": ''
               },
               {
-                // "className": 'table_row',
+                // Title
                 "data": "rule_title"
               },
               {
-                // "className": 'table_row',
+                // Control ID
                 "data": "vuln_num"
               },
               {
-                // "className": 'table_row',
+                // Severity row
                 "data": "severity"
               },
               {
