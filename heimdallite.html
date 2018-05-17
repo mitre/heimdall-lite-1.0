@@ -54,6 +54,9 @@
 </style>
 
   <script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.2.1/dt-1.10.16/datatables.min.css"/>
 
@@ -69,9 +72,30 @@
                 <a class="navbar-brand"  style="font-size:250%; float: left">Heimdall-lite</a>
               </div>
           </div>
-          
-          <ul class="nav navbar-nav navbar-left navbar-top-links">
-              <br><li><i class="fa fa-home fa-fw"></i><input id="file" type="file" accept=".json" name="file" style="width: 100%; height: 100%;" onchange="upload()"></li>
+
+          <ul class="nav navbar-top-links navbar-left">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-sitemap fa-fw"></i> Load Json
+                <span class="fa arrow"></span>
+              </a>
+              <ul class="dropdown-menu" >
+                  <li>
+                    <a href="#">
+                      <label class="btn btn-primary btn-file">
+                          Browse<input id="file" type="file" accept=".json" name="file" style="width: 100%; height: 100%; display: none;" onchange="upload()">
+                      </label>
+                    </a>
+                  </li>
+              </ul>
+            </li>
+            <!-- <li>
+              <a href="#">
+                <label class="btn btn-primary btn-file">
+                    Load Json<input id="file" type="file" accept=".json" name="file" style="display: none;" onchange="upload()">
+                </label>
+              </a>
+            </li> -->
           </ul>
       </nav>
 
@@ -1044,7 +1068,7 @@
                 record.push('UM')
               }
               if (control.result === 'Not_Tested') {
-                  record.push(1.0);
+                  record.push(1.2);
               }
               if (control.result === 'NotAFinding') {
                   record.push(1.4);
@@ -1112,7 +1136,6 @@
           case "low":
               switch(default_block_color) {
                   case '#00ff00':
-                      console.log("here");
                       $(this).children('rect').css({fill: "#89CC51"});
                       break;
                   default:
