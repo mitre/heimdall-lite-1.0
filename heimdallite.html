@@ -16,11 +16,12 @@
 
   <!-- MetisMenu CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/metismenu/dist/metisMenu.min.css">
+  <link rel="stylesheet" type="text/html" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
 
-  <link rel="stylesheet" type="text/html" href="https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/default.css">
+  <!-- <link rel="stylesheet" type="text/html" href="https://raw.githubusercontent.com/isagalaev/highlight.js/master/src/styles/default.css"> -->
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.0/c3.min.css">
-  <link href="http://prismjs.com/themes/prism.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/themes/prism.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
 
   <style type="text/css" class="init">
@@ -543,8 +544,8 @@
 
 
   <!-- Metis Menu Plugin JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/metismenu"></script>
-  <script src="http://prismjs.com/prism.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.7/metisMenu.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.js"></script>
 
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-ruby.min.js"></script>
@@ -713,15 +714,15 @@
   function draw_data_table() {
     dataSet = filterDataset();
     if ( $.fn.dataTable.isDataTable( '#results_table' ) ) {
-        var datatable = $('#results_table').dataTable().api();
-        datatable.clear();
-        datatable.rows.add(dataSet);
-        datatable.draw();
+        var table = $('#results_table').dataTable().api();
+        table.clear();
+        table.rows.add(dataSet);
+        table.draw();
     }
     else
     {
         // use dataSet to filter and group controls
-        var datatable = $('#results_table').DataTable( {
+        var table = $('#results_table').DataTable( {
              "iDisplayLength": 10,
 
         "rowCallback": function( row, data, index ) {
