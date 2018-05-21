@@ -534,12 +534,7 @@
       alert(target);
     });
 
-    // function test () {
-    //     $('pre code').each(function(i, block) {
-    //     // Prism.highlight(block, Prism.languages.ruby, 'ruby')
-    //     // hljs.highlightBlock(block);
-    //   });
-    // }
+
 
   </script>
 
@@ -650,14 +645,14 @@
       '<li><a data-toggle="tab" href="#inspec_code">Inspec Code</a></li>'+
     '</ul>'+
     '<div class="tab-content">'+
-      '<div id="fdetails" class="tab-pane fade in active">'+
+      '<div id="fdetails" class="tab-pane active">'+
         '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
           '<tr>'+
               '<td>'+d.finding_details.replace(/(?:\r\n|\r|\n)/g, '<br>')+'</td>'+
           '</tr>'+
         '</table>'+
       '</div>'+
-      '<div id="details" class="tab-pane fade in">'+
+      '<div id="details" class="tab-pane">'+
         '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
 
 
@@ -725,7 +720,6 @@
   
     // Add event listener for opening and closing details
     $('#results_table tbody').on('click', 'td.table_row', function () {
-      console.log("here");
       var tr = $(this).closest('tr');
       var row = table.row( tr );
 
@@ -739,8 +733,7 @@
        }
        row.child( details_panel(row.data()) ).show();
        tr.addClass('shown');
-       Prism.highlightElement($('#code')[0]); // Reload element in prism to display line numbers
-       // Prism.highlightAll();
+       Prism.highlightAll();
       }
     });
   }
