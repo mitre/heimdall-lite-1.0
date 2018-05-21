@@ -377,30 +377,41 @@
         var c_id = control['id']
         data[c_id] = {}
         data[c_id] = {}
-        data[c_id]['profile']        = profile_name                 || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['vuln_num']       = control['id']                || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['profile']         = profile_name                                                        || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['vuln_num']        = control['id']                                                       || DATA_NOT_FOUND_MESSAGE
         if (data[c_id]['vuln_num'].match(/\d+\.\d+/)) {
-          data[c_id]['vuln_num']     = data[c_id]['vuln_num'].match(/\d+(\.\d+)*/)[0];
+          data[c_id]['vuln_num']      = data[c_id]['vuln_num'].match(/\d+(\.\d+)*/)[0];
         }
-        data[c_id]['rule_title']     = control['title']             || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['vuln_discuss']   = control['desc'] || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['severity']       = control['tags']['severity']  || compute_severity(control['impact']) || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['gid']            = control['tags']['gid']       || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['group_title']    = control['tags']['gtitle']    || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['rule_id']        = control['tags']['rid']       || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['rule_ver']       = control['tags']['stig_id']   || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['cci_ref']        = control['tags']['cci']       || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['nist']           = control['tags']['nist']      || ['unmapped']
-        data[c_id]['check_content']  = control['tags']['check']     || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['fix_text']       = control['tags']['fix']       || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['rule_title']      = control['title']                                                    || DATA_NOT_FOUND_MESSAGE
+        if (control['desc']) {
+          data[c_id]['vuln_discuss']  = control['desc'].replace(new RegExp("\n", 'g'), '<br>')              || DATA_NOT_FOUND_MESSAGE
+        } else { data[c_id]['vuln_discuss'] = DATA_NOT_FOUND_MESSAGE }
+        
+        data[c_id]['severity']        = control['tags']['severity']  || compute_severity(control['impact']) || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['gid']             = control['tags']['gid']                                              || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['group_title']     = control['tags']['gtitle']                                           || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['rule_id']         = control['tags']['rid']                                              || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['rule_ver']        = control['tags']['stig_id']                                          || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['cci_ref']         = control['tags']['cci']                                              || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['nist']            = control['tags']['nist']                                             || ['unmapped']
+        if (control['tags']['check']) {
+          data[c_id]['check_content'] = control['tags']['check'].replace(new RegExp("\n", 'g'), '<br>')     || DATA_NOT_FOUND_MESSAGE
+        } else { data[c_id]['check_content'] = DATA_NOT_FOUND_MESSAGE }
+        
+        if (control['tags']['fix']) {
+          data[c_id]['fix_text']      = control['tags']['fix'].replace(new RegExp("\n", 'g'), '<br>')       || DATA_NOT_FOUND_MESSAGE
+        } else { data[c_id]['fix_text'] = DATA_NOT_FOUND_MESSAGE }
+        
+        if (control['tags']['rationale']) {
+          data[c_id]['rationale']     = control['tags']['rationale'].replace(new RegExp("\n", 'g'), '<br>') || DATA_NOT_FOUND_MESSAGE
+        } else { data[c_id]['rationale'] = DATA_NOT_FOUND_MESSAGE }
+        
+        data[c_id]['cis_family']      = control['tags']['cis_family']                                       || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['cis_rid']         = control['tags']['cis_rid']                                          || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['cis_level']       = control['tags']['cis_level']                                        || DATA_NOT_FOUND_MESSAGE
 
-        data[c_id]['rationale'] = control['tags']['rationale']      || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['cis_family'] = control['tags']['cis_family']    || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['cis_rid'] = control['tags']['cis_rid']          || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['cis_level'] = control['tags']['cis_level']      || DATA_NOT_FOUND_MESSAGE
-
-        data[c_id]['impact']         = String(control['impact'])    || DATA_NOT_FOUND_MESSAGE
-        data[c_id]['code']           = String(control['code'])        || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['impact']          = String(control['impact'])                                           || DATA_NOT_FOUND_MESSAGE
+        data[c_id]['code']            = String(control['code'])                                             || DATA_NOT_FOUND_MESSAGE
 
         data[c_id]['status'] = []
         data[c_id]['message'] = ''
@@ -436,6 +447,7 @@
         }
         return severity
       }
+
 
       function grab_start_time(json) {
         for (var i = 0; i < json['profiles'].length; i++) {
