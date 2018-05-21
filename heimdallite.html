@@ -704,7 +704,7 @@
     set_results_table_thead();
 
     // use dataSet to filter and group controls
-    createDataTable();
+    table = createDataTable();
   
     // Add event listener for opening and closing details
     $('#results_table tbody').on('click', 'td.table_row', function () {
@@ -775,6 +775,7 @@
             "order": [[2, 'asc']]
       } );
     }
+    return table;
   }
   
   function set_results_table_thead() {
