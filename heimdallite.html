@@ -1418,11 +1418,21 @@
   }
 
   function update_treemap_colors_profile() {
+    
+    // Logic to fix color if there is only one type of severity
+    if (severity_count['CAT I'] == 0 && severity_count['CAT II'] == 0) {
+      data_filter.severity = 'high';
+    } else if (severity_count['CAT I'] == 0 && severity_count['CAT III'] == 0) {
+      data_filter.severity = 'medium';
+    } else if (severity_count['CAT II'] == 0 && severity_count['CAT III'] == 0) {
+      data_filter.severity = 'low';
+    }
     // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
     // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
     $('#nist_treemap_profile').children('div').children('div').children('div').children('svg').children('g').each(function() {
       var default_block_color = $(this).children('rect').attr('fill');
       // console.log(data_table.getFormattedValue($(this).children('rect').attr('x'), $(this).children('rect').attr('y')));
+      console.log(default_block_color);
       switch(data_filter.severity) {
           case "*":
               switch(default_block_color) {
@@ -1505,7 +1515,7 @@
                       record.push(1.3);
                   }
                   if (control.severity === DATA_NOT_FOUND_MESSAGE) {
-                      record.push(1.2);
+                      record.push(1.);
                   }
                   treeMapData.push(record);
               }
