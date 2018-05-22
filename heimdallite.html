@@ -1432,7 +1432,6 @@
     $('#nist_treemap_profile').children('div').children('div').children('div').children('svg').children('g').each(function() {
       var default_block_color = $(this).children('rect').attr('fill');
       // console.log(data_table.getFormattedValue($(this).children('rect').attr('x'), $(this).children('rect').attr('y')));
-      console.log(default_block_color);
       switch(data_filter.severity) {
           case "*":
               switch(default_block_color) {
