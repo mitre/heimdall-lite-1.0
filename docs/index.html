@@ -143,10 +143,6 @@
           margin: 40px 0;
       }
 
-      .featurette-image {
-          max-width: 50%;
-      }
-
       .featurette-image.pull-left {
           margin-right: 10px;
       }
@@ -304,7 +300,7 @@
                 <h2 class="featurette-heading">View the results of an InSpec execution json.</h2>
                 <p class="lead">Easily see how many controls passed and failed.</p>
                 <p class="lead">Click on the donut charts to filter the controls by status and severity.</p>
-                <img class="featurette-image img-responsive pull-right" id="base_image">
+                <img class="featurette-image img-responsive" id="base_image">
             </div>
 
             <hr class="featurette-divider">
@@ -313,11 +309,11 @@
             <div class="featurette" id="services">
                 <h2 class="featurette-heading">Use the treemap or datatable to navigate through your controls.</h2>
                 <p class="lead"></p>
-                <img class="featurette-image img-responsive pull-left" id="treemap_image">
+                <img class="featurette-image img-responsive" id="treemap_image">
                 
                 <hr class="featurette-divider">
                 
-                <img class="featurette-image img-responsive pull-left" id="data_table_image">
+                <img class="featurette-image img-responsive" id="data_table_image" style="width: 100%">
             </div>
 
             <hr class="featurette-divider">
@@ -556,6 +552,11 @@
         // Create a reader object
         var reader = new FileReader();
         reader.addEventListener('load', function(e) {
+          data_filter = {
+                          'result' : '*',
+                          'severity' : '*',
+                          'nist_families' : '*',
+                        }
           json = JSON.parse(e.target.result);
           profile_name = file.name;
           json = parse_json(json, profile_name);
@@ -1421,11 +1422,11 @@
     
     // Logic to fix color if there is only one type of severity
     if (severity_count['CAT I'] == 0 && severity_count['CAT II'] == 0) {
-      data_filter.severity = 'high';
+      data_filter.severity = 'low';
     } else if (severity_count['CAT I'] == 0 && severity_count['CAT III'] == 0) {
       data_filter.severity = 'medium';
     } else if (severity_count['CAT II'] == 0 && severity_count['CAT III'] == 0) {
-      data_filter.severity = 'low';
+      data_filter.severity = 'high';
     }
     // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
     // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
@@ -1551,6 +1552,10 @@
       if (dataSet[0] == undefined) { // If displaying only one control, filter by the gid/vuln_number
         dataSet = raw_dataSet;
         dataSet = $(dataSet).filter(function (i,n){ return n.gid.indexOf(data_filter.nist_families) != -1; });
+      }
+      if (dataSet[0] == undefined) { // If filter still is undefined, filter by vuln num
+        dataSet = raw_dataSet;
+        dataSet = $(dataSet).filter(function (i,n){ return n.vuln_num.indexOf(data_filter.nist_families) != -1; });
       }
     }
     return dataSet;
