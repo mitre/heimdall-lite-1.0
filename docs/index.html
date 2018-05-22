@@ -42,7 +42,8 @@
   #nist_treemap_results rect {
         stroke: black;
         stroke-width: 0.25;
-      }
+      }  
+  
   .chart {
     width: 100%;
     min-height: 300px;
@@ -481,19 +482,19 @@
               </div>
           </div>
           <div class="row" id='profile_charts' style='display:none;'>
-              <div class="col-lg-4">
+              <div class="col-lg-4" style='width: 25%; float: left;'>
                   <div class="panel panel-default">
                       <div class="panel-heading">
                           <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
                       </div>
                       <!-- /.panel-heading -->
                       <div class="panel-body">
-                          <div id="severity_pie_profile"></div>
+                          <div id="severity_pie_profile" style="min-height: 300px;"></div>
                       </div>
                       <!-- /.panel-body -->
                   </div>
               </div>
-              <div class="col-lg-8">
+              <div class="col-lg-8" style='height: 100%; width: 75%; float: right;'>
                   <div class="panel panel-default">
                       <div class="panel-heading">
                           <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
@@ -1142,7 +1143,7 @@
         pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', '#4579B2', 'rgb(255, 200, 87)']
       },
       size: {
-        height: 240
+        height: 300
       },
       donut: {
         title: "Control Status",
@@ -1191,7 +1192,7 @@
           pattern: ['rgb(255, 0, 41)','rgb(255, 200, 87)','rgb(137, 204, 81)' ]
       },
       size: {
-        height: 240
+        height: 300
       },
       donut: {
         title: "Control Severity",
@@ -1226,7 +1227,7 @@
           }
       },
       size: {
-          height: 240
+          height: 300
       }
     });
   }
