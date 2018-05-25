@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased](https://github.com/aaronlippold/heimdall-lite/tree/HEAD)
+
+[Full Changelog](https://github.com/aaronlippold/heimdall-lite/compare/v1.0...HEAD)
+
+**Closed issues:**
+
+- What does "load a profile" mean? [\#4](https://github.com/aaronlippold/heimdall-lite/issues/4)
+
 ## [v1.0](https://github.com/aaronlippold/heimdall-lite/tree/v1.0) (2018-05-22)
 **Implemented enhancements:**
 
