@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Rony Xaiver and Matthew Dromazos">
-  <meta name='version' content='v1.0.1-5-g999e837'>
+  <meta name='version' content='v1.0.1-6-g085dc4e'>
 
   <title>Heimdall-lite</title>
 
@@ -349,87 +349,104 @@
             <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item"></li>
             <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
           </ol>
-
-          <div class="row" id='status_labels_div_id' style='display:none;'>
-              <div class="col-lg-3 col-md-6">
-                  <div class="panel panel-green">
-                      <div class="panel-heading">
-                          <div class="row">
-                              <div class="col-xs-3">
-                                  <i class="glyphicon glyphicon-ok-circle fa-5x"></i>
-                              </div>
-                              <div class="col-xs-9 text-right">
-                                  <div id = "not_a_finding" class="huge"></div>
-                                  <div>Not A Finding</div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="panel-footer">
-                          (all tests passed)<br><br>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-lg-3 col-md-6">
-                  <div class="panel panel-red">
-                      <div class="panel-heading">
-                          <div class="row">
-                              <div class="col-xs-3">
-                                  <i class="glyphicon glyphicon-remove-circle fa-5x"></i>
-                              </div>
-                              <div class="col-xs-9 text-right">
-                                  <div id = "open" class="huge"></div>
-                                  <div>Open</div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="panel-footer">
-                          (has tests that failed)<br><br>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-lg-3 col-md-6">
-                  <div class="panel panel-primary">
-                      <div class="panel-heading">
-                          <div class="row">
-                              <div class="col-xs-3">
-                                  <i class="glyphicon glyphicon-ban-circle fa-5x"></i>
-                              </div>
-                              <div class="col-xs-9 text-right">
-                                  <div id= "not_applicable" class="huge"></div>
-                                  <div>Not Applicable</div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="panel-footer">
-                          (zero impact: exception for this system and/or absent component)
-                      </div>
-                  </div>
-              </div>
-              <div class="col-lg-3 col-md-6">
-                  <div class="panel panel-yellow">
-                      <div class="panel-heading">
-                          <div class="row">
-                              <div class="col-xs-3">
-                                  <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
-                              </div>
-                              <div class="col-xs-9 text-right">
-                                  <div id = "not_reviewed" class="huge"></div>
-                                  <div>Not Reviewed</div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="panel-footer">
-                          (can only be tested manually or disabled test)<br><br>
-                      </div>
-                  </div>
-              </div>
+        <div class="row" id='status_labels_div_id' style='display:none;'>
+            <div class="col-lg-3 col-md-6" id="not_a_finding_banner">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-ok-circle fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div id = "not_a_finding" class="huge"></div>
+                                <div>Not A Finding</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        (all tests passed)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" id="open_banner">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-remove-circle fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div id = "open" class="huge"></div>
+                                <div>Open</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        (has tests that failed)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" id="not_applicable_banner">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-ban-circle fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div id= "not_applicable" class="huge"></div>
+                                <div>Not Applicable</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer" id="not_applicable_footer">
+                        (zero impact: exception for this system and/or absent component)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6" id="not_reviewed_banner">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div id = "not_reviewed" class="huge"></div>
+                                <div>Not Reviewed</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        (can only be tested manually or disabled test)
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-12" style="display: none;" id="not_tested_banner">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div id = "not_tested" class="huge"></div>
+                                <div>Not Tested</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        (error running control, no testes ran)
+                    </div>
+                </div>
+            </div>
           </div>
           <!-- /.row -->
           <div class="row" id="results_charts_row" style='display:none;'>
               <div class="col-lg-4" id='control_status_id'>
                   <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Status<br><br>
+                      <div class="panel-heading res-chart">
+                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Status
                       </div>
                       <!-- /.panel-heading -->
                       <div class="panel-body">
@@ -441,8 +458,8 @@
 
               <div class="col-lg-4">
                   <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity<br><br>
+                      <div class="panel-heading res-chart">
+                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
                       </div>
                       <!-- /.panel-heading -->
                       <div class="panel-body">
@@ -453,7 +470,7 @@
               </div>
               <div class="col-lg-4" id='compliance_level_id'>
                   <div class="panel panel-default">
-                      <div class="panel-heading">
+                      <div class="panel-heading res-chart">
                           <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
                       </div>
                       <!-- /.panel-heading -->
@@ -537,7 +554,36 @@
   <button id = "clear_filters_button" type="button" class="btn btn-primary floating">Clear Filters</button>
 
   <script type="text/javascript" class="init">
-    
+  function evenfooters() {
+      var heights = [];                           // make an array
+      $(".panel-footer").each(function(){           // copy the height of each
+          heights.push($(this).innerHeight());         //   element to the array
+      });
+      heights.sort(function(a, b){return b - a}); // sort the array high to low
+      var minh = heights[0];                      // take the highest number    
+      $(".panel-footer").innerHeight(minh);              // and apply that to each element
+  }
+  function evenheaders() {
+      var heights = [];                           // make an array
+      $(".panel-heading.res-chart").each(function(){           // copy the height of each
+          heights.push($(this).innerHeight());         //   element to the array
+      });
+      heights.sort(function(a, b){return b - a}); // sort the array high to low
+      var minh = heights[0];                      // take the highest number    
+      $(".panel-heading.res-chart").innerHeight(minh);              // and apply that to each element
+  }
+  $(window).resize(function () { 
+      $(".panel-footer").each(function(){
+          $(this).css('height',"");           // clear height values
+      });   
+      $(".panel-heading.res-chart").each(function(){
+          $(this).css('height',"");           // clear height values
+      });
+      resizeId = setTimeout(evenfooters, 500);
+      resizeId = setTimeout(evenheaders, 500);                                 
+      evenfooters();
+      evenheaders();
+  });
   
       var xmlhttp = new XMLHttpRequest();
       var raw_dataSet = ''
@@ -944,6 +990,7 @@
   
     // Add event listener for opening and closing details
     $('#results_table tbody').on('click', 'td.table_row', function () {
+      // var tr = $(this).closest('tr');
       var tr = $(this).closest('tr');
       var row = table.row( tr );
 
@@ -960,6 +1007,27 @@
        Prism.highlightAll();
       }
     });
+  }
+  /*
+  * Polyfil for jquery method `closest` for use in ie 9
+  */
+  if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.msMatchesSelector || 
+                                  Element.prototype.webkitMatchesSelector;
+  }
+  /*
+  * Polyfil for jquery method `closest` for use in ie 9
+  */
+  if (!Element.prototype.closest) {
+      Element.prototype.closest = function(s) {
+          var el = this;
+          if (!document.documentElement.contains(el)) return null;
+          do {
+              if (el.matches(s)) return el;
+              el = el.parentElement || el.parentNode;
+          } while (el !== null && el.nodeType === 1); 
+          return null;
+      };
   }
   
   function createDataTable() {
@@ -1012,6 +1080,11 @@
     }
     return table;
   }
+  // window.addEventListener("resize", function () {
+  //   height = $('#not_applicable_footer').height();
+  //   console.log(height);
+  //   $('.panel-footer').height(height);
+  // });
   
   function set_results_table_thead() {
     if (results_json['profile_name'].split(';')[0] == 'result') {
@@ -1110,6 +1183,23 @@
     document.getElementById("open").innerHTML           = status_count['open_count'];
     document.getElementById("not_applicable").innerHTML = status_count['not_applicable_count'];
     document.getElementById("not_reviewed").innerHTML   = status_count['not_reviewed_count'];
+    if (status_count['not_tested_count'] != 0) {
+      not_tested_banner = document.getElementById("not_tested");
+      not_tested_banner.innerHTML   = status_count['not_tested_count'];
+      $("#not_tested_banner").attr('class', 'col-lg-4 col-md-12');
+      $("#not_a_finding_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#not_reviewed_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#not_applicable_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#open_banner").attr('class', 'col-lg-2 col-md-6');  
+      $('#not_tested_banner').show();
+    } else {
+      $("#not_a_finding_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#not_reviewed_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#not_applicable_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#open_banner").attr('class', 'col-lg-3 col-md-6');  
+      $('#not_tested_banner').hide();
+    }
+    window.dispatchEvent(new Event('resize'));
   }
 
   function draw_status_pie_chart()
@@ -1986,7 +2076,7 @@
 </body>
 
 <footer>
-  <div class='pull-right hidden-xs'>Version: v1.0.1-5-g999e837</div>
+  <div class='pull-right hidden-xs'>Version: v1.0.1-6-g085dc4e</div>
   <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
 </footer
 
