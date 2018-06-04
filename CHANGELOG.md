@@ -6,6 +6,9 @@
 
 **Closed issues:**
 
+- Incorporate the automated `github\_changelog\_gen` into our release and tagging process [\#18](https://github.com/aaronlippold/heimdall-lite/issues/18)
+- Add git commit short hash to footer version number  [\#17](https://github.com/aaronlippold/heimdall-lite/issues/17)
+- Add version to header [\#16](https://github.com/aaronlippold/heimdall-lite/issues/16)
 - What does "load a profile" mean? [\#4](https://github.com/aaronlippold/heimdall-lite/issues/4)
 
 ## [v1.0](https://github.com/aaronlippold/heimdall-lite/tree/v1.0) (2018-05-22)

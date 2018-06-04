@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Rony Xaiver and Matthew Dromazos">
-  <meta name='version' content='v1.0.1-4-gc0e0837'>
+  <meta name='version' content='v1.0.1-5-g999e837'>
 
   <title>Heimdall-lite</title>
 
@@ -365,7 +365,7 @@
                           </div>
                       </div>
                       <div class="panel-footer">
-                          (all tests passed)
+                          (all tests passed)<br><br>
                       </div>
                   </div>
               </div>
@@ -383,7 +383,7 @@
                           </div>
                       </div>
                       <div class="panel-footer">
-                          (has tests that failed)
+                          (has tests that failed)<br><br>
                       </div>
                   </div>
               </div>
@@ -401,7 +401,7 @@
                           </div>
                       </div>
                       <div class="panel-footer">
-                          (exception for this system)
+                          (zero impact: exception for this system and/or absent component)
                       </div>
                   </div>
               </div>
@@ -419,7 +419,7 @@
                           </div>
                       </div>
                       <div class="panel-footer">
-                          (manual test or absent sub-component)
+                          (can only be tested manually or disabled test)<br><br>
                       </div>
                   </div>
               </div>
@@ -454,7 +454,7 @@
               <div class="col-lg-4" id='compliance_level_id'>
                   <div class="panel panel-default">
                       <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed) * 100]
+                          <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
                       </div>
                       <!-- /.panel-heading -->
                       <div class="panel-body">
@@ -1210,7 +1210,7 @@
   * This function calculates the compliance level
   */
   function score () {
-    return (status_count['not_a_finding_count']/(dataSet.length - status_count['not_applicable_count']))*100;
+    return (status_count['not_a_finding_count']/(status_count['open_count'] + status_count['not_a_finding_count'] + status_count['not_reviewed_count'] + status_count['not_tested_count']))*100;
   }
 
   function draw_compliance_pie_chart() {
@@ -1986,7 +1986,7 @@
 </body>
 
 <footer>
-  <div class='pull-right hidden-xs'>Version: v1.0.1-4-gc0e0837</div>
+  <div class='pull-right hidden-xs'>Version: v1.0.1-5-g999e837</div>
   <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
 </footer
 
