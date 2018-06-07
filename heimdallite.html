@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Rony Xaiver and Matthew Dromazos">
-  <meta name='version' content='v1.0.1-6-g085dc4e'>
+  <meta name='version' content='v1.0.1-7-g3f726b4'>
 
   <title>Heimdall-lite</title>
 
@@ -349,7 +349,7 @@
             <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item"></li>
             <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
           </ol>
-        <div class="row" id='status_labels_div_id' style='display:none;'>
+          <div class="row" id='status_labels_div_id' style='display:none;'>
             <div class="col-lg-3 col-md-6" id="not_a_finding_banner">
                 <div class="panel panel-green">
                     <div class="panel-heading">
@@ -990,7 +990,6 @@
   
     // Add event listener for opening and closing details
     $('#results_table tbody').on('click', 'td.table_row', function () {
-      // var tr = $(this).closest('tr');
       var tr = $(this).closest('tr');
       var row = table.row( tr );
 
@@ -1000,12 +999,23 @@
       }
       else {
        if ( table.row( '.shown' ).length ) {
-          $('.table_row', table.row( '.shown' ).node()).click();
+          $('.table_row', table.rows( '.shown' ).nodes()).click();
        }
        row.child( details_panel(row.data()) ).show();
        tr.addClass('shown');
        Prism.highlightAll();
       }
+    });
+    $('#results_table').on( 'page.dt', function () {
+      console.log(table.rows({ page: 'current' }));
+      table.rows({ page: 'current' }).nodes().each(tr => {
+        var row = table.row( tr );
+        if ( row.child.isShown() ) {
+          row.child.hide();
+          console.log(tr);
+          $(tr).removeClass('shown');
+        }
+      });
     });
   }
   /*
@@ -1050,7 +1060,7 @@
                 $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px">Not Reviewed</button> ' );
               }
               if ( data.result == "Not_Tested" ) {
-                $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px">Not Tested</button> ' );
+                $('td:eq(0)', row).html( '<button class="btn btn-info" style="width:120px">Not Tested</button> ' );
               }
 
             },
@@ -1199,7 +1209,16 @@
       $("#open_banner").attr('class', 'col-lg-3 col-md-6');  
       $('#not_tested_banner').hide();
     }
-    window.dispatchEvent(new Event('resize'));
+    $(".panel-footer").each(function(){
+        $(this).css('height',"");           // clear height values
+    });   
+    $(".panel-heading.res-chart").each(function(){
+        $(this).css('height',"");           // clear height values
+    });
+    resizeId = setTimeout(evenfooters, 250);
+    resizeId = setTimeout(evenheaders, 250);                                 
+    evenfooters();
+    evenheaders();
   }
 
   function draw_status_pie_chart()
@@ -1208,7 +1227,8 @@
                     ['Not A Finding',  status_count['not_a_finding_count']],
                     ['Open',           status_count['open_count']],
                     ['Not Applicable', status_count['not_applicable_count']],
-                    ['Not Reviewed',   status_count['not_reviewed_count']]
+                    ['Not Reviewed',   status_count['not_reviewed_count']],
+                    ['Not Tested',     status_count['not_tested_count']]
                   ];
 
     var status_pie = c3.generate({
@@ -1226,12 +1246,14 @@
               data_filter.result = 'Not_Applicable';
             }else if (d.id == 'Not Reviewed'){
               data_filter.result = 'Not_Reviewed';
+            }else if (d.id == 'Not Tested'){
+              data_filter.result = 'Not_Tested';
             }
             load_views();
           }
       },
       color: {
-        pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', '#4579B2', 'rgb(255, 200, 87)']
+        pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', '#4579B2', 'rgb(255, 200, 87)', '#DDEDF6']
       },
       size: {
         height: 300
@@ -1400,17 +1422,20 @@
       switch(data_filter.result) {
           case '*':
               switch(default_block_color) {
-                  case '#7f8000': //Default Not Applicable
+                  case '#cc3300': //Default Not Applicable
                       $(this).children('rect').css({fill: '#4579B2'});
                       break;
-                  case '#ff0000': //Default Not Reviewed
+                  case '#ff3333': //Default Not Reviewed
                       $(this).children('rect').css({fill: '#ffC857'});
                       break;
                   case '#00ff00': //Default Not A Finding
                       $(this).children('rect').css({fill: '#89cc51'});
                       break;
-                  case '#ff7f7f': //Default Open
+                  case '#ff9999': //Default Open
                       $(this).children('rect').css({fill: '#ff0029'});
+                      break;
+                  case '#669900': //Default Not Tested
+                      $(this).children('rect').css({fill: '#DDEDF6'});
                       break;
                   default: // Everything else
                       $(this).children('rect').css({fill: '#FFFFFF'});
@@ -1457,6 +1482,16 @@
                       break;
               }
               break;
+          case 'Not_Tested':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#DDEDF6'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
       }
     });
   }
@@ -1486,10 +1521,10 @@
                 record.push('UM')
               }
               if (control.result === 'Not_Tested') {
-                  record.push(1.2);
+                  record.push(1.4);
               }
               if (control.result === 'NotAFinding') {
-                  record.push(1.4);
+                  record.push(1.5);
               }
               if (control.result === 'Not_Reviewed') {
                   record.push(1.2);
@@ -1605,7 +1640,7 @@
                       record.push(1.3);
                   }
                   if (control.severity === DATA_NOT_FOUND_MESSAGE) {
-                      record.push(1.);
+                      record.push(1.0);
                   }
                   treeMapData.push(record);
               }
@@ -2076,7 +2111,7 @@
 </body>
 
 <footer>
-  <div class='pull-right hidden-xs'>Version: v1.0.1-6-g085dc4e</div>
+  <div class='pull-right hidden-xs'>Version: v1.0.1-7-g3f726b4</div>
   <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
 </footer
 
