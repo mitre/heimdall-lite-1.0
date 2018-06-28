@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Rony Xaiver and Matthew Dromazos">
-  <meta name='version' content='v1.0.1-7-g3f726b4'>
+  <meta name='version' content='v1.0.1-8-g2096f9a'>
 
   <title>Heimdall-lite</title>
 
@@ -624,7 +624,7 @@
       }
 
       function parse_json(json, profile_name) {
-        var  DATA_NOT_FOUND_MESSAGE = 'N/A'
+        DATA_NOT_FOUND_MESSAGE = 'N/A'
         results_json = {}
         var controls = []
         var data = {}
@@ -873,7 +873,7 @@
   });
 
 
-  var  DATA_NOT_FOUND_MESSAGE = 'N/A'
+  DATA_NOT_FOUND_MESSAGE = 'N/A'
 
   /*
   * This method redraws all views on the screen.
@@ -931,7 +931,7 @@
       details_panel += '<tr>'+ '<td>Title:</td>'  + '<td>'+d['rule_title']  +'</td>'+ '</tr>';
       details_panel += '<tr>'+ '<td>Desc:</td>'   + '<td>'+d['vuln_discuss']+'</td>'+ '</tr>';
 
-      var  DATA_NOT_FOUND_MESSAGE = 'N/A'
+      DATA_NOT_FOUND_MESSAGE = 'N/A'
       // Optional Tags
       if (d['severity']      != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Severity:</td>'  + '<td>'+d['severity']     +'</td>'+ '</tr>'; }
       if (d['impact']        != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Impact:</td>'    + '<td>'+d['impact']       +'</td>'+ '</tr>'; }
@@ -1006,17 +1006,17 @@
        Prism.highlightAll();
       }
     });
-    $('#results_table').on( 'page.dt', function () {
-      console.log(table.rows({ page: 'current' }));
-      table.rows({ page: 'current' }).nodes().each(tr => {
-        var row = table.row( tr );
-        if ( row.child.isShown() ) {
-          row.child.hide();
-          console.log(tr);
-          $(tr).removeClass('shown');
-        }
-      });
-    });
+    // $('#results_table').on( 'page.dt', function () {
+    //   console.log(table.rows({ page: 'current' }));
+    //   table.rows({ page: 'current' }).nodes().each(tr => {
+    //     var row = table.row( tr );
+    //     if ( row.child.isShown() ) {
+    //       row.child.hide();
+    //       console.log(tr);
+    //       $(tr).removeClass('shown');
+    //     }
+    //   });
+    // });
   }
   /*
   * Polyfil for jquery method `closest` for use in ie 9
@@ -2111,7 +2111,7 @@
 </body>
 
 <footer>
-  <div class='pull-right hidden-xs'>Version: v1.0.1-7-g3f726b4</div>
+  <div class='pull-right hidden-xs'>Version: v1.0.1-8-g2096f9a</div>
   <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
 </footer
 

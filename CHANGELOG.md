@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Compliance level change [\#20](https://github.com/aaronlippold/heimdall-lite/issues/20)
 - Incorporate the automated `github\_changelog\_gen` into our release and tagging process [\#18](https://github.com/aaronlippold/heimdall-lite/issues/18)
 - Add git commit short hash to footer version number  [\#17](https://github.com/aaronlippold/heimdall-lite/issues/17)
 - Add version to header [\#16](https://github.com/aaronlippold/heimdall-lite/issues/16)
