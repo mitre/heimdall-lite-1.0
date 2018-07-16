@@ -707,6 +707,11 @@
 
         data[c_id]['status'] = []
         data[c_id]['message'] = ''
+
+        if (parseFloat(data[c_id]['impact']) == 0) {
+            data[c_id]['message'] = data[c_id]['vuln_discuss'] + "\n\n";
+        }
+
         if (control['results']) {
           // Contanate all of the results messages
           control['results'].forEach(function(result) {
@@ -716,14 +721,7 @@
             if (result['status'] == 'passed') { data[c_id]['message'] += 'PASS -- ' + result['code_desc'] + '\n' }
           });
         }
-        if (parseFloat(data[c_id]['impact']) == 0) {
-          if(control['results'] == []) {
-            message = "\n\n Not Applicable --- ";
-            control['results'].forEach(function(result) {
-              message += result + " \n"
-            });
-          }
-        }
+
         data[c_id]['result']           = clk_status(data[c_id])
         data[c_id]['finding_details']  = clk_finding_details(data[c_id])
       }
