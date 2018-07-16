@@ -39,4 +39,4 @@ build:
 
   script:
     - mkdir -p /var/www/heimdall-lite/
-    - cp -v heimdallite.html /var/www/heimdall-lite/
+    - cp heimdallite.html /var/www/heimdall-lite/
