@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="Rony Xaiver and Matthew Dromazos">
-  <meta name='version' content='v1.0.1-9-g599d8d9'>
+  <meta name='version' content='v1.0.1-10-g41c0bc7'>
 
   <title>Heimdall-lite</title>
 
@@ -343,217 +343,232 @@
         </div>
       </div>
 
+      <ul class="nav nav-tabs" id='navDiv' style='display:none;'>
+          <li class="active">
+              <a  href="#mainContent" data-toggle="tab">Results</a>
+		      </li>
+          <li>
+              <a href="#sspContent" data-toggle="tab">SSP Ready Content</a>
+          </li>
+      </ul>
+      <div class="tab-content clearfix">
+        <div style="padding: 30px;" id='mainContent' class='tab-pane active'>
+            <ol class="breadcrumb" id='title_id' style='display: none;'>
+              <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item"></li>
+              <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
+            </ol>
+            <div class="row" id='status_labels_div_id' style='display:none;'>
+              <div class="col-lg-3 col-md-6" id="not_a_finding_banner">
+                  <div class="panel panel-green">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-ok-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "not_a_finding" class="huge"></div>
+                                  <div>Not A Finding</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (all tests passed)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="open_banner">
+                  <div class="panel panel-red">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-remove-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "open" class="huge"></div>
+                                  <div>Open</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (has tests that failed)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="not_applicable_banner">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-ban-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id= "not_applicable" class="huge"></div>
+                                  <div>Not Applicable</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer" id="not_applicable_footer">
+                          (zero impact: exception for this system and/or absent component)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="not_reviewed_banner">
+                  <div class="panel panel-yellow">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "not_reviewed" class="huge"></div>
+                                  <div>Not Reviewed</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (can only be tested manually or disabled test)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-12" style="display: none;" id="profile_error_banner">
+                  <div class="panel panel-info">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "profile_error" class="huge"></div>
+                                  <div>Profile Error</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (error running control, no testes ran)
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <!-- /.row -->
+            <div class="row" id="results_charts_row" style='display:none;'>
+                <div class="col-lg-4" id='control_status_id'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Control Status
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="status_pie"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
 
-      <div style="padding: 30px;">
-          <ol class="breadcrumb" id='title_id' style='display: none;'>
-            <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item"></li>
-            <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
-          </ol>
-          <div class="row" id='status_labels_div_id' style='display:none;'>
-            <div class="col-lg-3 col-md-6" id="not_a_finding_banner">
-                <div class="panel panel-green">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="glyphicon glyphicon-ok-circle fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div id = "not_a_finding" class="huge"></div>
-                                <div>Not A Finding</div>
-                            </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
                         </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="severity_pie_results"></div>
+                        </div>
+                        <!-- /.panel-body -->
                     </div>
-                    <div class="panel-footer">
-                        (all tests passed)
+                </div>
+                <div class="col-lg-4" id='compliance_level_id'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="profile_gauge"></div>
+                        </div>
+                        <!-- /.panel-body -->
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" id="open_banner">
-                <div class="panel panel-red">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="glyphicon glyphicon-remove-circle fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div id = "open" class="huge"></div>
-                                <div>Open</div>
-                            </div>
+            <div class="row" id="results_treemap_row" style='display:none;'>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
                         </div>
-                    </div>
-                    <div class="panel-footer">
-                        (has tests that failed)
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="nist_treemap_results" class = "chart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" id="not_applicable_banner">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="glyphicon glyphicon-ban-circle fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div id= "not_applicable" class="huge"></div>
-                                <div>Not Applicable</div>
-                            </div>
+            <div class="row" id='profile_charts' style='display:none;'>
+                <div class="col-lg-4" style='width: 25%; float: left;'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
                         </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="severity_pie_profile" style="min-height: 300px;"></div>
+                        </div>
+                        <!-- /.panel-body -->
                     </div>
-                    <div class="panel-footer" id="not_applicable_footer">
-                        (zero impact: exception for this system and/or absent component)
+                </div>
+                <div class="col-lg-8" style='height: 100%; width: 75%; float: right;'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="nist_treemap_profile" class = "chart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6" id="not_reviewed_banner">
-                <div class="panel panel-yellow">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div id = "not_reviewed" class="huge"></div>
-                                <div>Not Reviewed</div>
-                            </div>
+            <div class="row" id="profile_results_id" style='display: none;'>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Profile Results
                         </div>
-                    </div>
-                    <div class="panel-footer">
-                        (can only be tested manually or disabled test)
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                        <table id="results_table" class="display" cellspacing="0" width="100%">
+                            <thead>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-12" style="display: none;" id="not_tested_banner">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
-                            </div>
-                            <div class="col-xs-9 text-right">
-                                <div id = "not_tested" class="huge"></div>
-                                <div>Not Tested</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        (error running control, no testes ran)
-                    </div>
-                </div>
-            </div>
-          </div>
-          <!-- /.row -->
-          <div class="row" id="results_charts_row" style='display:none;'>
-              <div class="col-lg-4" id='control_status_id'>
-                  <div class="panel panel-default">
-                      <div class="panel-heading res-chart">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Status
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="status_pie"></div>
-                      </div>
-                      <!-- /.panel-body -->
-                  </div>
-              </div>
-
-              <div class="col-lg-4">
-                  <div class="panel panel-default">
-                      <div class="panel-heading res-chart">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="severity_pie_results"></div>
-                      </div>
-                      <!-- /.panel-body -->
-                  </div>
-              </div>
-              <div class="col-lg-4" id='compliance_level_id'>
-                  <div class="panel panel-default">
-                      <div class="panel-heading res-chart">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="profile_gauge"></div>
-                      </div>
-                      <!-- /.panel-body -->
-                  </div>
-              </div>
-          </div>
-          <div class="row" id="results_treemap_row" style='display:none;'>
-              <div class="col-lg-12">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="nist_treemap_results" class = "chart"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="row" id='profile_charts' style='display:none;'>
-              <div class="col-lg-4" style='width: 25%; float: left;'>
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Control Severity
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="severity_pie_profile" style="min-height: 300px;"></div>
-                      </div>
-                      <!-- /.panel-body -->
-                  </div>
-              </div>
-              <div class="col-lg-8" style='height: 100%; width: 75%; float: right;'>
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                          <div id="nist_treemap_profile" class = "chart"></div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="row" id="profile_results_id" style='display: none;'>
-              <div class="col-lg-12">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <i class="fa fa-bar-chart-o fa-fw"></i> Profile Results
-                      </div>
-                      <!-- /.panel-heading -->
-                      <div class="panel-body">
-                      <table id="results_table" class="display" cellspacing="0" width="100%">
-                          <thead>
-                          </thead>
-                          <tfoot>
-                          </tfoot>
-                      </table>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <!-- <div class="row">
+        </div>
+        <div style="padding: 30px;" id='sspContent' class='tab-pane'>
+          <div class="row">
             <div class="col-lg-12">
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <i class="fa fa-bar-chart-o fa-fw"></i> SSP Ready Control Implementation Details and Status
+                  <button class='btn btn-primary' onclick='expandAll()'>Expand/Collapse All</button>
                 </div>
-                  <div id="sspList">
-                  </div>
+                <div id="sspList">
+                </div>
               </div>
             </div>
-          </div> -->
+          </div>
+        </div>
       </div>
   </div>
   <button id = "clear_filters_button" type="button" class="btn btn-primary floating">Clear Filters</button>
 
   <script type="text/javascript" class="init">
+  function expandAll() {
+    $('.sspItem').click();
+  }
+  
   function evenfooters() {
       var heights = [];                           // make an array
       $(".panel-footer").each(function(){           // copy the height of each
@@ -633,6 +648,7 @@
           json['controls'].forEach(function(control) {
             assign_data_attributes(data, control, results_json['profile_name'])
           });
+          $('#navDiv').show();
           $('#welcome_div').hide();
           $('#results_treemap_row').hide();
           $('#results_charts_row').hide();
@@ -651,6 +667,7 @@
             });
           });
           $('#welcome_div').hide();
+          $('#navDiv').show();
           $('#profile_charts').hide();
           $('#results_treemap_row').show();
           $('#results_charts_row').show();
@@ -779,7 +796,7 @@
         } else if (includes('skipped', status_list)) {
           result = 'Not_Reviewed';
         } else {
-          result = 'Not_Tested'
+          result = 'Profile_Error';
         }
         return result
       }
@@ -790,7 +807,7 @@
         if (control['result'] == 'NotAFinding') { result = 'All Automated tests passed for the control \n\n ' + control['message'] }
         if (control['result'] == 'Not_Reviewed') { result = 'Automated test skipped due to known accepted condition in the control : \n\n' + control['message'] }
         if (control['result'] == 'Not_Applicable') { result = 'Justification: \n\n' + control['message'] + '\n' }
-        if (control['result'] == 'Not_Tested') { result = 'No test available for this control' }
+        if (control['result'] == 'Profile_Error') { result = 'No test available for this control' }
         return result
       }
   </script>
@@ -801,7 +818,7 @@
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
       var target = $(e.target).attr("href") // activated tab
-      alert(target);
+      //alert(target);
     });
 
 
@@ -888,7 +905,7 @@
     draw_severity_pie_chart()
     draw_compliance_pie_chart();
     draw_tree_map();
-    // draw_ssp_table();
+    draw_ssp_table();
   }
 
   /*
@@ -903,6 +920,7 @@
     draw_status_pie_chart();
     draw_severity_pie_chart()
     draw_compliance_pie_chart();
+    draw_ssp_table();
   }
 
   function details_panel ( d ) {
@@ -954,7 +972,7 @@
         '</table>'+
       '</div>' +
     '</div>';
-
+  
       return details_panel;
   }
 
@@ -964,7 +982,7 @@
     status_count ['open_count']           = $(dataSet).filter(function (i,n){return n.result==='Open';}).length;
     status_count ['not_applicable_count'] = $(dataSet).filter(function (i,n){return n.result==='Not_Applicable';}).length;
     status_count ['not_reviewed_count']   = $(dataSet).filter(function (i,n){return n.result==='Not_Reviewed';}).length;
-    status_count ['not_tested_count']     = $(dataSet).filter(function (i,n){return n.result==='Not_Tested';}).length;
+    status_count ['profile_error_count']     = $(dataSet).filter(function (i,n){return n.result==='Profile_Error';}).length;
     return status_count
   }
 
@@ -979,44 +997,49 @@
   function draw_data_table() {
     dataSet = filterDataset();
     if ( $.fn.dataTable.isDataTable( '#results_table' ) ) {
+        dataSet = filterDataset();
+        console.log("is datatable");
         var table = $('#results_table').dataTable().api();
-        table.destroy();
+
+        table.destroy().draw();
+        $('#results_table thead').empty();
         $('#results_table tbody').empty();
+        $('#results_table tfoot').empty();
+        set_results_table_thead();
+        // use dataSet to filter and group controls
+        table = createDataTable();
+        // table.clear();
+        // table.rows.add(dataSet);
+        // table.draw();
+        
+    } else {
+      set_results_table_thead();
+      // use dataSet to filter and group controls
+      table = createDataTable();
+      // Add event listener for opening and closing details
+      $('#results_table tbody').on('click', 'td.table_row', function () {
+        var table = $('#results_table').dataTable().api();
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        if ( row.child.isShown() ) {
+          row.child.hide();
+          tr.removeClass('shown');
+        }
+        else {
+         if ( table.row( '.shown' ).length ) {
+            $('.table_row', table.rows( '.shown' ).nodes()).click();
+         }
+         row.child( details_panel(row.data()) ).show();
+         tr.addClass('shown');
+         Prism.highlightAll();
+        }
+      });
     }
-    set_results_table_thead();
-
-    // use dataSet to filter and group controls
-    table = createDataTable();
+  }
   
-    // Add event listener for opening and closing details
-    $('#results_table tbody').on('click', 'td.table_row', function () {
-      var tr = $(this).closest('tr');
-      var row = table.row( tr );
-
-      if ( row.child.isShown() ) {
-        row.child.hide();
-        tr.removeClass('shown');
-      }
-      else {
-       if ( table.row( '.shown' ).length ) {
-          $('.table_row', table.rows( '.shown' ).nodes()).click();
-       }
-       row.child( details_panel(row.data()) ).show();
-       tr.addClass('shown');
-       Prism.highlightAll();
-      }
-    });
-    // $('#results_table').on( 'page.dt', function () {
-    //   console.log(table.rows({ page: 'current' }));
-    //   table.rows({ page: 'current' }).nodes().each(tr => {
-    //     var row = table.row( tr );
-    //     if ( row.child.isShown() ) {
-    //       row.child.hide();
-    //       console.log(tr);
-    //       $(tr).removeClass('shown');
-    //     }
-    //   });
-    // });
+  function reload_data_table() {
+    dataSet = filterDataset();
+    var table = $('#results_table').dataTable().api();
   }
   /*
   * Polyfil for jquery method `closest` for use in ie 9
@@ -1059,8 +1082,8 @@
               if ( data.result == "Not_Reviewed" ) {
                 $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px">Not Reviewed</button> ' );
               }
-              if ( data.result == "Not_Tested" ) {
-                $('td:eq(0)', row).html( '<button class="btn btn-info" style="width:120px">Not Tested</button> ' );
+              if ( data.result == "Profile_Error" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-info" style="width:120px">Profile Error</button> ' );
               }
 
             },
@@ -1193,21 +1216,21 @@
     document.getElementById("open").innerHTML           = status_count['open_count'];
     document.getElementById("not_applicable").innerHTML = status_count['not_applicable_count'];
     document.getElementById("not_reviewed").innerHTML   = status_count['not_reviewed_count'];
-    if (status_count['not_tested_count'] != 0) {
-      not_tested_banner = document.getElementById("not_tested");
-      not_tested_banner.innerHTML   = status_count['not_tested_count'];
-      $("#not_tested_banner").attr('class', 'col-lg-4 col-md-12');
+    if (status_count['profile_error_count'] != 0) {
+      profile_error_banner = document.getElementById("profile_error");
+      profile_error_banner.innerHTML   = status_count['profile_error_count'];
+      $("#profile_error_banner").attr('class', 'col-lg-4 col-md-12');
       $("#not_a_finding_banner").attr('class', 'col-lg-2 col-md-6');
       $("#not_reviewed_banner").attr('class', 'col-lg-2 col-md-6');
       $("#not_applicable_banner").attr('class', 'col-lg-2 col-md-6');
       $("#open_banner").attr('class', 'col-lg-2 col-md-6');  
-      $('#not_tested_banner').show();
+      $('#profile_error_banner').show();
     } else {
       $("#not_a_finding_banner").attr('class', 'col-lg-3 col-md-6');
       $("#not_reviewed_banner").attr('class', 'col-lg-3 col-md-6');
       $("#not_applicable_banner").attr('class', 'col-lg-3 col-md-6');
       $("#open_banner").attr('class', 'col-lg-3 col-md-6');  
-      $('#not_tested_banner').hide();
+      $('#profile_error_banner').hide();
     }
     $(".panel-footer").each(function(){
         $(this).css('height',"");           // clear height values
@@ -1228,7 +1251,7 @@
                     ['Open',           status_count['open_count']],
                     ['Not Applicable', status_count['not_applicable_count']],
                     ['Not Reviewed',   status_count['not_reviewed_count']],
-                    ['Not Tested',     status_count['not_tested_count']]
+                    ['Profile Error',     status_count['profile_error_count']]
                   ];
 
     var status_pie = c3.generate({
@@ -1246,8 +1269,8 @@
               data_filter.result = 'Not_Applicable';
             }else if (d.id == 'Not Reviewed'){
               data_filter.result = 'Not_Reviewed';
-            }else if (d.id == 'Not Tested'){
-              data_filter.result = 'Not_Tested';
+            }else if (d.id == 'Profile Error'){
+              data_filter.result = 'Profile_Error';
             }
             load_views();
           }
@@ -1322,7 +1345,7 @@
   * This function calculates the compliance level
   */
   function score () {
-    return (status_count['not_a_finding_count']/(status_count['open_count'] + status_count['not_a_finding_count'] + status_count['not_reviewed_count'] + status_count['not_tested_count']))*100;
+    return (status_count['not_a_finding_count']/(status_count['open_count'] + status_count['not_a_finding_count'] + status_count['not_reviewed_count'] + status_count['profile_error_count']))*100;
   }
 
   function draw_compliance_pie_chart() {
@@ -1434,7 +1457,7 @@
                   case '#ff9999': //Default Open
                       $(this).children('rect').css({fill: '#ff0029'});
                       break;
-                  case '#669900': //Default Not Tested
+                  case '#669900': //Default Profile Error
                       $(this).children('rect').css({fill: '#DDEDF6'});
                       break;
                   default: // Everything else
@@ -1482,7 +1505,7 @@
                       break;
               }
               break;
-          case 'Not_Tested':
+          case 'Profile_Error':
               switch(default_block_color) {
                   case '#00ff00': //Default Not A Finding
                       $(this).children('rect').css({fill: '#DDEDF6'});
@@ -1520,7 +1543,7 @@
               else {
                 record.push('UM')
               }
-              if (control.result === 'Not_Tested') {
+              if (control.result === 'Profile_Error') {
                   record.push(1.4);
               }
               if (control.result === 'NotAFinding') {
@@ -1702,11 +1725,139 @@
       return n.result==='keyword';
     });
   }
-
+  
   function draw_ssp_table() {
       dataSet = filterDataset();
       controls = getAllNistControls(dataSet);
-      groupedControls = getGroupedControls(controls, dataSet)
+      
+      //Add elements to the list
+      var ssp_ul = document.getElementById("sspList");
+      ssp_ul.classList.add('list-group');
+      ssp_ul.style.marginLeft = '0px';
+      // Create the panel group
+      var link_counter = 0;
+      var title_counter = 0;
+      
+      //Create high level panel group and panel which everything will be appended too
+      var panel_group_ul = document.createElement('ul');
+      panel_group_ul.classList.add('list-group');
+      // panel_group_ul.style.marginLeft = '-10px';
+      panel_group_ul.classList.add('panel-group');
+      ssp_ul.appendChild(panel_group_ul);
+      
+      for (var family in controls) {
+          var panel_li = create_collapsable_list_item('<h4>' + family + '</h4>', family, panel_group_ul)
+          //Create the family div and append it to the panel
+          var control_ul = document.createElement('ul');
+          control_ul.classList.add('list-group');
+          // control_ul.style.marginLeft = '20px';
+          control_ul.setAttribute('id', family + "_div");
+          control_ul.classList.add('panel-collapse');
+          control_ul.classList.add('collapse');
+          panel_li.appendChild(control_ul);
+          
+          for (var control in controls[family]) {
+            control_li = create_collapsable_list_item(control, control, control_ul);
+            //Create the family div and append it to the panel
+            var test_ul = document.createElement('ul');
+            test_ul.classList.add('list-group');
+            // test_ul.style.marginLeft = '20px';
+            test_ul.setAttribute('id', control + "_div");
+            test_ul.classList.add('panel-collapse');
+            test_ul.classList.add('collapse');
+            control_li.appendChild(test_ul);
+            
+            link_counter += 1;
+            var counter = 1;
+            controls[family][control].forEach(function (test) {
+              var result = get_test_result_label(test.result);
+              var test_li = create_collapsable_list_item(result + " " + counter.toString() + ": " + test.rule_title, 'title' + title_counter.toString(), test_ul);
+              counter += 1;
+              add_test_data(title_counter, test, test_li)
+              
+              title_counter += 1;
+            })
+          }
+      }
+  }
+  
+  function get_test_result_label(result) {
+     var span = ''
+     switch(result) {
+        case 'NotAFinding':
+            span = '<span class="label label-success">Not A Finding</span>';
+            break;
+        case 'Open':
+            span = '<span class="label label-danger">Open</span>';
+            break;
+        case 'Not_Reviewed':
+            span = '<span class="label label-warning">Not Reviewed</span>';
+            break;
+        case 'Not_Applicable':
+            span = '<span class="label label-primary">Not Applicable</span>';
+            break;
+        case 'Profile_Error':
+            span = '<span class="label label-info">Profile Error</span>';
+            break;
+     }
+     return span;
+  }
+  
+  function create_collapsable_list_item(item, item_name, appendItem) {
+      //Create high level panel group and panel which everything will be appended too
+      var panel_li = document.createElement('li');
+      panel_li.classList.add('list-group-item');
+      panel_li.classList.add('panel');
+      panel_li.classList.add('panel-default');
+      appendItem.appendChild(panel_li);
+      
+      var item_a = document.createElement("a");
+      item_a.setAttribute('data-toggle', "collapse");
+      item_a.classList.add('sspItem');
+      item_a.setAttribute('href', "#" + item_name + "_div");
+      item_a.innerHTML = item;
+      panel_li.appendChild(item_a);
+      return panel_li;
+  }
+  
+  function add_test_data(title_counter, test, tests_div) {
+    //create the list of objects that will be opened when the title is clicked
+    var attributes_panel_div = document.createElement('div');
+    attributes_panel_div.classList.add('panel-collapse');
+    attributes_panel_div.classList.add('collapse');
+    attributes_panel_div.setAttribute('id', 'title' + title_counter.toString() + '_div' );
+    title_counter += 1;
+    tests_div.appendChild(attributes_panel_div);
+
+    // Create the list group and append it to the attributes_panel_div
+    var attributes_list_group = document.createElement('ul');
+    attributes_list_group.classList.add('list-group');
+    attributes_list_group.style.marginLeft = '20px';
+    attributes_panel_div.appendChild(attributes_list_group);
+
+    var disc_li = document.createElement('li');
+    disc_li.classList.add('list-group-item');
+    disc_li.appendChild(document.createTextNode("Discussion: " + test.vuln_discuss.replace(/<br>/g, '\n')));
+    disc_li.style = "white-space: pre;"
+    attributes_list_group.appendChild(disc_li);
+    var check_li = document.createElement('li');
+    check_li.classList.add('list-group-item');
+    check_li.appendChild(document.createTextNode("Check: " + test.check_content.replace(/<br>/g, '\n')));
+    check_li.style = "white-space: pre;"
+    attributes_list_group.appendChild(check_li);
+    var fix_li = document.createElement('li');
+    fix_li.classList.add('list-group-item');
+    fix_li.appendChild(document.createTextNode("Fix: " + test.fix_text.replace(/<br>/g, '\n')));
+    fix_li.style = "white-space: pre;"
+    attributes_list_group.appendChild(fix_li);
+  }
+  
+  // DEPRECATED
+  function draw_ssp_table_old() {
+      dataSet = filterDataset();
+      controls = getAllNistControls(dataSet);
+      console.log(controls)
+      //groupedControls = getGroupedControls(controls, dataSet)
 
       //Add elements to the list
       var ssp_ul = document.getElementById("sspList");
@@ -1714,8 +1865,8 @@
       // Create the panel group
       var link_counter = 0;
       var title_counter = 0;
-      groupedControls.forEach( function (family) {
-          //Create high level panel group and panel which everything will be appended too
+      for(var control in controls) {
+          //Create panel for each control
           var panel_group_div = document.createElement('div');
           panel_group_div.classList.add('panel-group');
           ssp_ul.appendChild(panel_group_div);
@@ -1732,13 +1883,13 @@
           family_heading_div.appendChild(family_title_h);
           var family_a = document.createElement("a");
           family_a.setAttribute('data-toggle', "collapse");
-          family_a.setAttribute('href', "#" + family.name + "_div");
-          family_a.innerHTML = family.name;
+          family_a.setAttribute('href', "#" + control + "_div");
+          family_a.innerHTML = control;
           family_title_h.appendChild(family_a);
 
           //Create the family div and append it to the panel
           var family_div = document.createElement('div');
-          family_div.setAttribute('id', family.name + "_div");
+          family_div.setAttribute('id', control+ "_div");
           family_div.classList.add('panel-collapse');
           family_div.classList.add('collapse');
           panel_div.appendChild(family_div);
@@ -1757,7 +1908,8 @@
           var system_name_a = document.createElement('a');
           system_name_a.setAttribute("data-toggle", "collapse");
           system_name_a.setAttribute("href", "#" + link_counter.toString());
-          system_name_a.innerHTML = document.getElementById('profile_name').innerHTML;
+          // system_name_a.innerHTML = document.getElementById('profile_name').innerHTML;
+          system_name_a.innerHTML = profile_name;
           system_title_h.appendChild(system_name_a);
 
           // Create the tests_div and append it to the family_div
@@ -1771,33 +1923,37 @@
           var counter = 1;
           // alert(JSON.stringify(family.controls[0]));
           //Loop through each control test. Create a heading and div for each test
-          family.controls.forEach( function (control) {
-              var result = '';
-              if (control.result == 'Open') {
-                  result = 'Other Than Satisfied';
-              } else if (control.result == 'NotAFinding') {
-                  result = 'Satisfied';
-              } else {
-                  result = "Not_Tested";
+          controls[control].forEach( function (test) {
+              // var result = '';
+              if (test.result == 'Open') {
+                  result = 'Open';
+              } else if (test.result == 'NotAFinding') {
+                  result = 'Not A Finding';
+              } else if (test.result == 'Not_Reviewed"') {
+                  result = "Not Reviewed";
+              } else if (test.result == 'Not_Applicable') {
+                  result = 'Not Applicable';
+              } else if (test.result == 'Profile_Error') {
+                  result = 'Profile Error';
               }
               //Create the title heading dive
               var test_heading_div = document.createElement('div');
               test_heading_div.classList.add('panel-heading');
               tests_div.appendChild(test_heading_div)
-
+          
               //create the title panel-title and append it to the test_heading div
               var test_title_h = document.createElement('h4');
               test_title_h.classList.add('panel-title');
               test_heading_div.appendChild(test_title_h);
-
+          
               //Create the test a element and append it to the test_title_h
               var test_title_a = document.createElement('a');
               test_title_a.setAttribute('data-toggle', 'collapse');
               test_title_a.setAttribute('href', "#title" + title_counter.toString());
-              test_title_a.appendChild(document.createTextNode(counter.toString() + '. (' + result + ') ' +  control.rule_title));
+              test_title_a.appendChild(document.createTextNode(counter.toString() + '. (' + test.result + ') ' +  test.rule_title));
               test_title_h.appendChild(test_title_a);
               counter += 1;
-
+          
               //create the list of objects that will be opened when the title is clicked
               var attributes_panel_div = document.createElement('div');
               attributes_panel_div.classList.add('panel-collapse');
@@ -1805,35 +1961,39 @@
               attributes_panel_div.setAttribute('id', 'title' + title_counter.toString() );
               title_counter += 1;
               tests_div.appendChild(attributes_panel_div);
-
+          
               // Create the list group and append it to the attributes_panel_div
               var attributes_list_group = document.createElement('ul');
               attributes_list_group.classList.add('list-group');
               attributes_list_group.style.marginLeft = '20px';
               attributes_panel_div.appendChild(attributes_list_group);
-
+          
               var disc_li = document.createElement('li');
               disc_li.classList.add('list-group-item');
-              disc_li.appendChild(document.createTextNode("Discussion: " + control.vuln_discuss));
+              disc_li.appendChild(document.createTextNode("Discussion: " + test.vuln_discuss.replace(/<br>/g, '\n')));
+              disc_li.style = "white-space: pre;"
               attributes_list_group.appendChild(disc_li);
               var check_li = document.createElement('li');
               check_li.classList.add('list-group-item');
-              check_li.appendChild(document.createTextNode("Check: " + control.check_content));
+              check_li.appendChild(document.createTextNode("Check: " + test.check_content.replace(/<br>/g, '\n')));
+              check_li.style = "white-space: pre;"
               attributes_list_group.appendChild(check_li);
               var fix_li = document.createElement('li');
               fix_li.classList.add('list-group-item');
-              fix_li.appendChild(document.createTextNode("Fix: " + control.fix_text));
+              fix_li.appendChild(document.createTextNode("Fix: " + test.fix_text.replace(/<br>/g, '\n')));
+              fix_li.style = "white-space: pre;"
               attributes_list_group.appendChild(fix_li);
           });
-      });
+      };
   }
 
+  // DEPRECATED
   function getGroupedControls(controls, dataSet) {
       var groupedControls = []
       for (var i = 0; i < controls.length; i ++) {
           var groupedControl = {'name': controls[i], 'controls': []};
           dataSet.forEach(function(test) {
-              if (test.nist[0].indexOf(controls[i])) {
+              if (test.nist[0] == controls[i]) {
                   groupedControl['controls'].push(test);
               }
           });
@@ -1841,20 +2001,51 @@
       }
       return groupedControls;
   }
+  
+  function nistFamilySort(ary) {
+      control_numbers = []
+      ary.forEach(function(nist) {
+          control_numbers.push(nist.split('-')[1]);
+      })
+      console.log(control_numbers);
+      control_numbers = control_numbers.sort(function(a, b){return a-b});
+      console.log(control_numbers);
+      sorted = []
+      control_numbers.forEach(function(num) {
+          sorted.push(ary[0].split('-')[0] + '-' + num)
+      });
+      console.log(sorted)
+      return sorted;
+  }
 
   function getAllNistControls(dataSet) {
       var controls = {};
       dataSet.forEach(function(test) {
+          // console.log(test);
           if (test.nist[0] != 'unmapped') {
-            nist_tag = test.nist[0].match(/\w\w-\d*/)[0];
-            if (controls.nist_tag != 1) {
-                controls[nist_tag] = 1;
-            }
+            test.nist.slice(0, -1).forEach(function(nist) {
+              nist_family = nist.match(/\w\w/)[0]
+              if (!controls[nist_family]) {
+                controls[nist_family] = {};
+              }
+              nist_tag = nist.match(/\w\w-\d*/)[0];
+              if (controls[nist_family][nist_tag]) {
+                controls[nist_family][nist_tag].push(test);
+              } else {
+                controls[nist_family][nist_tag] = [];
+                controls[nist_family][nist_tag].push(test);
+              }
+            })
           }
       });
-      controls = Object.keys(controls).sort();
-
-      return controls;
+      const ordered = {};
+      Object.keys(controls).sort().forEach(function(key) {
+        ordered[key] = {};
+        nistFamilySort(Object.keys(controls[key])).forEach(function(nistCont) {
+          ordered[key][nistCont] = controls[key][nistCont];
+        })
+      })
+      return ordered;
   }
 
   </script>
@@ -2111,8 +2302,8 @@
 </body>
 
 <footer>
-  <div class='pull-right hidden-xs'>Version: v1.0.1-9-g599d8d9</div>
+  <div class='pull-right hidden-xs'>Version: v1.0.1-10-g41c0bc7</div>
   <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
-</footer
+</footer>
 
 </html>

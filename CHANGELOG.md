@@ -4,13 +4,28 @@
 
 [Full Changelog](https://github.com/aaronlippold/heimdall-lite/compare/v1.0...HEAD)
 
+**Implemented enhancements:**
+
+- When profile errors are created \(the 5th box\), we should add that in to the filter [\#23](https://github.com/aaronlippold/heimdall-lite/issues/23)
+
+**Fixed bugs:**
+
+- v1.0.1-7-g3f726b4 does work for IE [\#24](https://github.com/aaronlippold/heimdall-lite/issues/24)
+
 **Closed issues:**
 
+- Sync github to gitlab [\#26](https://github.com/aaronlippold/heimdall-lite/issues/26)
+- update heimdall-lite-controls.png [\#25](https://github.com/aaronlippold/heimdall-lite/issues/25)
 - Compliance level change [\#20](https://github.com/aaronlippold/heimdall-lite/issues/20)
 - Incorporate the automated `github\_changelog\_gen` into our release and tagging process [\#18](https://github.com/aaronlippold/heimdall-lite/issues/18)
 - Add git commit short hash to footer version number  [\#17](https://github.com/aaronlippold/heimdall-lite/issues/17)
 - Add version to header [\#16](https://github.com/aaronlippold/heimdall-lite/issues/16)
 - What does "load a profile" mean? [\#4](https://github.com/aaronlippold/heimdall-lite/issues/4)
+
+**Merged pull requests:**
+
+- Populate control Desc justification for Non applicable controls [\#28](https://github.com/aaronlippold/heimdall-lite/pull/28) ([rx294](https://github.com/rx294))
+- Sync gitlab [\#27](https://github.com/aaronlippold/heimdall-lite/pull/27) ([lukemalinowski](https://github.com/lukemalinowski))
 
 ## [v1.0](https://github.com/aaronlippold/heimdall-lite/tree/v1.0) (2018-05-22)
 **Implemented enhancements:**
