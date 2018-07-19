@@ -629,6 +629,8 @@
           raw_dataSet = json['controls'];
           raw_json = json
           load_views();
+          $('#sspList').empty();
+          draw_ssp_table();
         });
         try {
           reader.readAsBinaryString(file);
@@ -903,7 +905,7 @@
     draw_severity_pie_chart()
     draw_compliance_pie_chart();
     draw_tree_map();
-    draw_ssp_table();
+    // draw_ssp_table();
   }
 
   /*
@@ -918,7 +920,7 @@
     draw_status_pie_chart();
     draw_severity_pie_chart()
     draw_compliance_pie_chart();
-    draw_ssp_table();
+    // draw_ssp_table();
   }
 
   function details_panel ( d ) {
