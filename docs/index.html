@@ -35,6 +35,11 @@
       right: 20px;
       visibility: hidden;
   }
+  .floating2 {
+      position: fixed;
+      top: 8px;
+      right: 20px;
+  }
   #nist_treemap_profile rect {
         stroke: black;
         stroke-width: 0.25;
@@ -250,6 +255,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/prism.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/components/prism-ruby.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.14.0/plugins/line-numbers/prism-line-numbers.min.js" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.4/xlsx.full.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js" crossorigin="anonymous"></script>
+
+
+
 </head>
 
 <body>
@@ -278,6 +289,9 @@
               </ul>
             </li>
           </ul>
+
+         <button id = "export-catt" type="button" class="btn btn-primary floating2" style='display:none;'">CATT Report</button> 
+
       </nav>
       
       <div id="welcome_div">
@@ -678,6 +692,7 @@
           $('#status_labels_div_id').show();
           $('#profile_results_id').show();
           $('#title_id').show();
+          $('#export-catt').show();
         }
 
         results_json['controls'] = Object.keys(data).map(function(v) { return data[v]; });
@@ -1726,6 +1741,97 @@
     });
   }
   
+  $("#export-catt").click(function(){
+
+    dataSet = filterDataset();
+    controls = getAllNistControls(dataSet);
+
+    var catt = [['Control Number','Finding Title','Date Identified','Finding ID','Information System or Program Name','Repeat Findings','Repeat Finding CFACTS Weakness ID','Finding Description','Weakness Description','Control Weakness Type','Source','Assessment/Audit Company','Test Method','Test Objective','Test Result Description','Test Result','Recommended Corrective Action(s)','Effect on Business','Likelihood','Impact']]
+
+    for (var family in controls) {
+      family = controls[family]
+      for (var subFamily in family){
+        console.log(subFamily)
+        family[subFamily].forEach(function (control) {
+          field = []
+          impact = parseFloat(control['impact'])
+
+          if (impact != 0.0) {
+            console.log(control)
+            field.push(subFamily)                  // Control Number
+            field.push(br2nl(control['rule_title']))      // Finding Title
+            field.push(convertDate(new Date(control['profile'].split(':').slice(1).join(':').trim()),'/')) // Date Identified
+            field.push('')                         // Finding ID
+            field.push('')                         // Information System or Program Name
+            field.push('')                         // Repeat Findings
+            field.push('')                         // Repeat Finding CFACTS Weakness ID
+            field.push(br2nl(control['rule_title']))      // Finding Description
+            field.push(br2nl(control['vuln_discuss']))   // Weakness Description
+            field.push('Security')                 // Control Weakness Type
+            field.push('Self-Assessment ')          // Source
+            field.push('InSpec')                   // Assessment/Audit Company
+            field.push('Test')                     // Test Method
+            field.push(br2nl(control['check_content']))   // Test Objective
+            field.push(br2nl(control['finding_details'])) // Test Result Description
+            control['result'] == "NotAFinding" ? field.push('Satisfied') : field.push('Other Than Satisfied') // Test Result
+            field.push(br2nl(control['fix_text']))        // Recommended Corrective Action(s)
+            field.push('')                         // Effect on Business
+            field.push('')                         // Likelihood
+
+            if (impact >= 0.1 && impact <= 0.3) {  // Impact
+              field.push('Low')                   
+            } else if (impact >= 0.4 && impact <= 0.6) {
+              field.push('Moderate')
+            } else if (impact >= 0.7 && impact <= 1.0) {
+              field.push('High')
+            }
+
+            catt.push(field)
+          }
+
+        });
+      }
+    }
+
+
+    function convertDate(inputFormat,delimiter) {
+      function pad(s) { return (s < 10) ? '0' + s : s; }
+      var d = new Date(inputFormat);
+      return [pad(d.getMonth()+1), pad(d.getDate()), d.getFullYear()].join(delimiter);
+    }
+
+    function br2nl(str) {
+        return str.replace(/<br ?\/?>/g, "\n");
+    }
+
+    var wb = XLSX.utils.book_new();
+
+    wb.Props = {
+              Title: "CMS CATT Report",
+              Subject: "Assessment Data",
+              Author: "Heimdall-lite",
+              CreatedDate: new Date()
+    };
+
+    wb.SheetNames.push("Assessment Data");
+
+    var ws = XLSX.utils.aoa_to_sheet(catt);
+    wb.Sheets["Assessment Data"] = ws;
+
+    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+    function s2ab(s) { 
+              var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+              var view = new Uint8Array(buf);  //create uint8array as viewer
+              for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+              return buf;    
+    }
+
+     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'CATT-'+ convertDate(new Date(),'-')+ '.xlsx');
+  });
+
+
+
   function draw_ssp_table() {
       dataSet = filterDataset();
       controls = getAllNistControls(dataSet);
@@ -2029,6 +2135,9 @@
                 controls[nist_family] = {};
               }
               nist_tag = nist.match(/\w\w-\d*/)[0];
+              nist_tag = nist_tag.split('-')[0] + '-' + nist_tag.split('-')[1].padStart(2, '0')
+
+
               if (controls[nist_family][nist_tag]) {
                 controls[nist_family][nist_tag].push(test);
               } else {
@@ -2036,6 +2145,7 @@
                 controls[nist_family][nist_tag].push(test);
               }
             })
+            controls[nist_family][nist_tag] = [...new Set(controls[nist_family][nist_tag])]
           }
       });
       const ordered = {};
