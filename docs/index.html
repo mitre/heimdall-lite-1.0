@@ -1803,7 +1803,7 @@
     function br2nl(str) {
       if (str == null)
         return 'Not Available' 
-      return str.replace(/<br ?\/?>/g, "\n\r").substring(0,32767);
+      return str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767);
     }
 
     var wb = XLSX.utils.book_new();
