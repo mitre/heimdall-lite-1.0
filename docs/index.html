@@ -290,7 +290,7 @@
             </li>
           </ul>
 
-         <button id = "export-catt" type="button" class="btn btn-primary floating2" style='display:none;'">CATT Report</button> 
+         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'">Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button> 
 
       </nav>
       
@@ -692,7 +692,7 @@
           $('#status_labels_div_id').show();
           $('#profile_results_id').show();
           $('#title_id').show();
-          $('#export-catt').show();
+          $('#export-caat').show();
         }
 
         results_json['controls'] = Object.keys(data).map(function(v) { return data[v]; });
@@ -1741,12 +1741,12 @@
     });
   }
   
-  $("#export-catt").click(function(){
+  $("#export-caat").click(function(){
 
     dataSet = filterDataset();
     controls = getAllNistControls(dataSet);
 
-    var catt = [['Control Number','Finding Title','Date Identified','Finding ID','Information System or Program Name','Repeat Findings','Repeat Finding CFACTS Weakness ID','Finding Description','Weakness Description','Control Weakness Type','Source','Assessment/Audit Company','Test Method','Test Objective','Test Result Description','Test Result','Recommended Corrective Action(s)','Effect on Business','Likelihood','Impact']]
+    var caat = [['Control Number','Finding Title','Date Identified','Finding ID','Information System or Program Name','Repeat Findings','Repeat Finding Weakness ID','Finding Description','Weakness Description','Control Weakness Type','Source','Assessment/Audit Company','Test Method','Test Objective','Test Result Description','Test Result','Recommended Corrective Action(s)','Effect on Business','Likelihood','Impact']]
 
     for (var family in controls) {
       family = controls[family]
@@ -1786,7 +1786,7 @@
               field.push('High')
             }
 
-            catt.push(field)
+            caat.push(field)
           }
 
         });
@@ -1801,13 +1801,15 @@
     }
 
     function br2nl(str) {
-        return str.replace(/<br ?\/?>/g, "\n");
+      if (str == null)
+        return 'Not Available' 
+      return str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767);
     }
 
     var wb = XLSX.utils.book_new();
 
     wb.Props = {
-              Title: "CMS CATT Report",
+              Title: "CMS CAAT Report",
               Subject: "Assessment Data",
               Author: "Heimdall-lite",
               CreatedDate: new Date()
@@ -1815,7 +1817,7 @@
 
     wb.SheetNames.push("Assessment Data");
 
-    var ws = XLSX.utils.aoa_to_sheet(catt);
+    var ws = XLSX.utils.aoa_to_sheet(caat);
     wb.Sheets["Assessment Data"] = ws;
 
     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
@@ -1827,7 +1829,7 @@
               return buf;    
     }
 
-     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'CATT-'+ convertDate(new Date(),'-')+ '.xlsx');
+     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'CAAT-'+ convertDate(new Date(),'-')+ '.xlsx');
   });
 
 
