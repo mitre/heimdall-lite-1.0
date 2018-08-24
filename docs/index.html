@@ -290,7 +290,7 @@
             </li>
           </ul>
 
-         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'">Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button> 
+         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'>Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button> 
 
       </nav>
       
@@ -1078,6 +1078,28 @@
       };
   }
   
+  /*
+  * Polyfil for String method `padStart` for use in ie 9
+  */
+  // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+  if (!String.prototype.padStart) {
+      String.prototype.padStart = function padStart(targetLength,padString) {
+          targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+          padString = String((typeof padString !== 'undefined' ? padString : ' '));
+          if (this.length > targetLength) {
+              return String(this);
+          }
+          else {
+              targetLength = targetLength-this.length;
+              if (targetLength > padString.length) {
+                  padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+              }
+              return padString.slice(0,targetLength) + String(this);
+          }
+      };
+  }
+    
   function createDataTable() {
     // use dataSet to filter and group controls
     if (results_json['profile_name'].split(';')[0] == 'result') {
