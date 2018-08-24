@@ -24,6 +24,9 @@
 
 **Merged pull requests:**
 
+- Catt report [\#35](https://github.com/aaronlippold/heimdall-lite/pull/35) ([rx294](https://github.com/rx294))
+- Adding CATT report feature [\#33](https://github.com/aaronlippold/heimdall-lite/pull/33) ([rx294](https://github.com/rx294))
+- Adding CATT report feature [\#32](https://github.com/aaronlippold/heimdall-lite/pull/32) ([rx294](https://github.com/rx294))
 - Populate control Desc justification for Non applicable controls [\#28](https://github.com/aaronlippold/heimdall-lite/pull/28) ([rx294](https://github.com/rx294))
 - Sync gitlab [\#27](https://github.com/aaronlippold/heimdall-lite/pull/27) ([lukemalinowski](https://github.com/lukemalinowski))
 
