@@ -290,7 +290,7 @@
             </li>
           </ul>
 
-         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'">Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button> 
+         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'>Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button> 
 
       </nav>
       
@@ -363,6 +363,9 @@
 		      </li>
           <li>
               <a href="#sspContent" data-toggle="tab">SSP Ready Content</a>
+          </li>
+          <li>
+              <a href="#profileData" data-toggle="tab">Profile Data</a>
           </li>
       </ul>
       <div class="tab-content clearfix">
@@ -574,6 +577,19 @@
             </div>
           </div>
         </div>
+        <div style="padding: 30px;" id='profileData' class='tab-pane'>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <i class="fa fa-bar-chart-o fa-fw"></i>Profile and Dependancy Profile Data
+                </div>
+                <div id="profileChart">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
   </div>
   <button id = "clear_filters_button" type="button" class="btn btn-primary floating">Clear Filters</button>
@@ -645,6 +661,7 @@
           load_views();
           $('#sspList').empty();
           draw_ssp_table();
+          draw_profile_chart();
         });
         try {
           reader.readAsBinaryString(file);
@@ -936,6 +953,80 @@
     draw_severity_pie_chart()
     draw_compliance_pie_chart();
     // draw_ssp_table();
+  }
+  
+  function draw_profile_chart() {
+    data = get_profile_chart_data();
+    console.log(data);
+    
+    // var obj = document.getElementById('nist_treemap_results');
+    // var divWidth = obj.offsetWidth;
+    // 
+    // var margin = {top: 20, right: 120, bottom: 20, left: 120},
+    //     width = divWidth - margin.right - margin.left,
+    //     height = 800 - margin.top - margin.bottom;
+    // 
+    // var i = 0,
+    //     duration = 750,
+    //     root;
+    // 
+    // var tree = d3.layout.tree()
+    //     .size([height, width]);
+    // 
+    // var diagonal = d3.svg.diagonal()
+    //     .projection(function(d) { return [d.y, d.x]; });
+    // 
+    // var svg = d3.select("profileChart").append("svg")
+    //     .attr("width", width + margin.right + margin.left)
+    //     .attr("height", height + margin.top + margin.bottom)
+    //   .append("g")
+    //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // 
+    // root = flare;
+    // root.x0 = height / 2;
+    // root.y0 = 0;
+    // 
+    // function collapse(d) {
+    //   if (d.children) {
+    //     d._children = d.children;
+    //     d._children.forEach(collapse);
+    //     d.children = null;
+    //   }
+    // }
+    // 
+    // root.children.forEach(collapse);
+    // update(root);
+  }
+  
+  function get_profile_chart_data() {
+    return recursive_find_profile(raw_json['profiles'][0])
+    
+    function recursive_find_profile(json) {
+      var profile_data = {
+        'name': raw_json['profiles'][0]['name'],
+        'version': raw_json['profiles'][0]['name'],
+        'sha256': raw_json['profiles'][0]['sha256'],
+        'title': raw_json['profiles'][0]['title'],
+        'maintainer': raw_json['profiles'][0]['maintainer'],
+        'summary': raw_json['profiles'][0]['summary'],
+        'license': raw_json['profiles'][0]['license'],
+        'copyright': raw_json['profiles'][0]['copyright'],
+        'copyright_email': raw_json['profiles'][0]['copyright_email'],
+        'controls': raw_json['profiles'][0]['controls'],
+        'groups': raw_json['profiles'][0]['groups'],
+        'children': []
+      };
+      json['depends'].forEach(profileDepends => {
+        console.log(profileDepends)
+        raw_json['profiles'].forEach(profile ={
+          if (profileDepends['name'] == profile['name']) {
+            profile_chart[children].push(recursive_find_profile(profileDepends['name']))
+          }
+        });
+      });
+      return profile_data;
+    }
+    
   }
 
   function details_panel ( d ) {
