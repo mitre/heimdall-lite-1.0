@@ -840,7 +840,7 @@
 
   </script>
 
-  <script>
+  <script type="text/javascript">
   /*!
    * Start Bootstrap - SB Admin 2 v3.3.7+1 (http://startbootstrap.com/template-overviews/sb-admin-2)
    * Copyright 2013-2016 Start Bootstrap
@@ -2141,13 +2141,14 @@
 
 
               if (controls[nist_family][nist_tag]) {
-                controls[nist_family][nist_tag].push(test);
+                if (!controls[nist_family][nist_tag].includes(test)) {
+                  controls[nist_family][nist_tag].push(test);
+                }
               } else {
                 controls[nist_family][nist_tag] = [];
                 controls[nist_family][nist_tag].push(test);
               }
             })
-            controls[nist_family][nist_tag] = [...new Set(controls[nist_family][nist_tag])]
           }
       });
       const ordered = {};
