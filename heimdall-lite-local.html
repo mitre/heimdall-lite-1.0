@@ -1883,7 +1883,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         document.getElementById("clear_filters_button").style.visibility = "visible";
         load_all_but_tree_map();
       } else {
-        data_filter.nist_families = d.children.map(child => child.name)
+        data_filter.nist_families = d.name
         document.getElementById("clear_filters_button").style.visibility = "visible";
         load_all_but_tree_map();
       }
