@@ -878,7 +878,7 @@
 
   </script>
 
-  <script>
+  <script type="text/javascript">
   /*!
    * Start Bootstrap - SB Admin 2 v3.3.7+1 (http://startbootstrap.com/template-overviews/sb-admin-2)
    * Copyright 2013-2016 Start Bootstrap
@@ -1338,6 +1338,83 @@
       };
   }
   
+  /*
+  * Polyfil for String method `padStart` for use in ie 9
+  */
+  // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+  if (!String.prototype.padStart) {
+      String.prototype.padStart = function padStart(targetLength,padString) {
+          targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+          padString = String((typeof padString !== 'undefined' ? padString : ' '));
+          if (this.length > targetLength) {
+              return String(this);
+          }
+          else {
+              targetLength = targetLength-this.length;
+              if (targetLength > padString.length) {
+                  padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+              }
+              return padString.slice(0,targetLength) + String(this);
+          }
+      };
+  }
+  
+  /*
+  * Polyfil for Array method `includes` for use in ie 9
+  */
+  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+  if (!Array.prototype.includes) {
+    Object.defineProperty(Array.prototype, 'includes', {
+      value: function(searchElement, fromIndex) {
+
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        // 1. Let O be ? ToObject(this value).
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, "length")).
+        var len = o.length >>> 0;
+
+        // 3. If len is 0, return false.
+        if (len === 0) {
+          return false;
+        }
+
+        // 4. Let n be ? ToInteger(fromIndex).
+        //    (If fromIndex is undefined, this step produces the value 0.)
+        var n = fromIndex | 0;
+
+        // 5. If n ≥ 0, then
+        //  a. Let k be n.
+        // 6. Else n < 0,
+        //  a. Let k be len + n.
+        //  b. If k < 0, let k be 0.
+        var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+        function sameValueZero(x, y) {
+          return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+        }
+
+        // 7. Repeat, while k < len
+        while (k < len) {
+          // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+          // b. If SameValueZero(searchElement, elementK) is true, return true.
+          if (sameValueZero(o[k], searchElement)) {
+            return true;
+          }
+          // c. Increase k by 1. 
+          k++;
+        }
+
+        // 8. Return false
+        return false;
+      }
+    });
+  }
+    
   function createDataTable() {
     // use dataSet to filter and group controls
     if (results_json['profile_name'].split(';')[0] == 'result') {
@@ -2388,8 +2465,7 @@
 
   function getAllNistControls(dataSet) {
       var controls = {};
-      dataSet.forEach(function(test) {
-          // console.log(test);
+      Array.from(dataSet).forEach(function(test) {
           if (test.nist[0] != 'unmapped') {
             test.nist.slice(0, -1).forEach(function(nist) {
               nist_family = nist.match(/\w\w/)[0]
@@ -2401,13 +2477,14 @@
 
 
               if (controls[nist_family][nist_tag]) {
-                controls[nist_family][nist_tag].push(test);
+                if (!controls[nist_family][nist_tag].includes(test)) {
+                  controls[nist_family][nist_tag].push(test);
+                }
               } else {
                 controls[nist_family][nist_tag] = [];
                 controls[nist_family][nist_tag].push(test);
               }
             })
-            controls[nist_family][nist_tag] = [...new Set(controls[nist_family][nist_tag])]
           }
       });
       const ordered = {};
