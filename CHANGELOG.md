@@ -24,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Profiledata [\#38](https://github.com/aaronlippold/heimdall-lite/pull/38) ([dromazmj](https://github.com/dromazmj))
 - Catt report [\#35](https://github.com/aaronlippold/heimdall-lite/pull/35) ([rx294](https://github.com/rx294))
 - Adding CATT report feature [\#33](https://github.com/aaronlippold/heimdall-lite/pull/33) ([rx294](https://github.com/rx294))
 - Adding CATT report feature [\#32](https://github.com/aaronlippold/heimdall-lite/pull/32) ([rx294](https://github.com/rx294))
