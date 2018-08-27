@@ -2205,8 +2205,7 @@
 
   function getAllNistControls(dataSet) {
       var controls = {};
-      dataSet.forEach(function(test) {
-          // console.log(test);
+      Array.from(dataSet).forEach(function(test) {
           if (test.nist[0] != 'unmapped') {
             test.nist.slice(0, -1).forEach(function(nist) {
               nist_family = nist.match(/\w\w/)[0]
