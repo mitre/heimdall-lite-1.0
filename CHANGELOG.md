@@ -10,13 +10,16 @@
 
 **Fixed bugs:**
 
+- Latest version does not work with IE again  [\#36](https://github.com/aaronlippold/heimdall-lite/issues/36)
 - v1.0.1-7-g3f726b4 does work for IE [\#24](https://github.com/aaronlippold/heimdall-lite/issues/24)
 
 **Closed issues:**
 
 - Sync github to gitlab [\#26](https://github.com/aaronlippold/heimdall-lite/issues/26)
 - update heimdall-lite-controls.png [\#25](https://github.com/aaronlippold/heimdall-lite/issues/25)
+- dynamically add Profile Error tile [\#21](https://github.com/aaronlippold/heimdall-lite/issues/21)
 - Compliance level change [\#20](https://github.com/aaronlippold/heimdall-lite/issues/20)
+- Findings relabel [\#19](https://github.com/aaronlippold/heimdall-lite/issues/19)
 - Incorporate the automated `github\_changelog\_gen` into our release and tagging process [\#18](https://github.com/aaronlippold/heimdall-lite/issues/18)
 - Add git commit short hash to footer version number  [\#17](https://github.com/aaronlippold/heimdall-lite/issues/17)
 - Add version to header [\#16](https://github.com/aaronlippold/heimdall-lite/issues/16)
