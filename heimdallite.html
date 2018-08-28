@@ -482,7 +482,7 @@
               <a href="#sspContent" data-toggle="tab">SSP Ready Content</a>
           </li>
           <li>
-              <a href="#profileData" data-toggle="tab">Profile Data</a>
+              <a href="#profileData" data-toggle="tab" id='profileDataListItem'>Profile Data</a>
           </li>
       </ul>
       <div class="tab-content clearfix">
@@ -628,10 +628,27 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
+                            <ul class="nav nav-tabs" id='navDivNistResults'>
+                                <li class="active">
+                                    <a  href="#treeMapDivResults" data-toggle="tab">Tree Map Chart</a>
+                      		      </li>
+                                <!-- <li>
+                                    <a href="#partitionLayoutDivResults" data-toggle="tab">Partition Layout Chart</a>
+                                </li> -->
+                            </ul>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id="nist_treemap_results" class = "chart"></div>
+                            <div class="tab-content clearfix">
+                                <div id='treeMapDivResults' class='tab-pane active'>
+                                    <div id="nist_treemap_results" class="chart"></div>
+                                </div>
+                            </div>
+                            <div class="tab-content clearfix">
+                                <div id='partitionLayoutDivResults' class='tab-pane'>
+                                    <div id="partition-layout-div"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -654,9 +671,10 @@
                         <div class="panel-heading">
                             <i class="fa fa-bar-chart-o fa-fw"></i> NIST SP 800-53 Coverage
                         </div>
+                        
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id="nist_treemap_profile" class = "chart"></div>
+                            <div id="nist_treemap_profile" class="chart"></div>
                         </div>
                     </div>
                 </div>
@@ -1100,7 +1118,7 @@
           	 width = window.innerWidth - 200 - margin.right - margin.left,
           	 height = 400 - margin.top - margin.bottom;
     	
-    	var rectNode = { width : 120, height : 45, textMargin : 5 },
+    	var rectNode = { width : 240, height : 90, textMargin : 10 },
     		tooltip = { width : 150, height : 40, textMargin : 5 };
     	var i = 0,
     		duration = 750,
@@ -1139,6 +1157,13 @@
     			alert('Invalides data.');
     		}
     	}
+      
+      $('#profileDataListItem').on('shown.bs.tab',function() {
+        svgGroup.selectAll('.tooltip-box')
+          .attr('width', function(d) { console.log(d);return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
+          .attr('height', function(d) { console.log(d);return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
+      });
+
 
     	function drawTree(jsonData)
     	{
@@ -1222,7 +1247,7 @@
     			d.y = d.depth * (rectNode.width * 1.5);
     		});
     	
-    	// 1) ******************* Update the nodes *******************
+    	  // 1) ******************* Update the nodes *******************
     		var node = nodeGroup.selectAll('g.node').data(nodes, function(d) {
     			return d.id || (d.id = ++i);
     		});
@@ -1270,8 +1295,8 @@
     					return '<div style="width: ' + 
                   (rectNode.width - rectNode.textMargin * 2) + 'px; height: ' + 
                   (rectNode.height - rectNode.textMargin * 2) + 'px;" class="node-text wordwrap">' + 
-                  '<b>' + d.name + '</b><br><br>' + 
-                  '<b>Version: </b>' + d.version + '<br>'
+                  '<b><h5>' + d.name + '</h5></b>' + 
+                  '<b><h5>Version: </b>' + d.version + '</h5><br>'
     							+ '</div>';
     				})
     		.on('mouseover', function(d) {
@@ -1303,19 +1328,39 @@
     		});
 
     		nodeEnterTooltip.append("text")
-    		.attr('id', function(d) { return 'nodeInfoTextID' + d.id; })
+      		.attr('id', function(d) { return 'nodeInfoTextID' + d.id; })
         	.attr('x', rectNode.width / 2 + tooltip.textMargin)
-    		.attr('y', rectNode.height / 2 + tooltip.textMargin * 2)
-    		.attr('width', tooltip.width)
-    		.attr('height', tooltip.height)
-    		.attr('class', 'tooltip-text')
-    		.style('fill', 'white')
-    		.append("tspan")
-    	    .text(function(d) {return 'Name: ' + d.name;})
+      		.attr('y', rectNode.height / 2 + tooltip.textMargin * 2)
+      		.attr('width', tooltip.width)
+      		.attr('height', tooltip.height)
+      		.attr('class', 'tooltip-text')
+      		.style('fill', 'white')
+      		.append("tspan")
+      	    .text(function(d) {return 'Name: ' + d.name;})
     	    .append("tspan")
-    	    .attr('x', rectNode.width / 2 + tooltip.textMargin)
-    	    .attr('dy', '1.5em')
-    	    .text(function(d) {return 'Title: ' + d.title;});
+      	    .attr('x', rectNode.width / 2 + tooltip.textMargin)
+      	    .attr('dy', '1.5em')
+      	    .text(function(d) {return 'Title: ' + d.title;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Summary: ' + d.summary;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Maintainer: ' + d.maintainer;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Copyright: ' + d.copyright;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Copyright Email: ' + d.copyright_email;});
+          
+        svgGroup.selectAll('.tooltip-box')
+          .attr('width', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
+          .attr('height', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
 
     		// Transition nodes to their new position.
     		var nodeUpdate = node.transition().duration(duration)
@@ -1400,33 +1445,33 @@
     				$('#tooltipLinkTextID' + d.target.id).css('visibility', 'hidden');
     			});
 
-    			linkTooltip.enter().append('rect')
-    			.attr('id', function(d) { return 'tooltipLinkID' + d.target.id; })
-    			.attr('class', 'tooltip-box')
-    			.style('fill-opacity', 0.8)
-    			.attr('x', function(d) { return (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y; })
-    			.attr('y', function(d) { return (d.target.x - d.source.x) / 2 + d.source.x; })
-    			.attr('width', tooltip.width)
-    			.attr('height', tooltip.height)
-    			.on('mouseover', function(d) {
-    				$('#tooltipLinkID' + d.target.id).css('visibility', 'visible');
-    				$('#tooltipLinkTextID' + d.target.id).css('visibility', 'visible');
-    				// After selected a link, the cursor can be hover the tooltip, that's why we still need to highlight the link and the arrow
-    				$('#linkID' + d.target.id).attr('class', 'linkselected');
-    				$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow-selected)');
-    				$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, true));
-
-    				removeMouseEvents();
-    			})
-    			.on('mouseout', function(d) {
-    				$('#tooltipLinkID' + d.target.id).css('visibility', 'hidden');
-    				$('#tooltipLinkTextID' + d.target.id).css('visibility', 'hidden');
-    				$('#linkID' + d.target.id).attr('class', 'link');
-    				$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow)');
-    				$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, false));
-
-    				reactivateMouseEvents();
-    			});
+    			// linkTooltip.enter().append('rect')
+    			// .attr('id', function(d) { return 'tooltipLinkID' + d.target.id; })
+    			// .attr('class', 'tooltip-box')
+    			// .style('fill-opacity', 0.8)
+    			// .attr('x', function(d) { return (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y; })
+    			// .attr('y', function(d) { return (d.target.x - d.source.x) / 2 + d.source.x; })
+    			// .attr('width', tooltip.width)
+    			// .attr('height', tooltip.height)
+    			// .on('mouseover', function(d) {
+    			// 	$('#tooltipLinkID' + d.target.id).css('visibility', 'visible');
+    			// 	$('#tooltipLinkTextID' + d.target.id).css('visibility', 'visible');
+    			// 	// After selected a link, the cursor can be hover the tooltip, that's why we still need to highlight the link and the arrow
+    			// 	$('#linkID' + d.target.id).attr('class', 'linkselected');
+    			// 	$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow-selected)');
+    			// 	$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, true));
+          // 
+    			// 	removeMouseEvents();
+    			// })
+    			// .on('mouseout', function(d) {
+    			// 	$('#tooltipLinkID' + d.target.id).css('visibility', 'hidden');
+    			// 	$('#tooltipLinkTextID' + d.target.id).css('visibility', 'hidden');
+    			// 	$('#linkID' + d.target.id).attr('class', 'link');
+    			// 	$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow)');
+    			// 	$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, false));
+          // 
+    			// 	reactivateMouseEvents();
+    			// });
 
     			linkTooltip.enter().append('text')
     			.attr('id', function(d) { return 'tooltipLinkTextID' + d.target.id; })
@@ -1689,6 +1734,7 @@
         'license':         json.license,
         'copyright':       json.copyright,
         'copyright_email': json.copyright_email,
+        'type':            'type' + parseInt(nodeNum),
         'children': []
       };
       
@@ -1815,7 +1861,7 @@
     } else {
       set_results_table_thead();
       // use dataSet to filter and group controls
-      // table = createDataTable();
+      table = createDataTable();
       // Add event listener for opening and closing details
       $('#results_table tbody').on('click', 'td.table_row', function () {
         var table = $('#results_table').dataTable().api();
