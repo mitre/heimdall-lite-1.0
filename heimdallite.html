@@ -741,40 +741,55 @@
   <button id = "clear_filters_button" type="button" class="btn btn-primary floating">Clear Filters</button>
 
   <script type="text/javascript" class="init">
-  function expandAll() {
-    $('.sspItem').click();
-  }
-  
-  function evenfooters() {
-      var heights = [];                           // make an array
-      $(".panel-footer").each(function(){           // copy the height of each
-          heights.push($(this).innerHeight());         //   element to the array
+      function expandAll() {
+        $('.sspItem').click();
+      }
+      
+      function evenfooters() {
+          var heights = [];                            // make an array
+          $(".panel-footer").each(function(){          // copy the height of each
+              heights.push($(this).innerHeight());     //   element to the array
+          });
+          heights.sort(function(a, b){return b - a;}); // sort the array high to low
+          var minh = heights[0];                       // take the highest number    
+          $(".panel-footer").innerHeight(minh);        // and apply that to each element
+      }
+      function evenheaders() {
+          var heights = [];                                // make an array
+          $(".panel-heading.res-chart").each(function(){   // copy the height of each
+              heights.push($(this).innerHeight());         //   element to the array
+          });
+          heights.sort(function(a, b){return b - a;});     // sort the array high to low
+          var minh = heights[0];                           // take the highest number    
+          $(".panel-heading.res-chart").innerHeight(minh); // and apply that to each element
+      }
+      
+      function resizePanels() {
+        $(".panel-footer").each(function(){
+            $(this).css('height',"");           // clear height values
+        });   
+        $(".panel-heading.res-chart").each(function(){
+            $(this).css('height',"");           // clear height values
+        });
+        resizeId = setTimeout(evenfooters, 500);
+        resizeId = setTimeout(evenheaders, 500);                                 
+        evenfooters();
+        evenheaders();
+      }
+      
+      $(window).resize(function () {
+          if ($("ul#navDiv li.active")[0].children[0].innerHTML == 'Results') {
+            resizePanels();
+            if ($("ul#navDivNistResults li.active")[0].children[0].innerHTML == 'Partition Layout Chart') {
+              draw_partition_map();
+            } else {
+              draw_tree_map();
+            }
+          } else if ($("ul#navDiv li.active")[0].children[0].innerHTML == 'Profile Data') {
+            draw_profile_chart();
+          }
       });
-      heights.sort(function(a, b){return b - a;}); // sort the array high to low
-      var minh = heights[0];                      // take the highest number    
-      $(".panel-footer").innerHeight(minh);              // and apply that to each element
-  }
-  function evenheaders() {
-      var heights = [];                           // make an array
-      $(".panel-heading.res-chart").each(function(){           // copy the height of each
-          heights.push($(this).innerHeight());         //   element to the array
-      });
-      heights.sort(function(a, b){return b - a;}); // sort the array high to low
-      var minh = heights[0];                      // take the highest number    
-      $(".panel-heading.res-chart").innerHeight(minh);              // and apply that to each element
-  }
-  $(window).resize(function () { 
-      $(".panel-footer").each(function(){
-          $(this).css('height',"");           // clear height values
-      });   
-      $(".panel-heading.res-chart").each(function(){
-          $(this).css('height',"");           // clear height values
-      });
-      resizeId = setTimeout(evenfooters, 500);
-      resizeId = setTimeout(evenheaders, 500);                                 
-      evenfooters();
-      evenheaders();
-  });
+      
       var xmlhttp = new XMLHttpRequest();
       var raw_dataSet = '';
 
@@ -998,6 +1013,7 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
       var target = $(e.target).attr("href"); // activated tab
       //alert(target);
+      window.dispatchEvent(new Event('resize'));
     });
 
 
@@ -1102,9 +1118,7 @@
   }
   
   function draw_profile_chart() {
-    $(window).resize(function() {
-      draw_profile_chart();
-    });
+    
     document.getElementById('profileChart').innerHTML = "";
     document.getElementById('profileChartLegend').innerHTML = "";
 
@@ -2445,9 +2459,6 @@
       return "translate(8," + d.dx * ky / 2 + ")";
     }
     
-    $(window).resize(function() {
-      draw_partition_map();
-    });
   }
   
 
@@ -2457,14 +2468,14 @@
                                     'packages': ['treemap']
                                   });
 
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawTreeMapChart);
     if (results_json.profile_name.split(';')[0] == 'result') {
       var treemapData = getTreeMapData();
     } else {
       var treemapData = getTreeMapDataProfile();
     }
 
-    function drawChart()
+    function drawTreeMapChart()
     {
       data_table = new google.visualization.DataTable();
       data_table.addColumn('string', 'ID');
@@ -2528,9 +2539,9 @@
       }
     }
 
-    $(window).resize(function() {
-      drawChart();
-    });
+    // $(window).resize(function() {
+    //   drawChart();
+    // });
   }
 
   function update_treemap_colors() {
