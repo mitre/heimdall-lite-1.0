@@ -730,7 +730,7 @@
                 </div>
                 <div class='chart' style='width: 100%'>
                   <ct-visualization id="profileChart"></ct-visualization>
-                  <div id="legend"></div>
+                  <div id="profileChartLegend"></div>
                 </div>
               </div>
             </div>
@@ -1102,8 +1102,14 @@
   }
   
   function draw_profile_chart() {
+    $(window).resize(function() {
+      draw_profile_chart();
+    });
+    document.getElementById('profileChart').innerHTML = "";
+    document.getElementById('profileChartLegend').innerHTML = "";
+
+    
     treeData = get_profile_chart_data();
-    console.log(treeData);
     treeBoxes('', treeData);
     
     function treeBoxes(urlService, jsonData)
@@ -1164,15 +1170,14 @@
     			drawTree(jsonData);
     		else
     		{
-    			console.error(jsonData);
     			alert('Invalides data.');
     		}
     	}
       
       $('#profileDataListItem').on('shown.bs.tab',function() {
         svgGroup.selectAll('.tooltip-box')
-          .attr('width', function(d) { console.log(d);return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
-          .attr('height', function(d) { console.log(d);return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
+          .attr('width', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
+          .attr('height', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
       });
 
 
@@ -1257,7 +1262,7 @@
           	'Dependent Profile': '#5cb85c',
           };
 
-          var legend = d3.select("#legend").append("svg:svg")
+          var legend = d3.select("#profileChartLegend").append("svg:svg")
               .attr("width", li.w)
               .attr("height", d3.keys(colors).length * (li.h + li.s));
 
@@ -1807,12 +1812,16 @@
       if(json.depends) {
         json.depends.forEach(function(profileDepends) {
           nodeNum = nodeNum + 0.1;
-          console.log(profileDepends);
-          inspec_json.profiles.forEach(function(profile) {
-            if (json.name === profile.parent_profile) {
-              profile_data.children.push(recursive_find_profile(profile, nodeNum, previousNodeNum));
-            }
-          });
+          try {
+            inspec_json.profiles.forEach(function(profile) {
+              if (json.name === profile.parent_profile) {
+                profile_data.children.push(recursive_find_profile(profile, nodeNum, previousNodeNum)); 
+                throw BreakException;
+              }
+            });
+          } catch (e) {
+            
+          }
         });
       }
       return profile_data;
@@ -1894,7 +1903,6 @@
     dataSet = filterDataset();
     if ( $.fn.dataTable.isDataTable( '#results_table' ) ) {
         dataSet = filterDataset();
-        console.log("is datatable");
         var table = $('#results_table').dataTable().api();
 
         table.destroy().draw();
@@ -2342,15 +2350,17 @@
   }
   
   function draw_partition_map() {
-    var obj;
+    var divWidth = 900;
     document.getElementById('partition-layout-div').innerHTML = "";
 
     if(document.getElementById('partition-layout-div').offsetWidth != 0) {
-      obj = document.getElementById('partition-layout-div');
+      divWidth = document.getElementById('partition-layout-div').offsetWidth;
+    } else if (document.getElementById('nist_treemap_results').offsetWidth != 0) {
+      divWidth = document.getElementById('nist_treemap_results').offsetWidth;
     } else {
-      obj = document.getElementById('nist_treemap_results');
+      divWidth = document.getElementById('profileChartLegend').offsetWidth;
     }
-    var divWidth = obj.offsetWidth;
+    
     
     var margin = {top: 0, right: 0, bottom: 20, left: 0};
     var w = divWidth - 25,
@@ -2359,7 +2369,6 @@
         y = d3.scale.linear().range([0, h]),
         root = getPartitionMapData();
         
-    console.log(root);
     
     var color_quantize = d3.scale.quantize().domain([0,4]).range(['#BA3E35', '#E39F49', '#4579B2', '#DDEDF6', '#73B566']);
     var color_linear = d3.scale.linear().domain([0, dataSet.length]).range(['#BA3E35', '#73B566']);
@@ -2471,10 +2480,14 @@
         tree = new google.visualization.TreeMap(document.getElementById('nist_treemap_profile'));
       }
       
+      var divWidth = 0;
+      
       if(document.getElementById('partition-layout-div').offsetWidth != 0) {
-        obj = document.getElementById('partition-layout-div');
+        divWidth = document.getElementById('partition-layout-div').offsetWidth;
+      } else if (document.getElementById('nist_treemap_results').offsetWidth != 0) {
+        divWidth = document.getElementById('nist_treemap_results').offsetWidth;
       } else {
-        obj = document.getElementById('nist_treemap_results');
+        divWidth = document.getElementById('profileChartLegend').offsetWidth;
       }
       
       var options = {
@@ -2489,7 +2502,7 @@
         headerHeight: 15,
         showScale: false,
         height: 300,
-        width: obj.offsetWidth,
+        width: divWidth,
         useWeightedAverageForAggregation: true
       };
       function myOnClickFunction() {
@@ -2618,7 +2631,6 @@
      
      for (var i = 0; i < dataSet.length; i++) {
        var control = dataSet[i];
-       console.log(control);
        if (control.nist) {
          for(var j = 0; j < control.nist.length; j++) {
            // standard nist style format is ['AC-1', 'Rev_4']
@@ -2706,7 +2718,6 @@
      //     }
      // }
      var newPartitionMapData = jQuery.extend(true, {}, partitionMapData);
-     console.log(partitionMapData);
      
      return newPartitionMapData;
   }
