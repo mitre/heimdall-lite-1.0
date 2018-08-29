@@ -677,19 +677,7 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
 
 <body>
   <script type="text/javascript" class="init">
-      var connection = checkNetConnection();
-      
-      function checkNetConnection(){
-        jQuery.ajaxSetup({async:false});
-        r=Math.round(Math.random() * 10000);
-        re=''
-        $.get("https://google/com",{subins:r},function(d){
-            re=true;
-        }).error(function(){
-            re=false;
-        });
-        return re;
-      }
+      connection = navigator.onLine;
   </script>
   <div id="wrapper">
       <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
