@@ -2443,10 +2443,20 @@
       // if (!d.children) return;
       
       if (results_json.profile_name.split(';')[0] == 'result') {
-        data_filter.nist_families = d.name;
+        if( d.name.match(/\w-\d/)) {
+          data_filter.nist_families = d.name;
+          data_filter.result = d.name;
+        } else {
+          data_filter.result = d.name;
+        }
         document.getElementById("clear_filters_button").style.visibility = "visible";
         load_all_but_tree_map();
       } else {
+        if( d.name.match(/\w-\d/)) {
+          data_filter.nist_families = d.name;
+        } else {
+          data_filter.result = d.name;
+        }
         data_filter.nist_families = d.name;
         document.getElementById("clear_filters_button").style.visibility = "visible";
         load_all_but_tree_map();
@@ -2645,11 +2655,11 @@
      var id = 1;
      
      applicabilityBuckets = [
-       {'name': 'Profile Error', 'color': 3},
-       {'name': 'Not A Finding', 'color': 4},
-       {'name': 'Not Reviewed', 'color': 1},
+       {'name': 'Profile_Error', 'color': 3},
+       {'name': 'NotAFinding', 'color': 4},
+       {'name': 'Not_Reviewed', 'color': 1},
        {'name': 'Open', 'color': -1},
-       {'name': 'Not Applicable', 'color': 2},
+       {'name': 'Not_Applicable', 'color': 2},
      ];
      
      
