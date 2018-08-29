@@ -1933,9 +1933,10 @@
 
   function draw_data_table() {
     dataSet = filterDataset();
+    var table;
     if ( $.fn.dataTable.isDataTable( '#results_table' ) ) {
         dataSet = filterDataset();
-        var table = $('#results_table').dataTable().api();
+        table = $('#results_table').dataTable().api();
 
         table.destroy().draw();
         $('#results_table thead').empty();
@@ -1977,6 +1978,7 @@
     dataSet = filterDataset();
     var table = $('#results_table').dataTable().api();
   }
+  
   /*
   * Polyfil for jquery method `closest` for use in ie 9
   */
@@ -2078,8 +2080,9 @@
     
   function createDataTable() {
     // use dataSet to filter and group controls
+    var table;
     if (results_json.profile_name.split(';')[0] == 'result') {
-      var table = $('#results_table').DataTable( {
+      table = $('#results_table').DataTable( {
            "iDisplayLength": 10,
 
             "rowCallback": function( row, data, index ) {
@@ -2105,7 +2108,7 @@
             "order": [[2, 'asc']]
       } );
     } else {
-      var table = $('#results_table').DataTable( {
+      table = $('#results_table').DataTable( {
            "iDisplayLength": 10,
 
             "rowCallback": function( row, data, index ) {
@@ -2126,11 +2129,6 @@
     }
     return table;
   }
-  // window.addEventListener("resize", function () {
-  //   height = $('#not_applicable_footer').height();
-  //   console.log(height);
-  //   $('.panel-footer').height(height);
-  // });
   
   function set_results_table_thead() {
     if (results_json.profile_name.split(';')[0] == 'result') {
@@ -2487,10 +2485,12 @@
                                   });
 
     google.charts.setOnLoadCallback(drawTreeMapChart);
+    
+    var treemapData;
     if (results_json.profile_name.split(';')[0] == 'result') {
-      var treemapData = getTreeMapData();
+      treemapData = getTreeMapData();
     } else {
-      var treemapData = getTreeMapDataProfile();
+      treemapData = getTreeMapDataProfile();
     }
 
     function drawTreeMapChart()
@@ -2556,10 +2556,6 @@
         update_treemap_colors_profile();
       }
     }
-
-    // $(window).resize(function() {
-    //   drawChart();
-    // });
   }
 
   function update_treemap_colors() {
@@ -2986,7 +2982,8 @@
             field.push('Test');                      // Test Method
             field.push(br2nl(control.check_content)) ;  // Test Objective
             field.push(br2nl(control.finding_details)); // Test Result Description
-            control.result == "NotAFinding" ? field.push('Satisfied') : field.push('Other Than Satisfied'); // Test Result
+            result = control.result == "NotAFinding" ? 'Satisfied' : 'Other Than Satisfied';
+            field.push(result); // Test Result
             field.push(br2nl(control.fix_text));        // Recommended Corrective Action(s)
             field.push('');                                // Effect on Business
             field.push('');                                // Likelihood
