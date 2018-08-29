@@ -713,7 +713,8 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <i class="fa fa-bar-chart-o fa-fw"></i> SSP Ready Control Implementation Details and Status
-                  <button class='btn btn-primary' onclick='expandAll()'>Expand/Collapse All</button>
+                  <button class='btn btn-primary' onclick='expandAll()' id='expandButton'>Expand All</button>
+                  <button class='btn btn-primary' onclick='collapseAll()' style='display: none;' id='collapseButton'>Collapse All</button>
                 </div>
                 <div id="sspList">
                 </div>
@@ -742,7 +743,24 @@
 
   <script type="text/javascript" class="init">
       function expandAll() {
-        $('.sspItem').click();
+        for(var i = 0; i < $('.sspItem').length; i++) {
+          if ($('.sspItem').eq(i).attr('aria-expanded') == 'false') {
+            $('.sspItem')[i].click();
+          }
+        }
+        $('#expandButton').hide();
+        $('#collapseButton').show();
+      }
+      
+      function collapseAll() {
+        for(var i = 0; i < $('.sspItem').length; i++) {
+          if ($('.sspItem').eq(i).attr('aria-expanded') == 'true') {
+            $('.sspItem')[i].click();
+            // $('.sspItem')[i].classList.remove('expanded');
+          }
+        }
+        $('#collapseButton').hide();
+        $('#expandButton').show();
       }
       
       function evenfooters() {
@@ -3116,6 +3134,7 @@
       var item_a = document.createElement("a");
       item_a.setAttribute('data-toggle', "collapse");
       item_a.classList.add('sspItem');
+      item_a.setAttribute('aria-expanded', 'false');
       item_a.setAttribute('href', "#" + item_name + "_div");
       item_a.innerHTML = item;
       panel_li.appendChild(item_a);
