@@ -2351,6 +2351,8 @@
       }
     });
   }
+  
+  var previousPartitionFilterResult = '';
 
   /*
   * This function calculates the compliance level
@@ -2443,24 +2445,25 @@
       // if (!d.children) return;
       
       if (results_json.profile_name.split(';')[0] == 'result') {
-        if( d.name.match(/\w-\d/)) {
+        if( d.name.match(/\w-\d/) || d.name.match(/^\w\w$/)) {
           data_filter.nist_families = d.name;
-          data_filter.result = d.name;
+          if (previousPartitionFilterResult != '') {
+            data_filter.result = previousPartitionFilterResult;
+            previousPartitionFilterResult = '';
+          }
         } else {
+          previousPartitionFilterResult = data_filter.result;
           data_filter.result = d.name;
         }
-        document.getElementById("clear_filters_button").style.visibility = "visible";
-        load_all_but_tree_map();
       } else {
         if( d.name.match(/\w-\d/)) {
           data_filter.nist_families = d.name;
-        } else {
-          data_filter.result = d.name;
         }
-        data_filter.nist_families = d.name;
-        document.getElementById("clear_filters_button").style.visibility = "visible";
-        load_all_but_tree_map();
       }
+      
+      document.getElementById("clear_filters_button").style.visibility = "visible";
+      load_all_but_tree_map();
+      
       kx = (d.y ? w - 40 : w) / (1 - d.y);
       ky = h / d.dx;
       x.domain([d.y, 1]).range([d.y ? 40 : 0, w]);
