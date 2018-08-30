@@ -781,6 +781,9 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
           </li>
           <li>
               <a href="#profileData" data-toggle="tab" id='profileDataListItem'>Profile Data</a>
+          </li>  
+          <li>
+              <a href="#changeLog" data-toggle="tab" id='changeLogListItem'>Change Log</a>
           </li>
       </ul>
       <div class="tab-content clearfix">
@@ -1013,6 +1016,21 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
                 <div class='chart' style='width: 100%'>
                   <ct-visualization id="profileChart"></ct-visualization>
                   <div id="profileChartLegend"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 30px;" id='changeLog' class='tab-pane'>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <i class="fa fa-bar-chart-o fa-fw"></i>Change Log Data
+                </div>
+                <div style='width: 100%'>
+                  <div id="changeLogDivStart"></div>
+                  <div id="changeLogDivEnd"></div>
                 </div>
               </div>
             </div>

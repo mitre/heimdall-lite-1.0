@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Footer and Border - Clean up and make solid. [\#31](https://github.com/aaronlippold/heimdall-lite/issues/31)
 - When profile errors are created \(the 5th box\), we should add that in to the filter [\#23](https://github.com/aaronlippold/heimdall-lite/issues/23)
 
 **Fixed bugs:**
