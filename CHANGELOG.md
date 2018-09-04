@@ -10,13 +10,16 @@
 
 **Fixed bugs:**
 
+- Latest version does not work with IE again  [\#36](https://github.com/aaronlippold/heimdall-lite/issues/36)
 - v1.0.1-7-g3f726b4 does work for IE [\#24](https://github.com/aaronlippold/heimdall-lite/issues/24)
 
 **Closed issues:**
 
 - Sync github to gitlab [\#26](https://github.com/aaronlippold/heimdall-lite/issues/26)
 - update heimdall-lite-controls.png [\#25](https://github.com/aaronlippold/heimdall-lite/issues/25)
+- dynamically add Profile Error tile [\#21](https://github.com/aaronlippold/heimdall-lite/issues/21)
 - Compliance level change [\#20](https://github.com/aaronlippold/heimdall-lite/issues/20)
+- Findings relabel [\#19](https://github.com/aaronlippold/heimdall-lite/issues/19)
 - Incorporate the automated `github\_changelog\_gen` into our release and tagging process [\#18](https://github.com/aaronlippold/heimdall-lite/issues/18)
 - Add git commit short hash to footer version number  [\#17](https://github.com/aaronlippold/heimdall-lite/issues/17)
 - Add version to header [\#16](https://github.com/aaronlippold/heimdall-lite/issues/16)
@@ -24,6 +27,11 @@
 
 **Merged pull requests:**
 
+- Version of heimdall-lite that works both on the internet and off! [\#39](https://github.com/aaronlippold/heimdall-lite/pull/39) ([dromazmj](https://github.com/dromazmj))
+- Profiledata [\#38](https://github.com/aaronlippold/heimdall-lite/pull/38) ([dromazmj](https://github.com/dromazmj))
+- Catt report [\#35](https://github.com/aaronlippold/heimdall-lite/pull/35) ([rx294](https://github.com/rx294))
+- Adding CATT report feature [\#33](https://github.com/aaronlippold/heimdall-lite/pull/33) ([rx294](https://github.com/rx294))
+- Adding CATT report feature [\#32](https://github.com/aaronlippold/heimdall-lite/pull/32) ([rx294](https://github.com/rx294))
 - Populate control Desc justification for Non applicable controls [\#28](https://github.com/aaronlippold/heimdall-lite/pull/28) ([rx294](https://github.com/rx294))
 - Sync gitlab [\#27](https://github.com/aaronlippold/heimdall-lite/pull/27) ([lukemalinowski](https://github.com/lukemalinowski))
 
