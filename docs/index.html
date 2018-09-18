@@ -3257,6 +3257,7 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
     controls = getAllNistControls(dataSet);
 
     var caat = [['Control Number','Finding Title','Date Identified','Finding ID','Information System or Program Name','Repeat Findings','Repeat Finding Weakness ID','Finding Description','Weakness Description','Control Weakness Type','Source','Assessment/Audit Company','Test Method','Test Objective','Test Result Description','Test Result','Recommended Corrective Action(s)','Effect on Business','Likelihood','Impact']];
+    vulnList = [];
 
     for (var family in controls) {
       family = controls[family];
@@ -3265,7 +3266,8 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
           field = [];
           impact = parseFloat(control.impact);
 
-          if (impact != 0.0) {
+          if (impact != 0.0 && !vulnList.includes(control.vuln_num)) {
+            vulnList.push(control.vuln_num)
             field.push(subFamily);                  // Control Number
             field.push(br2nl(control.rule_title));  // Finding Title
             field.push(convertDate(new Date(control.profile.split(':').slice(1).join(':').trim()),'/')); // Date Identified

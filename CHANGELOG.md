@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Footer and Border - Clean up and make solid. [\#31](https://github.com/aaronlippold/heimdall-lite/issues/31)
 - When profile errors are created \(the 5th box\), we should add that in to the filter [\#23](https://github.com/aaronlippold/heimdall-lite/issues/23)
 
 **Fixed bugs:**
@@ -15,6 +16,8 @@
 
 **Closed issues:**
 
+- Fix CAAT issue of repeated controls with multiple NIST controls [\#41](https://github.com/aaronlippold/heimdall-lite/issues/41)
+- Assessment Audit Tracking modifcations [\#34](https://github.com/aaronlippold/heimdall-lite/issues/34)
 - Sync github to gitlab [\#26](https://github.com/aaronlippold/heimdall-lite/issues/26)
 - update heimdall-lite-controls.png [\#25](https://github.com/aaronlippold/heimdall-lite/issues/25)
 - dynamically add Profile Error tile [\#21](https://github.com/aaronlippold/heimdall-lite/issues/21)
@@ -27,6 +30,7 @@
 
 **Merged pull requests:**
 
+- Fix CAAT issue of repeated controls with multiple NIST controls fixes \#41 [\#42](https://github.com/aaronlippold/heimdall-lite/pull/42) ([rx294](https://github.com/rx294))
 - Version of heimdall-lite that works both on the internet and off! [\#39](https://github.com/aaronlippold/heimdall-lite/pull/39) ([dromazmj](https://github.com/dromazmj))
 - Profiledata [\#38](https://github.com/aaronlippold/heimdall-lite/pull/38) ([dromazmj](https://github.com/dromazmj))
 - Catt report [\#35](https://github.com/aaronlippold/heimdall-lite/pull/35) ([rx294](https://github.com/rx294))
