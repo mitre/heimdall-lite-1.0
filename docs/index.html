@@ -2369,7 +2369,8 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
     var table;
     if (results_json.profile_name.split(';')[0] == 'result') {
       table = $('#results_table').DataTable( {
-           "iDisplayLength": 10,
+           "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+           "iDisplayLength": 25,
 
             "rowCallback": function( row, data, index ) {
               if ( data.result == "NotAFinding" ) {
