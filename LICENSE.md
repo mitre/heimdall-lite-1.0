@@ -1,4 +1,6 @@
-# LICENSE
+Apache License  
+Version 2.0, January 2004  
+http://www.apache.org/licenses/  
 
 Licensed under the apache-2.0 license, except as noted below.  
 
