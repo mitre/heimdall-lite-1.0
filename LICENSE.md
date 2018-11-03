@@ -1,6 +1,6 @@
 # LICENSE
 
-Licensed under the Apache 2.0 license, except as noted below.  
+Licensed under the apache-2.0 license, except as noted below.  
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
