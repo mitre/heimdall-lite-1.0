@@ -30,6 +30,7 @@
 
 **Merged pull requests:**
 
+- Enable Print View [\#43](https://github.com/aaronlippold/heimdall-lite/pull/43) ([rx294](https://github.com/rx294))
 - Fix CAAT issue of repeated controls with multiple NIST controls fixes \#41 [\#42](https://github.com/aaronlippold/heimdall-lite/pull/42) ([rx294](https://github.com/rx294))
 - Version of heimdall-lite that works both on the internet and off! [\#39](https://github.com/aaronlippold/heimdall-lite/pull/39) ([dromazmj](https://github.com/dromazmj))
 - Profiledata [\#38](https://github.com/aaronlippold/heimdall-lite/pull/38) ([dromazmj](https://github.com/dromazmj))
