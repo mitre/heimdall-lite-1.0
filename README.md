@@ -2,6 +2,19 @@
 
 A small but powerful single page JavaScript implementation of the MITRE Heimdall InSpec results viewer.
 
+## Versioning and State of Development
+This project uses the [Semantic Versioning Policy](https://semver.org/). 
+
+### Branches
+The master branch contains the latest version of the software leading up to a new release. 
+
+Other branches contain feature-specific updates. 
+
+### Tags
+Tags indicate official releases of the project.
+
+Please note 0.x releases are works in progress (WIP) and may change at any time.   
+
 # Installation & Use
 
 As a single-page javascript app - you can run [Heimdall-Lite](https://github.com/mitre/inspec/heimdall-lite/) from any webserver, a *secured* s3 bucket or directly via GitHub Pages (as it is here). [Heimdall-Lite](https://github.com/mitre/inspec/heimdall-lite/) gives you the ability to easily review and produce reports about your inspec run, filter the resuls for easy review and hot-wash, print out reports, generate System Security Plan (SSP) content, and much more.  
