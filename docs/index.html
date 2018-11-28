@@ -1206,8 +1206,11 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
 
       function assign_data_attributes(data, control, profile_name) {
         var c_id = control.id;
-        data[c_id] = {};
-        data[c_id] = {};
+        
+        if (data[c_id] === undefined )
+        {
+          data[c_id] = {};
+        }
         data[c_id].profile            = profile_name                                           || DATA_NOT_FOUND_MESSAGE;
         data[c_id].vuln_num           = control.id                                             || DATA_NOT_FOUND_MESSAGE;
         if (data[c_id].vuln_num.match(/\d+\.\d+/)) {
@@ -1242,7 +1245,11 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
         data[c_id].cis_level       = control.tags.cis_level                                        || DATA_NOT_FOUND_MESSAGE;
 
         data[c_id].impact          = String(control.impact)                                        || DATA_NOT_FOUND_MESSAGE;
-        data[c_id].code            = String(control.code)                                          || DATA_NOT_FOUND_MESSAGE;
+
+        if (data[c_id].code === undefined )
+        {
+          data[c_id].code            =  String(control.code)                                          || DATA_NOT_FOUND_MESSAGE;      
+        }
 
         data[c_id].status = [];
         data[c_id].message = '';
