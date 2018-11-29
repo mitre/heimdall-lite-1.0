@@ -1,0 +1,3119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Rony Xaiver and Matthew Dromazos">
+  <meta name='version' content='v1.0.1-10-g41c0bc7'>
+
+  <title>Heimdall-lite</title>
+
+  <link rel="stylesheet" type="text/css" href="assets/css/application.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/c3.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/layout.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/all.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/datatables.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/prism.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/css/prism-line-numbers.min.css"/>
+
+  <style type="text/css" media="print">
+   @page {
+     margin: 0.2cm;
+     size: landscape;
+     transform: scale(0.6);
+   }
+  </style>
+
+  <script src="assets/js/jquery-3.2.1.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/c3.min.js"></script>
+  <script src="assets/js/d3.min.js"></script>
+  <script src="assets/js/all.min.js"></script>
+  <script src="assets/js/datatables.js"></script>
+  <script src="assets/js/filesaver.min.js"></script>
+  <script src="assets/js/prism.js"></script>
+  <script src="assets/js/prism.ruby.js"></script>
+  <script src="assets/js/xlsx.min.js"></script>
+  <script src="assets/js/images.js"></script>
+  <script src="assets/js/googlecharts.js"></script>
+</head>
+
+<body>
+  <script type="text/javascript" class="init">
+      connection = navigator.onLine;
+  </script>
+  <div id="wrapper" class='container-fluid container-border'>
+      <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="navbar-header">
+              <div>
+                <a class="navbar-brand" style="font-size:250%; float: left">Heimdall-lite</a>
+              </div>
+          </div>
+
+          <ul class="nav navbar-top-links navbar-left">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-sitemap fa-fw"></i> Load Json
+                <i class="fa fa-arrow-down"></i>
+              </a>
+              <ul class="dropdown-menu" >
+                  <li>
+                    <a href="#">
+                      <label class="btn btn-primary btn-file">
+                          Browse<input id="file" type="file" accept=".json" name="file" style="width: 100%; height: 100%; display: none;" onchange="upload()">
+                      </label>
+                    </a>
+                  </li>
+              </ul>
+            </li>
+          </ul>
+
+         <button id = "export-caat" type="button" class="btn btn-primary floating2" style='display:none;'>Compliance Assessment/Audit Tracking (CAAT) Spreadsheet Download</button>
+
+      </nav>
+
+      <div id="welcome_div">
+        <!-- Full Width Image Header -->
+        <header class="header-image">
+            <div class="headline">
+                <div class="container" style="background: #99b3ff;">
+                    <h1>Welcome to Heimdall-lite!</h1>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <div class="container">
+
+            <hr class="featurette-divider">
+
+            <!-- First Featurette -->
+            <div class="featurette" id="about">
+
+                <h2 class="featurette-heading">View the results of an InSpec execution json.</h2>
+                <p class="lead">Easily see how many controls passed and failed.</p>
+                <p class="lead">Click on the donut charts to filter the controls by status and severity.</p>
+                <img class="featurette-image img-responsive" id="base_image">
+            </div>
+
+            <hr class="featurette-divider">
+
+            <!-- Second Featurette -->
+            <div class="featurette" id="services">
+                <h2 class="featurette-heading">Use the treemap or datatable to navigate through your controls.</h2>
+                <p class="lead"></p>
+                <img class="featurette-image img-responsive" id="treemap_image">
+
+                <hr class="featurette-divider">
+
+                <img class="featurette-image img-responsive" id="data_table_image" style="width: 100%">
+            </div>
+
+            <hr class="featurette-divider">
+
+            <!-- Third Featurette -->
+            <div class="featurette" id="contact">
+                <h2 class="featurette-heading">Click on a control to detect which tests passed or failed, or see its details and code.</h2>
+                <p class="lead"></p>
+                <img class="featurette-image img-responsive pull-right" id="results_image">
+            </div>
+
+            <hr class="featurette-divider">
+
+            <!-- Fourth Featurette -->
+            <div class="featurette" id="contact">
+                <h2 class="featurette-heading">View the profile before you execute it on a system.</h2>
+                <p class="lead">The profile must be loaded into Heimdall-lite as a json value.</p>
+                <p class="lead">To create a json of a profile use the following steps:
+                  <ul class="list-group">
+                    <li class="list-group-item">1. Open a terminal to the directory of the profile.</li>
+                    <li class="list-group-item">2. Run the command: `inspec json [path to profile] -o [name]`</li>
+                  </ul>
+                </p>
+
+                <img class="featurette-image img-responsive pull-right" id="results_image">
+            </div>
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs" id='navDiv' style='display:none;'>
+          <li class="active">
+              <a  href="#mainContent" data-toggle="tab">Results</a>
+		      </li>
+          <li>
+              <a href="#sspContent" data-toggle="tab">SSP Ready Content</a>
+          </li>
+          <li>
+              <a href="#profileData" data-toggle="tab" id='profileDataListItem'>Profile Data</a>
+          </li>
+      </ul>
+      <div class="tab-content clearfix">
+        <div style="padding: 30px;" id='mainContent' class='tab-pane active'>
+            <ol class="breadcrumb" id='title_id' style='display: none;'>
+              <li style="font-size:200%;"  id = "profile_title_label" class="breadcrumb-item"></li>
+              <li style="font-size:200%;" class="breadcrumb-item" id="profile_time_label"></li>
+            </ol>
+            <div class="row" id='status_labels_div_id' style='display:none;'>
+              <div class="col-lg-3 col-md-6" id="not_a_finding_banner">
+                  <div class="panel panel-green">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-ok-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "not_a_finding" class="huge"></div>
+                                  <div>Not A Finding</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (all tests passed)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="open_banner">
+                  <div class="panel panel-red">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-remove-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "open" class="huge"></div>
+                                  <div>Open</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (has tests that failed)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="not_applicable_banner">
+                  <div class="panel panel-primary">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-ban-circle fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id= "not_applicable" class="huge"></div>
+                                  <div>Not Applicable</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer" id="not_applicable_footer">
+                          (zero impact: exception for this system and/or absent component)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-6" id="not_reviewed_banner">
+                  <div class="panel panel-yellow">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "not_reviewed" class="huge"></div>
+                                  <div>Not Reviewed</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (can only be tested manually or disabled test)
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-2 col-md-12" style="display: none;" id="profile_error_banner">
+                  <div class="panel panel-info">
+                      <div class="panel-heading">
+                          <div class="row">
+                              <div class="col-xs-3">
+                                  <i class="glyphicon glyphicon-warning-sign fa-5x"></i>
+                              </div>
+                              <div class="col-xs-9 text-right">
+                                  <div id = "profile_error" class="huge"></div>
+                                  <div>Profile Error</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel-footer">
+                          (no result from test - check profile run privileges or author of profile)
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <!-- /.row -->
+            <div class="row" id="results_charts_row" style='display:none;'>
+                <div class="col-lg-4" id='control_status_id'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-chart-pie fa-fw"></i> Control Status
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="status_pie"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-chart-pie fa-fw"></i> Control Severity
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="severity_pie_results"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+                <div class="col-lg-4" id='compliance_level_id'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading res-chart">
+                            <i class="fa fa-tachometer-alt fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="profile_gauge"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="results_treemap_row" style='display:none;'>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-chart-area fa-fw"></i> NIST SP 800-53 Coverage
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <ul class="nav nav-tabs" id='navDivNistResults'>
+                                <li class="active">
+                                    <a href="#partitionLayoutDivResults" data-toggle="tab">Partition Layout Chart</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content clearfix" id='tabContentNistResults'>
+                                <div id='partitionLayoutDivResults' class='tab-pane active'class='chart'>
+                                    <div id="partition-layout-div" class='chart'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id='profile_charts' style='display:none;'>
+                <div class="col-lg-4" style='width: 25%; float: left;'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-chart-pie fa-fw"></i> Control Severity
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="severity_pie_profile" style="min-height: 300px;"></div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                </div>
+                <div class="col-lg-8" style='height: 100%; width: 75%; float: right;'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-chart-pie fa-fw"></i> NIST SP 800-53 Coverage
+                        </div>
+
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div id="nist_treemap_profile" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="profile_results_id" style='display: none;'>
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"  style='height:53px'>
+                            <i class="fa fa-th-list fa-fw"></i> Profile Results
+<button class='btn btn-primary' id="btn-show-all-children" type="button"  style="float: right;">Expand All</button>
+<button class='btn btn-primary' style='display: none;float: right;' id="btn-hide-all-children" type="button">Collapse All</button>
+                        </div>
+
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                        <table id="results_table" class="display" cellspacing="0" width="100%">
+                            <thead>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 30px;" id='sspContent' class='tab-pane'>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <i class="fa fa-stream fa-fw"></i> SSP Ready Control Implementation Details and Status
+                  <button class='btn btn-primary' onclick='expandAll()' id='expandButton'>Expand All</button>
+                  <button class='btn btn-primary' onclick='collapseAll()' style='display: none;' id='collapseButton'>Collapse All</button>
+                </div>
+                <div id="sspList">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding: 30px;" id='profileData' class='tab-pane'>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <i class="fa fa-sitemap fa-fw"></i> Profile and Dependancy Profile Data
+                </div>
+                <div class='chart' style='width: 100%'>
+                  <ct-visualization id="profileChart"></ct-visualization>
+                  <div id="profileChartLegend"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <button id = "clear_filters_button" type="button" class="btn btn-primary floating">Clear Filters</button>
+
+  <script type="text/javascript" class="init">
+      if (navigator.onLine) {
+        $('#navDivNistResults').append('<li ><a  href="#treeMapDivResults" data-toggle="tab">Tree Map Chart</a></li>')
+        $('#tabContentNistResults').append("<div id='treeMapDivResults' class='tab-pane'><div id='nist_treemap_results' class='chart'></div></div>")
+      }
+
+      function expandAll() {
+        for(var i = 0; i < $('.sspItem').length; i++) {
+          if ($('.sspItem').eq(i).attr('aria-expanded') == 'false') {
+            $('.sspItem')[i].click();
+          }
+        }
+        $('#expandButton').hide();
+        $('#collapseButton').show();
+      }
+
+      function collapseAll() {
+        for(var i = 0; i < $('.sspItem').length; i++) {
+          if ($('.sspItem').eq(i).attr('aria-expanded') == 'true') {
+            $('.sspItem')[i].click();
+            // $('.sspItem')[i].classList.remove('expanded');
+          }
+        }
+        $('#collapseButton').hide();
+        $('#expandButton').show();
+      }
+
+      function evenfooters() {
+          var heights = [];                            // make an array
+          $(".panel-footer").each(function(){          // copy the height of each
+              heights.push($(this).innerHeight());     //   element to the array
+          });
+          heights.sort(function(a, b){return b - a;}); // sort the array high to low
+          var minh = heights[0];                       // take the highest number
+          $(".panel-footer").innerHeight(minh);        // and apply that to each element
+      }
+      function evenheaders() {
+          var heights = [];                                // make an array
+          $(".panel-heading.res-chart").each(function(){   // copy the height of each
+              heights.push($(this).innerHeight());         //   element to the array
+          });
+          heights.sort(function(a, b){return b - a;});     // sort the array high to low
+          var minh = heights[0];                           // take the highest number
+          $(".panel-heading.res-chart").innerHeight(minh); // and apply that to each element
+      }
+
+      function resizePanels() {
+        $(".panel-footer").each(function(){
+            $(this).css('height',"");           // clear height values
+        });
+        $(".panel-heading.res-chart").each(function(){
+            $(this).css('height',"");           // clear height values
+        });
+        resizeId = setTimeout(evenfooters, 500);
+        resizeId = setTimeout(evenheaders, 500);
+        evenfooters();
+        evenheaders();
+      }
+
+      $(window).resize(function () {
+          if ($("ul#navDiv li.active")[0].children[0].innerHTML == 'Results') {
+            resizePanels();
+            if ($("ul#navDivNistResults li.active")[0].children[0].innerHTML == 'Partition Layout Chart') {
+              draw_partition_map();
+            } else {
+              if (connection) {draw_tree_map();}
+            }
+          } else if ($("ul#navDiv li.active")[0].children[0].innerHTML == 'Profile Data') {
+            draw_profile_chart();
+          }
+      });
+
+      var xmlhttp = new XMLHttpRequest();
+      var raw_dataSet = '';
+
+      // This method gets called when the user inputs a file
+      var upload = function() {
+        if (!window.FileReader) {
+            alert('Your browser is not supported');
+            return false;
+        }
+        var file = document.getElementById('file').files[0];
+        // Create a reader object
+        var reader = new FileReader();
+        reader.addEventListener('load', function(e) {
+          data_filter = {
+                          'result' : '*',
+                          'severity' : '*',
+                          'nist_families' : '*',
+                        };
+
+          inspec_json = JSON.parse(e.target.result);
+          var json = jQuery.extend(true, {}, inspec_json);
+          profile_name = file.name;
+          json = parse_json(json, profile_name);
+
+          // Render the title and the date on the screen
+          $('#profile_title_label').html(json.profile_name.split(":")[0].split(';')[1]);
+          $('#profile_time_label').html(json.profile_name.slice(json.profile_name.indexOf(':') + 1, json.profile_name.length));
+
+          raw_dataSet = json.controls;
+          raw_json = json;
+          load_views();
+          $('#sspList').empty();
+          draw_ssp_table();
+          draw_profile_chart();
+        });
+        try {
+          reader.readAsBinaryString(file);
+        }
+        catch(err) { // Catch if the browser does not support readAsBinaryString
+          reader.readAsText(file);
+        }
+      };
+
+      function parse_json(json, profile_name) {
+        DATA_NOT_FOUND_MESSAGE = 'N/A';
+        results_json = {};
+        var controls = [];
+        var data = {};
+        if (json.profiles == undefined) {
+          results_json.profile_name = 'profile;' + json.name + ': ' + json.version;
+          json.controls.forEach(function(control) {
+            assign_data_attributes(data, control, results_json.profile_name);
+          });
+          $('#navDiv').show();
+          $('#welcome_div').hide();
+          $('#results_treemap_row').hide();
+          $('#results_charts_row').hide();
+          $('#control_status_id').hide();
+          $('#compliance_level_id').hide();
+          $('#status_labels_div_id').hide();
+          $('#profile_charts').show();
+          $('#profile_results_id').show();
+          $('#title_id').show();
+        }
+        else {
+          results_json.profile_name = 'result;' + profile_name + ': ' + grab_start_time(json);
+          json.profiles.forEach(function(profile) {
+            profile.controls.forEach(function(control) {
+              assign_data_attributes(data, control, results_json.profile_name);
+            });
+          });
+          $('#welcome_div').hide();
+          $('#navDiv').show();
+          $('#profile_charts').hide();
+          $('#results_treemap_row').show();
+          $('#results_charts_row').show();
+          $('#control_status_id').show();
+          $('#compliance_level_id').show();
+          $('#status_labels_div_id').show();
+          $('#profile_results_id').show();
+          $('#title_id').show();
+          $('#export-caat').show();
+        }
+
+        results_json.controls = Object.keys(data).map(function(v) { return data[v]; });
+        return results_json;
+      }
+
+      function assign_data_attributes(data, control, profile_name) {
+        var c_id = control.id;
+        data[c_id] = {};
+        data[c_id] = {};
+        data[c_id].profile            = profile_name                                           || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].vuln_num           = control.id                                             || DATA_NOT_FOUND_MESSAGE;
+        if (data[c_id].vuln_num.match(/\d+\.\d+/)) {
+          data[c_id].vuln_num      = data[c_id].vuln_num.match(/\d+(\.\d+)*/)[0];
+        }
+        data[c_id].rule_title      = control.title                                                 || DATA_NOT_FOUND_MESSAGE;
+        if (control.desc) {
+          data[c_id].vuln_discuss  = control.desc.replace(new RegExp("\n", 'g'), '<br>')           || DATA_NOT_FOUND_MESSAGE;
+        } else { data[c_id].vuln_discuss = DATA_NOT_FOUND_MESSAGE; }
+
+        data[c_id].severity        = control.tags.severity || compute_severity(control.impact)     || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].gid             = control.tags.gid                                              || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].group_title     = control.tags.gtitle                                           || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].rule_id         = control.tags.rid                                              || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].rule_ver        = control.tags.stig_id                                          || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].cci_ref         = control.tags.cci                                              || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].nist            = control.tags.nist                                             || ['unmapped'];
+        if (control.tags.check) {
+          data[c_id].check_content = control.tags.check.replace(new RegExp("\n", 'g'), '<br>')     || DATA_NOT_FOUND_MESSAGE;
+        } else { data[c_id].check_content = DATA_NOT_FOUND_MESSAGE; }
+
+        if (control.tags.fix) {
+          data[c_id].fix_text      = control.tags.fix.replace(new RegExp("\n", 'g'), '<br>')       || DATA_NOT_FOUND_MESSAGE;
+        } else { data[c_id].fix_text = DATA_NOT_FOUND_MESSAGE; }
+
+        if (control.tags.rationale) {
+          data[c_id].rationale     = control.tags.rationale.replace(new RegExp("\n", 'g'), '<br>') || DATA_NOT_FOUND_MESSAGE;
+        } else { data[c_id].rationale = DATA_NOT_FOUND_MESSAGE; }
+
+        data[c_id].cis_family      = control.tags.cis_family                                       || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].cis_rid         = control.tags.cis_rid                                          || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].cis_level       = control.tags.cis_level                                        || DATA_NOT_FOUND_MESSAGE;
+
+        data[c_id].impact          = String(control.impact)                                        || DATA_NOT_FOUND_MESSAGE;
+        data[c_id].code            = String(control.code)                                          || DATA_NOT_FOUND_MESSAGE;
+
+        data[c_id].status = [];
+        data[c_id].message = '';
+
+        if (parseFloat(data[c_id].impact) == 0) {
+            data[c_id].message = data[c_id].vuln_discuss + "\n\n";
+        }
+
+        if (control.results) {
+          // Contanate all of the results messages
+          control.results.forEach(function(result) {
+            data[c_id].status.push(result.status);
+            if (result.status == 'skipped') { data[c_id].message += 'SKIP -- ' + result.skip_message + '\n'; }
+            if (result.status == 'failed')  { data[c_id].message += 'FAILED -- Test: ' + result.code_desc + '\nMessage: ' + result.message + '\n'; }
+            if (result.status == 'passed')  { data[c_id].message += 'PASS -- ' + result.code_desc + '\n'; }
+          });
+        }
+
+        data[c_id].result           = clk_status(data[c_id]);
+        data[c_id].finding_details  = clk_finding_details(data[c_id]);
+      }
+
+      function compute_severity(impact) {
+        severity = '';
+        if (impact >= 0.1 && impact <= 0.3) {
+          severity = 'low';
+        } else if (impact >= 0.4 && impact <= 0.6) {
+          severity = 'medium';
+        } else if (impact >= 0.7 && impact <= 1.0) {
+          severity = 'high';
+        }
+        return severity;
+      }
+
+
+      function grab_start_time(json) {
+        for (var i = 0; i < json.profiles.length; i++) {
+          for (var j = 0; j < json.profiles[i].controls.length; j++) {
+            if (json.profiles[i].controls[j] != {}) {
+              if (json.profiles[i].controls[j].results.length != 0) {
+                return json.profiles[i].controls[j].results[0].start_time;
+              }
+            }
+          }
+        }
+        return ''; // If no time was found, return empty string
+      }
+
+      /*
+      * This method returns whether or not a string is in an array of strings.
+      * This is needed because Internet Explorer does not suppor the built in includes method.
+      */
+      function includes(string, myArray) {
+        for (var i = 0; i < myArray.length; i++) {
+          if (myArray[i] == string) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function clk_status(control) {
+        var status_list = control.status;
+        result = '';
+        if (parseFloat(control.impact) == 0) {
+          result = 'Not_Applicable';
+        } else if (includes('failed', status_list)) {
+          result = 'Open';
+        } else if (includes('passed', status_list)) {
+          result = 'NotAFinding';
+        } else if (includes('skipped', status_list)) {
+          result = 'Not_Reviewed';
+        } else {
+          result = 'Profile_Error';
+        }
+        return result;
+      }
+
+      function clk_finding_details(control) {
+        var result = '';
+        if (control.result == 'Open') { result = 'One or more of the automated tests failed or was inconclusive for the control \n\n ' + control.message; }
+        if (control.result == 'NotAFinding') { result = 'All Automated tests passed for the control \n\n ' + control.message; }
+        if (control.result == 'Not_Reviewed') { result = 'Automated test skipped due to known accepted condition in the control : \n\n' + control.message; }
+        if (control.result == 'Not_Applicable') { result = 'Justification: \n\n' + control.message + '\n'; }
+        if (control.result == 'Profile_Error') { result = 'No test available for this control'; }
+        return result;
+      }
+  </script>
+
+
+
+  <script type="text/javascript">
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href"); // activated tab
+      //alert(target);
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    home_images();
+
+  </script>
+
+  <script>
+  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "signed-num-pre": function ( a ) {
+        return (a=="-" || a==="") ? 0 : a.replace('+','')*1;
+    },
+
+    "signed-num-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+
+    "signed-num-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+  });
+
+
+  //Loads the correct sidebar on window load,
+  //collapses the sidebar on window resize.
+  //Sets the min-height of #page-wrapper to window size
+  $(function() {
+      $(window).bind("load resize", function() {
+          var topOffset = 50;
+          var width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
+          if (width < 768) {
+              $('div.navbar-collapse').addClass('collapse');
+              topOffset = 100; // 2-row-menu
+          } else {
+              $('div.navbar-collapse').removeClass('collapse');
+          }
+
+          var height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
+          height = height - topOffset;
+          if (height < 1) height = 1;
+          if (height > topOffset) {
+              $("#page-wrapper").css("min-height", (height) + "px");
+          }
+      });
+
+      var url = window.location;
+      var element = $('ul.nav a').filter(function() {
+          return this.href == url;
+      }).addClass('active').parent();
+
+      while (true) {
+          if (element.is('li')) {
+              element = element.parent().addClass('in').parent();
+          } else {
+              break;
+          }
+      }
+  });
+
+
+  DATA_NOT_FOUND_MESSAGE = 'N/A';
+
+  /*
+  * This method redraws all views on the screen.
+  */
+  function load_views() {
+    dataSet = filterDataset();
+    status_count = status_counter();
+    severity_count = severity_counter();
+    draw_data_table();
+    update_banners();
+    draw_status_pie_chart();
+    draw_severity_pie_chart();
+    draw_compliance_pie_chart();
+    if (connection) {draw_tree_map();}
+    draw_partition_map();
+  }
+
+  /*
+  * This method is called when the treemap is clicked.  Want to updated everything but the treemap.
+  */
+  function load_all_but_tree_map() {
+    dataSet = filterDataset();
+    status_count = status_counter();
+    severity_count = severity_counter();
+    draw_data_table();
+    update_banners();
+    draw_status_pie_chart();
+    draw_severity_pie_chart();
+    draw_compliance_pie_chart();
+  }
+
+  function draw_profile_chart() {
+
+    document.getElementById('profileChart').innerHTML = "";
+    document.getElementById('profileChartLegend').innerHTML = "";
+
+
+    treeData = get_profile_chart_data();
+    treeBoxes('', treeData);
+
+    function treeBoxes(urlService, jsonData)
+    {
+    	var urlService_ = '';
+
+    	var blue = '#337ab7',
+    		green = '#5cb85c',
+    		yellow = '#f0ad4e',
+    		blueText = '#4ab1eb',
+    		purple = '#9467bd';
+
+
+
+    	var margin = {
+    					top : 0,
+    					right : 0,
+    					bottom : 100,
+    					left : 0
+    				 },
+          	 // Height and width are redefined later in function of the size of the tree
+          	 // (after that the data are loaded)
+          	 width = window.innerWidth - 200 - margin.right - margin.left,
+          	 height = 400 - margin.top - margin.bottom;
+
+    	var rectNode = { width : 240, height : 90, textMargin : 10 },
+    		tooltip = { width : 150, height : 40, textMargin : 5 };
+    	var i = 0,
+    		duration = 750,
+    		root;
+
+    	var mousedown; // Use to save temporarily 'mousedown.zoom' value
+    	var mouseWheel,
+    		mouseWheelName,
+    		isKeydownZoom = false;
+
+    	var tree;
+    	var baseSvg,
+    		svgGroup,
+    		nodeGroup, // If nodes are not grouped together, after a click the svg node will be set after his corresponding tooltip and will hide it
+    		nodeGroupTooltip,
+    		linkGroup,
+    		linkGroupToolTip,
+    		defs;
+
+    	init(urlService, jsonData);
+
+    	function init(urlService, jsonData)
+    	{
+    		urlService_ = urlService;
+    		if (urlService && urlService.length > 0)
+    		{
+    			if (urlService.charAt(urlService.length - 1) != '/')
+    				urlService_ += '/';
+    		}
+
+    		if (jsonData)
+    			drawTree(jsonData);
+    		else
+    		{
+    			alert('Invalides data.');
+    		}
+    	}
+
+      $('#profileDataListItem').on('shown.bs.tab',function() {
+        svgGroup.selectAll('.tooltip-box')
+          .attr('width', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
+          .attr('height', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
+      });
+
+
+    	function drawTree(jsonData)
+    	{
+    		tree = d3.layout.tree().size([ height, width ]);
+    		root = jsonData;
+    		root.fixed = true;
+
+    		// Dynamically set the height of the main svg container
+    		// breadthFirstTraversal returns the max number of node on a same level
+    		// and colors the nodes
+    		var maxDepth = 0;
+    		var maxTreeWidth = breadthFirstTraversal(tree.nodes(root), function(currentLevel) {
+    			maxDepth++;
+    			currentLevel.forEach(function(node) {
+    				if (node.type == 'type1')
+    					node.color = blue;
+    				if (node.type == 'type2')
+    					node.color = green;
+    				if (node.type == 'type3')
+    					node.color = yellow;
+    				if (node.type == 'type4')
+    					node.color = purple;
+    				});
+    			});
+    		height = maxTreeWidth * (rectNode.height + 20) + tooltip.height + 20 - margin.right - margin.left;
+    		width = maxDepth * (rectNode.width * 1.5) + tooltip.width / 2 - margin.top - margin.bottom;
+
+    		tree = d3.layout.tree().size([ height, width ]);
+    		root.x0 = height / 2;
+    		root.y0 = 0;
+
+    		baseSvg = d3.select('#profileChart').append('svg')
+        	    .attr('width', width + margin.right + margin.left)
+          		.attr('height', height + margin.top + margin.bottom)
+          		.attr('class', 'svgContainer')
+          		.call(d3.behavior.zoom()
+    		      //.scaleExtent([0.5, 1.5]) // Limit the zoom scale
+    		      .on('zoom', zoomAndDrag));
+
+    		// Mouse wheel is desactivated, else after a first drag of the tree, wheel event drags the tree (instead of scrolling the window)
+    		getMouseWheelEvent();
+    		d3.select('#profileChart').select('svg').on(mouseWheelName, null);
+    		d3.select('#profileChart').select('svg').on('dblclick.zoom', null);
+
+    		svgGroup = baseSvg.append('g')
+    		.attr('class','drawarea')
+    		.append('g')
+    		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    		// SVG elements under nodeGroupTooltip could be associated with nodeGroup,
+    		// same for linkGroupToolTip and linkGroup,
+    		// but this separation allows to manage the order on which elements are drew
+    		// and so tooltips are always on top.
+    		nodeGroup = svgGroup.append('g')
+    					.attr('id', 'nodes');
+    		linkGroup = svgGroup.append('g')
+    					.attr('id', 'links');
+    		linkGroupToolTip = svgGroup.append('g')
+    			   				.attr('id', 'linksTooltips');
+    		nodeGroupTooltip = svgGroup.append('g')
+    			   				.attr('id', 'nodesTooltips');
+
+    		defs = baseSvg.append('defs');
+    		initArrowDef();
+    		initDropShadow();
+
+    		update(root);
+        drawLegend();
+    	}
+
+      function drawLegend() {
+
+          // Dimensions of legend item: width, height, spacing, radius of rounded rect.
+          var li = {
+            w: 150, h: 30, s: 3, r: 3
+          };
+
+          var colors = {
+            'Profile': '#337ab7',
+          	'Dependent Profile': '#5cb85c',
+          };
+
+          var legend = d3.select("#profileChartLegend").append("svg:svg")
+              .attr("width", li.w)
+              .attr("height", d3.keys(colors).length * (li.h + li.s));
+
+          var g = legend.selectAll("g")
+              .data(d3.entries(colors))
+              .enter().append("svg:g")
+              .attr("transform", function(d, i) {
+                      return "translate(0," + i * (li.h + li.s) + ")";
+                   });
+
+          g.append("svg:rect")
+              .attr("rx", li.r)
+              .attr("ry", li.r)
+              .attr("width", li.w)
+              .attr("height", li.h)
+              .style("fill", function(d) { return d.value; });
+
+          g.append("svg:text")
+              .attr("x", li.w / 2)
+              .attr("y", li.h / 2)
+              .attr("dy", "0.35em")
+              .attr("text-anchor", "middle")
+              .text(function(d) { return d.key; });
+      }
+
+    	function update(source)
+    	{
+
+    		// Compute the new tree layout
+    		var nodes = tree.nodes(root).reverse(),
+    			links = tree.links(nodes);
+
+    		// Check if two nodes are in collision on the ordinates axe and move them
+    		breadthFirstTraversal(tree.nodes(root), collision);
+    		// Normalize for fixed-depth
+    		nodes.forEach(function(d) {
+    			d.y = d.depth * (rectNode.width * 1.5);
+    		});
+
+    	  // 1) ******************* Update the nodes *******************
+    		var node = nodeGroup.selectAll('g.node').data(nodes, function(d) {
+    			return d.id || (d.id = ++i);
+    		});
+    		var nodesTooltip = nodeGroupTooltip.selectAll('g').data(nodes, function(d) {
+    			return d.id || (d.id = ++i);
+    		});
+
+    		// Enter any new nodes at the parent's previous position
+    		// We use "insert" rather than "append", so when a new child node is added (after a click)
+    		// it is added at the top of the group, so it is drawed first
+    		// else the nodes tooltips are drawed before their children nodes and they
+    		// hide them
+    		var nodeEnter = node.enter().insert('g', 'g.node')
+    		.attr('class', 'node')
+    		.attr('transform', function(d) {
+    			  return 'translate(' + source.y0 + ',' + source.x0 + ')'; })
+    		.on('click', function(d) {
+    						click(d);
+    			});
+    		var nodeEnterTooltip = nodesTooltip.enter().append('g')
+    			.attr('transform', function(d) {
+    				  return 'translate(' + source.y0 + ',' + source.x0 + ')'; });
+
+    		nodeEnter.append('g').append('rect')
+    		.attr('rx', 6)
+    		.attr('ry', 6)
+    		.attr('width', rectNode.width)
+    		.attr('height', rectNode.height)
+    		.attr('class', 'node-rect')
+    		.attr('fill', function (d) { return d.color; })
+    		.attr('filter', 'url(#drop-shadow)');
+
+    		nodeEnter.append('foreignObject')
+    		.attr('x', rectNode.textMargin)
+    		.attr('y', rectNode.textMargin)
+    		.attr('width', function() {
+    					return (rectNode.width - rectNode.textMargin * 2) < 0 ? 0
+    							: (rectNode.width - rectNode.textMargin * 2)
+    				})
+    		.attr('height', function() {
+    					return (rectNode.height - rectNode.textMargin * 2) < 0 ? 0
+    							: (rectNode.height - rectNode.textMargin * 2)
+    				})
+    		.append('xhtml').html(function(d) {
+    					return '<div style="width: ' +
+                  (rectNode.width - rectNode.textMargin * 2) + 'px; height: ' +
+                  (rectNode.height - rectNode.textMargin * 2) + 'px;" class="node-text wordwrap">' +
+                  '<b><h5>' + d.name + '</h5></b>' +
+                  '<b><h5>Version: </b>' + d.version + '</h5><br>'
+    							+ '</div>';
+    				})
+    		.on('mouseover', function(d) {
+    			$('#nodeInfoID' + d.id).css('visibility', 'visible');
+    			$('#nodeInfoTextID' + d.id).css('visibility', 'visible');
+    		})
+    		.on('mouseout', function(d) {
+    			$('#nodeInfoID' + d.id).css('visibility', 'hidden');
+    			$('#nodeInfoTextID' + d.id).css('visibility', 'hidden');
+    		});
+
+    		nodeEnterTooltip.append("rect")
+    		.attr('id', function(d) { return 'nodeInfoID' + d.id; })
+        	.attr('x', rectNode.width / 2)
+    		.attr('y', rectNode.height / 2)
+    		.attr('width', tooltip.width)
+    		.attr('height', tooltip.height)
+        	.attr('class', 'tooltip-box')
+        	.style('fill-opacity', 0.8)
+    		.on('mouseover', function(d) {
+    			$('#nodeInfoID' + d.id).css('visibility', 'visible');
+    			$('#nodeInfoTextID' + d.id).css('visibility', 'visible');
+    			removeMouseEvents();
+    		})
+    		.on('mouseout', function(d) {
+    			$('#nodeInfoID' + d.id).css('visibility', 'hidden');
+    			$('#nodeInfoTextID' + d.id).css('visibility', 'hidden');
+    			reactivateMouseEvents();
+    		});
+
+    		nodeEnterTooltip.append("text")
+      		.attr('id', function(d) { return 'nodeInfoTextID' + d.id; })
+        	.attr('x', rectNode.width / 2 + tooltip.textMargin)
+      		.attr('y', rectNode.height / 2 + tooltip.textMargin * 2)
+      		.attr('width', tooltip.width)
+      		.attr('height', tooltip.height)
+      		.attr('class', 'tooltip-text')
+      		.style('fill', 'white')
+      		.append("tspan")
+      	    .text(function(d) {return 'Name: ' + d.name;})
+    	    .append("tspan")
+      	    .attr('x', rectNode.width / 2 + tooltip.textMargin)
+      	    .attr('dy', '1.5em')
+      	    .text(function(d) {return 'Title: ' + d.title;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Summary: ' + d.summary;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Maintainer: ' + d.maintainer;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Copyright: ' + d.copyright;})
+          .append("tspan")
+            .attr('x', rectNode.width / 2 + tooltip.textMargin)
+            .attr('dy', '1.5em')
+            .text(function(d) {return 'Copyright Email: ' + d.copyright_email;});
+
+        svgGroup.selectAll('.tooltip-box')
+          .attr('width', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().width + 50; })
+          .attr('height', function(d) { return document.getElementById('nodeInfoTextID' + d.id).getBBox().height + 50; });
+
+    		// Transition nodes to their new position.
+    		var nodeUpdate = node.transition().duration(duration)
+    		.attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
+    		nodesTooltip.transition().duration(duration)
+    		.attr('transform', function(d) { return 'translate(' + d.y + ',' + d.x + ')'; });
+
+    		nodeUpdate.select('rect')
+    		.attr('class', function(d) { return d._children ? 'node-rect-closed' : 'node-rect'; });
+
+    		nodeUpdate.select('text').style('fill-opacity', 1);
+
+    		// Transition exiting nodes to the parent's new position
+    		var nodeExit = node.exit().transition().duration(duration)
+    			.attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
+    			.remove();
+    		nodesTooltip.exit().transition().duration(duration)
+    			.attr('transform', function(d) { return 'translate(' + source.y + ',' + source.x + ')'; })
+    		.remove();
+
+    		nodeExit.select('text').style('fill-opacity', 1e-6);
+
+
+    	// 2) ******************* Update the links *******************
+    		var link = linkGroup.selectAll('path').data(links, function(d) {
+    			return d.target.id;
+    		});
+    		var linkTooltip = linkGroupToolTip.selectAll('g').data(links, function(d) {
+    			return d.target.id;
+    		});
+
+    		function linkMarkerStart(direction, isSelected) {
+    			if (direction == 'SYNC')
+    			{
+    				return isSelected ? 'url(#start-arrow-selected)' : 'url(#start-arrow)';
+    			}
+    			return '';
+    		}
+
+    		function linkType(link) {
+    			if (link.direction == 'SYNC')
+    				return "Synchronous [\u2194]";
+    			else
+    			{
+    				if (link.direction == 'ASYN')
+    					return "Asynchronous [\u2192]";
+    			}
+    			return '???';
+    		}
+
+    		d3.selection.prototype.moveToFront = function() {
+    			  return this.each(function(){
+    				    this.parentNode.appendChild(this);
+    				  });
+    			};
+
+    		// Enter any new links at the parent's previous position.
+    			// Enter any new links at the parent's previous position.
+    			var linkenter = link.enter().insert('path', 'g')
+    			.attr('class', 'link')
+    			.attr('id', function(d) { return 'linkID' + d.target.id; })
+    			.attr('d', function(d) { return diagonal(d); })
+    			.attr('marker-end', 'url(#end-arrow)')
+    			.attr('marker-start', function(d) { return linkMarkerStart(d.target.link.direction, false); })
+    			.on('mouseover', function(d) {
+    				d3.select(this).moveToFront();
+
+    				d3.select(this).attr('marker-end', 'url(#end-arrow-selected)');
+    				d3.select(this).attr('marker-start', linkMarkerStart(d.target.link.direction, true));
+    				d3.select(this).attr('class', 'linkselected');
+
+    				$('#tooltipLinkID' + d.target.id).attr('x', (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y);
+    				$('#tooltipLinkID' + d.target.id).attr('y', (d.target.x - d.source.x) / 2 + d.source.x);
+    				$('#tooltipLinkID' + d.target.id).css('visibility', 'visible');
+    				$('#tooltipLinkTextID' + d.target.id).css('visibility', 'visible');
+    			})
+    			.on('mouseout', function(d) {
+    				d3.select(this).attr('marker-end', 'url(#end-arrow)');
+    				d3.select(this).attr('marker-start', linkMarkerStart(d.target.link.direction, false));
+    				d3.select(this).attr('class', 'link');
+    				$('#tooltipLinkID' + d.target.id).css('visibility', 'hidden');
+    				$('#tooltipLinkTextID' + d.target.id).css('visibility', 'hidden');
+    			});
+
+    			// linkTooltip.enter().append('rect')
+    			// .attr('id', function(d) { return 'tooltipLinkID' + d.target.id; })
+    			// .attr('class', 'tooltip-box')
+    			// .style('fill-opacity', 0.8)
+    			// .attr('x', function(d) { return (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y; })
+    			// .attr('y', function(d) { return (d.target.x - d.source.x) / 2 + d.source.x; })
+    			// .attr('width', tooltip.width)
+    			// .attr('height', tooltip.height)
+    			// .on('mouseover', function(d) {
+    			// 	$('#tooltipLinkID' + d.target.id).css('visibility', 'visible');
+    			// 	$('#tooltipLinkTextID' + d.target.id).css('visibility', 'visible');
+    			// 	// After selected a link, the cursor can be hover the tooltip, that's why we still need to highlight the link and the arrow
+    			// 	$('#linkID' + d.target.id).attr('class', 'linkselected');
+    			// 	$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow-selected)');
+    			// 	$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, true));
+          //
+    			// 	removeMouseEvents();
+    			// })
+    			// .on('mouseout', function(d) {
+    			// 	$('#tooltipLinkID' + d.target.id).css('visibility', 'hidden');
+    			// 	$('#tooltipLinkTextID' + d.target.id).css('visibility', 'hidden');
+    			// 	$('#linkID' + d.target.id).attr('class', 'link');
+    			// 	$('#linkID' + d.target.id).attr('marker-end', 'url(#end-arrow)');
+    			// 	$('#linkID' + d.target.id).attr('marker-start', linkMarkerStart(d.target.link.direction, false));
+          //
+    			// 	reactivateMouseEvents();
+    			// });
+
+    			linkTooltip.enter().append('text')
+    			.attr('id', function(d) { return 'tooltipLinkTextID' + d.target.id; })
+    			.attr('class', 'tooltip-text')
+    			.attr('x', function(d) { return (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y + tooltip.textMargin; })
+    			.attr('y', function(d) { return (d.target.x - d.source.x) / 2 + d.source.x + tooltip.textMargin * 2; })
+    			.attr('width', tooltip.width)
+    			.attr('height', tooltip.height)
+    			.style('fill', 'white')
+    			.append("tspan")
+    	   		.text(function(d) { return linkType(d.target.link); })
+    	   		.append("tspan")
+    	    	.attr('x', function(d) { return (d.target.y + rectNode.width - d.source.y) / 2 + d.source.y + tooltip.textMargin; })
+    	   		.attr('dy', '1.5em')
+    	    	.text(function(d) {return d.target.link.name;});
+
+    		// Transition links to their new position.
+    		var linkUpdate = link.transition().duration(duration)
+    						 	 .attr('d', function(d) { return diagonal(d); });
+    		linkTooltip.transition().duration(duration)
+    				   .attr('d', function(d) { return diagonal(d); });
+
+    		// Transition exiting nodes to the parent's new position.
+    		link.exit().transition()
+    		.remove();
+
+    		linkTooltip.exit().transition()
+    			.remove();
+
+    		// Stash the old positions for transition.
+    		nodes.forEach(function(d) {
+    			d.x0 = d.x;
+    			d.y0 = d.y;
+    		});
+    	}
+
+    	// Zoom functionnality is desactivated (user can use browser Ctrl + mouse wheel shortcut)
+    	function zoomAndDrag() {
+    	    //var scale = d3.event.scale,
+    	    var scale = 1,
+    	        translation = d3.event.translate,
+    	        tbound = -height * scale,
+    	        bbound = height * scale,
+    	        lbound = (-width + margin.right) * scale,
+    	        rbound = (width - margin.left) * scale;
+    	    // limit translation to thresholds
+    	    translation = [
+    	        Math.max(Math.min(translation[0], rbound), lbound),
+    	        Math.max(Math.min(translation[1], bbound), tbound)
+    	    ];
+    	    d3.select('.drawarea')
+    	        .attr('transform', 'translate(' + translation + ')' +
+    	              ' scale(' + scale + ')');
+    	}
+
+    	// Toggle children on click.
+    	function click(d) {
+    		if (d.children) {
+    			d._children = d.children;
+    			d.children = null;
+    		} else {
+    			d.children = d._children;
+    			d._children = null;
+    		}
+    		update(d);
+    	}
+
+    	// Breadth-first traversal of the tree
+    	// func function is processed on every node of a same level
+    	// return the max level
+    	  function breadthFirstTraversal(tree, func)
+    	  {
+    		  var max = 0;
+    		  if (tree && tree.length > 0)
+    		  {
+    			  var currentDepth = tree[0].depth;
+    			  var fifo = [];
+    			  var currentLevel = [];
+
+    			  fifo.push(tree[0]);
+    			  while (fifo.length > 0) {
+    				  var node = fifo.shift();
+    				  if (node.depth > currentDepth) {
+    					  func(currentLevel);
+    					  currentDepth++;
+    					  max = Math.max(max, currentLevel.length);
+    					  currentLevel = [];
+    				  }
+    				  currentLevel.push(node);
+    				  if (node.children) {
+    					  for (var j = 0; j < node.children.length; j++) {
+    						  fifo.push(node.children[j]);
+    					  }
+    				  }
+    		  	}
+    			func(currentLevel);
+    			return Math.max(max, currentLevel.length);
+    		}
+    		return 0;
+    	  }
+
+    	// x = ordoninates and y = abscissas
+    	function collision(siblings) {
+    	  var minPadding = 5;
+    	  if (siblings) {
+    		  for (var i = 0; i < siblings.length - 1; i++)
+    		  {
+    			  if (siblings[i + 1].x - (siblings[i].x + rectNode.height) < minPadding)
+    				  siblings[i + 1].x = siblings[i].x + rectNode.height + minPadding;
+    		  }
+    	  }
+    	}
+
+    	function removeMouseEvents() {
+    		// Drag and zoom behaviors are temporarily disabled, so tooltip text can be selected
+    		mousedown = d3.select('#profileChart').select('svg').on('mousedown.zoom');
+    		d3.select('#profileChart').select('svg').on("mousedown.zoom", null);
+    	}
+
+    	function reactivateMouseEvents() {
+    		// Reactivate the drag and zoom behaviors
+    		d3.select('#profileChart').select('svg').on('mousedown.zoom', mousedown);
+    	}
+
+    	// Name of the event depends of the browser
+    	function getMouseWheelEvent() {
+    		if (d3.select('#profileChart').select('svg').on('wheel.zoom'))
+    		{
+    			mouseWheelName = 'wheel.zoom';
+    			return d3.select('#profileChart').select('svg').on('wheel.zoom');
+    		}
+    		if (d3.select('#profileChart').select('svg').on('mousewheel.zoom') != null)
+    		{
+    			mouseWheelName = 'mousewheel.zoom';
+    			return d3.select('#profileChart').select('svg').on('mousewheel.zoom');
+    		}
+    		if (d3.select('#profileChart').select('svg').on('DOMMouseScroll.zoom'))
+    		{
+    			mouseWheelName = 'DOMMouseScroll.zoom';
+    			return d3.select('#profileChart').select('svg').on('DOMMouseScroll.zoom');
+    		}
+    	}
+
+    	function diagonal(d) {
+    		var p0 = {
+    			x : d.source.x + rectNode.height / 2,
+    			y : (d.source.y + rectNode.width)
+    		}, p3 = {
+    			x : d.target.x + rectNode.height / 2,
+    			y : d.target.y  - 12 // -12, so the end arrows are just before the rect node
+    		}, m = (p0.y + p3.y) / 2, p = [ p0, {
+    			x : p0.x,
+    			y : m
+    		}, {
+    			x : p3.x,
+    			y : m
+    		}, p3 ];
+    		p = p.map(function(d) {
+    			return [ d.y, d.x ];
+    		});
+    		return 'M' + p[0] + 'C' + p[1] + ' ' + p[2] + ' ' + p[3];
+    	}
+
+    	function initDropShadow() {
+    		var filter = defs.append("filter")
+    		    .attr("id", "drop-shadow")
+    		    .attr("color-interpolation-filters", "sRGB");
+
+    		filter.append("feOffset")
+    		.attr("result", "offOut")
+    		.attr("in", "SourceGraphic")
+    	    .attr("dx", 0)
+    	    .attr("dy", 0);
+
+    		filter.append("feGaussianBlur")
+    		    .attr("stdDeviation", 2);
+
+    		filter.append("feOffset")
+    		    .attr("dx", 2)
+    		    .attr("dy", 2)
+    		    .attr("result", "shadow");
+
+    		filter.append("feComposite")
+    	    .attr("in", 'offOut')
+    	    .attr("in2", 'shadow')
+    	    .attr("operator", "over");
+    	}
+
+    	function initArrowDef() {
+    		// Build the arrows definitions
+    		// End arrow
+    		defs.append('marker')
+    		.attr('id', 'end-arrow')
+    		.attr('viewBox', '0 -5 10 10')
+    		.attr('refX', 0)
+    		.attr('refY', 0)
+    		.attr('markerWidth', 6)
+    		.attr('markerHeight', 6)
+    		.attr('orient', 'auto')
+    		.attr('class', 'arrow')
+    		.append('path')
+    		.attr('d', 'M0,-5L10,0L0,5');
+
+    		// End arrow selected
+    		defs.append('marker')
+    		.attr('id', 'end-arrow-selected')
+    		.attr('viewBox', '0 -5 10 10')
+    		.attr('refX', 0)
+    		.attr('refY', 0)
+    		.attr('markerWidth', 6)
+    		.attr('markerHeight', 6)
+    		.attr('orient', 'auto')
+    		.attr('class', 'arrowselected')
+    		.append('path')
+    		.attr('d', 'M0,-5L10,0L0,5');
+
+    		// Start arrow
+    		defs.append('marker')
+    		.attr('id', 'start-arrow')
+    		.attr('viewBox', '0 -5 10 10')
+    		.attr('refX', 0)
+    		.attr('refY', 0)
+    		.attr('markerWidth', 6)
+    		.attr('markerHeight', 6)
+    		.attr('orient', 'auto')
+    		.attr('class', 'arrow')
+    		.append('path')
+    		.attr('d', 'M10,-5L0,0L10,5');
+
+    		// Start arrow selected
+    		defs.append('marker')
+    		.attr('id', 'start-arrow-selected')
+    		.attr('viewBox', '0 -5 10 10')
+    		.attr('refX', 0)
+    		.attr('refY', 0)
+    		.attr('markerWidth', 6)
+    		.attr('markerHeight', 6)
+    		.attr('orient', 'auto')
+    		.attr('class', 'arrowselected')
+    		.append('path')
+    		.attr('d', 'M10,-5L0,0L10,5');
+    	}
+    }
+  }
+
+  function get_profile_chart_data() {
+    var nodeNum = "1";
+    var previousNodeNum = null;
+    return recursive_find_profile(inspec_json.profiles[0], nodeNum, previousNodeNum);
+
+    function recursive_find_profile(json, nodeNum, previousNodeNum) {
+      var profile_data = {
+        'nodeName':        'NODE NAME ' + nodeNum,
+        'name':            json.name,
+        'version':         json.version,
+        'sha256':          json.sha256,
+        'title':           json.title,
+        'maintainer':      json.maintainer,
+        'summary':         json.summary,
+        'license':         json.license,
+        'copyright':       json.copyright,
+        'copyright_email': json.copyright_email,
+        'type':            'type' + parseInt(nodeNum),
+        'children': []
+      };
+
+      if (previousNodeNum == null) {
+        profile_data.link = {
+          'name': "Link NODE NAME " + nodeNum,
+          'nodeName': "NODE NAME " + nodeNum,
+          'direction': 'ASYN'
+        };
+      } else {
+        profile_data.link = {
+          'name': "Link node " + previousNodeNum + ' to ' + nodeNum,
+          'nodeName': "NODE NAME " + nodeNum,
+          'direction': 'ASYN'
+        };
+      }
+      previousNodeNum = nodeNum;
+      nodeNum = parseFloat(nodeNum) + 1;
+
+      if(json.depends) {
+        json.depends.forEach(function(profileDepends) {
+          nodeNum = nodeNum + 0.1;
+          try {
+            inspec_json.profiles.forEach(function(profile) {
+              if (json.name === profile.parent_profile) {
+                profile_data.children.push(recursive_find_profile(profile, nodeNum, previousNodeNum));
+                throw BreakException;
+              }
+            });
+          } catch (e) {
+
+          }
+        });
+      }
+      return profile_data;
+    }
+  }
+
+  function details_panel ( d ) {
+      // 'd' is the original data object for the row
+    var details_panel = '';
+    details_panel +=
+    '<ul class="nav nav-tabs">'+
+      '<li class="active"><a data-toggle="tab" href="#fdetails">Finding Details</a></li>'+
+      '<li><a data-toggle="tab" href="#details" >Details</a></li>'+
+      '<li><a data-toggle="tab" href="#inspec_code">Inspec Code</a></li>'+
+    '</ul>'+
+    '<div class="tab-content">'+
+      '<div id="fdetails" class="tab-pane active">'+
+        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+          '<tr>'+
+              '<td>'+d.finding_details.replace(/(?:\r\n|\r|\n)/g, '<br>')+'</td>'+
+          '</tr>'+
+        '</table>'+
+      '</div>'+
+      '<div id="details" class="tab-pane">'+
+        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+
+
+      //Mandatory feilds
+      details_panel += '<tr>'+ '<td>Control:</td>'+ '<td>'+d.vuln_num     +'</td>'+ '</tr>';
+      details_panel += '<tr>'+ '<td>Title:</td>'  + '<td>'+d.rule_title   +'</td>'+ '</tr>';
+      details_panel += '<tr>'+ '<td>Desc:</td>'   + '<td>'+d.vuln_discuss +'</td>'+ '</tr>';
+
+      DATA_NOT_FOUND_MESSAGE = 'N/A';
+      // Optional Tags
+      if (d.severity      != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Severity:</td>'  + '<td>'+d.severity     +'</td>'+ '</tr>'; }
+      if (d.impact        != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Impact:</td>'    + '<td>'+d.impact       +'</td>'+ '</tr>'; }
+      if (d.nist          != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Nist Ref:</td>'  + '<td>'+d.nist         +'</td>'+ '</tr>'; }
+      if (d.rationale     != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Rationale:</td>' + '<td>'+d.rationale    +'</td>'+ '</tr>'; }
+      if (d.cis_family    != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>CIS family:</td>'+ '<td>'+d.cis_family   +'</td>'+ '</tr>'; }
+      if (d.cis_rid       != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>CIS rid:</td>'   + '<td>'+d.cis_rid      +'</td>'+ '</tr>'; }
+      if (d.cis_level     != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>CIS level:</td>' + '<td>'+d.cis_level    +'</td>'+ '</tr>'; }
+      if (d.check_content != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr class="overflow-wrap">'+ '<td>Check Text:</td>'+ '<td>'+d.check_content+'</td>'+ '</tr>'; }
+      if (d.fix_text      != DATA_NOT_FOUND_MESSAGE) { details_panel += '<tr>'+ '<td>Fix Text:</td>'  + '<td>'+d.fix_text     +'</td>'+ '</tr>'; }
+
+      details_panel +=
+        '</table>'+
+      '</div>'+
+      '<div id="inspec_code" class="tab-pane">'+
+        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+          '<tr>'+
+              '<td><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">'+d.code+'</code></pre></td>'+
+          '</tr>'+
+        '</table>'+
+      '</div>' +
+    '</div>';
+
+      return details_panel;
+  }
+
+  function details_panel_print_view ( d ) {
+      // 'd' is the original data object for the row
+    var details_panel = '';
+
+      //Mandatory feilds
+      control_details = '';
+      control_details += '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+      control_details += '<tr>'+ '<td>Control:</td>'+ '<td>'+d.vuln_num     +'</td>'+ '</tr><br>';
+      control_details += '<tr>'+ '<td>Title:</td>'  + '<td>'+d.rule_title   +'</td>'+ '</tr><br>';
+      control_details += '<tr>'+ '<td>Desc:</td>'   + '<td>'+d.vuln_discuss +'</td>'+ '</tr><br>';
+
+      DATA_NOT_FOUND_MESSAGE = 'N/A';
+      // Optional Tags
+      if (d.severity      != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>Severity:</td>'  + '<td>'+d.severity     +'</td>'+ '</tr>'; }
+      if (d.impact        != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>Impact:</td>'    + '<td>'+d.impact       +'</td>'+ '</tr>'; }
+      if (d.nist          != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>Nist Ref:</td>'  + '<td>'+d.nist         +'</td>'+ '</tr>'; }
+      if (d.rationale     != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>Rationale:</td>' + '<td>'+d.rationale    +'</td>'+ '</tr>'; }
+      if (d.cis_family    != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>CIS family:</td>'+ '<td>'+d.cis_family   +'</td>'+ '</tr>'; }
+      if (d.cis_rid       != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>CIS rid:</td>'   + '<td>'+d.cis_rid      +'</td>'+ '</tr>'; }
+      if (d.cis_level     != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>CIS level:</td>' + '<td>'+d.cis_level    +'</td>'+ '</tr>'; }
+      if (d.check_content != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr class="overflow-wrap">'+ '<td>Check Text:</td>'+ '<td>'+d.check_content+'</td>'+ '</tr>'; }
+      if (d.fix_text      != DATA_NOT_FOUND_MESSAGE) { control_details += '<tr>'+ '<td>Fix Text:</td>'  + '<td>'+d.fix_text     +'</td>'+ '</tr>'; }
+
+      control_details += '</table>';
+
+    details_panel +=
+      `<table>
+        <tr>
+          <th>Finding Details</th>
+          <th>Control Details</th>
+          <th>Inspec Code</th>
+        </tr>
+        <tr valign="top">
+          <td width="33.33%"><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">${d.finding_details.replace(/(?:\r\n|\r|\n)/g, '<br>')}</code></pre></td>
+          <td width="33.33%">${control_details}</td>
+
+          <td width="33.33%"><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">${d.code}</code></pre></td>
+        </tr>
+      </table>`;
+
+      return details_panel;
+  }
+
+  function status_counter() {
+    var status_count = {};
+    status_count.not_a_finding_count  = $(dataSet).filter(function (i,n){return n.result==='NotAFinding';}).length;
+    status_count.open_count           = $(dataSet).filter(function (i,n){return n.result==='Open';}).length;
+    status_count.not_applicable_count = $(dataSet).filter(function (i,n){return n.result==='Not_Applicable';}).length;
+    status_count.not_reviewed_count   = $(dataSet).filter(function (i,n){return n.result==='Not_Reviewed';}).length;
+    status_count.profile_error_count  = $(dataSet).filter(function (i,n){return n.result==='Profile_Error';}).length;
+    return status_count;
+  }
+
+  function severity_counter() {
+    var severity_count = {};
+    severity_count['CAT I'  ] = $(dataSet).filter(function (i,n){return n.severity==='high';}).length;
+    severity_count['CAT II' ] = $(dataSet).filter(function (i,n){return n.severity==='medium';}).length;
+    severity_count['CAT III'] = $(dataSet).filter(function (i,n){return n.severity==='low';}).length;
+    return severity_count;
+  }
+
+  function draw_data_table() {
+    dataSet = filterDataset();
+    var table;
+    if ( $.fn.dataTable.isDataTable( '#results_table' ) ) {
+        dataSet = filterDataset();
+        table = $('#results_table').dataTable().api();
+
+        table.destroy().draw();
+        $('#results_table thead').empty();
+        $('#results_table tbody').empty();
+        $('#results_table tfoot').empty();
+        set_results_table_thead();
+        // use dataSet to filter and group controls
+        table = createDataTable();
+        // table.clear();
+        // table.rows.add(dataSet);
+        // table.draw();
+
+    } else {
+      set_results_table_thead();
+      // use dataSet to filter and group controls
+      table = createDataTable();
+      // Add event listener for opening and closing details
+      $('#results_table tbody').on('click', 'td.table_row', function () {
+        var table = $('#results_table').dataTable().api();
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        if ( row.child.isShown() ) {
+          row.child.hide();
+          tr.removeClass('shown');
+        }
+        else {
+         if ( table.row( '.shown' ).length ) {
+            $('.table_row', table.rows( '.shown' ).nodes()).click();
+         }
+         row.child( details_panel(row.data()) ).show();
+         tr.addClass('shown');
+         Prism.highlightAll();
+        }
+      });
+    }
+  }
+
+      $('#btn-show-all-children').on('click', function(){
+        $('#btn-show-all-children').hide();
+        $('#btn-hide-all-children').show();
+        var table = $('#results_table').dataTable().api();
+        // Enumerate all rows
+        table.rows().every(function(){
+            // If row has details collapsed
+            if(!this.child.isShown()){
+                // Open this row
+                this.child(details_panel_print_view(this.data())).show();
+                $(this.node()).addClass('shown');
+            }
+        });
+    });
+
+    $('#btn-hide-all-children').on('click', function(){
+        $('#btn-hide-all-children').hide();
+        $('#btn-show-all-children').show();
+        var table = $('#results_table').dataTable().api();
+        // Enumerate all rows
+        table.rows().every(function(){
+            // If row has details expanded
+            if(this.child.isShown()){
+                // Collapse row details
+                this.child.hide();
+                $(this.node()).removeClass('shown');
+            }
+        });
+    });
+
+  function reload_data_table() {
+    dataSet = filterDataset();
+    var table = $('#results_table').dataTable().api();
+  }
+
+  /*
+  * Polyfil for jquery method `closest` for use in ie 9
+  */
+  if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.msMatchesSelector ||
+                                  Element.prototype.webkitMatchesSelector;
+  }
+  /*
+  * Polyfil for jquery method `closest` for use in ie 9
+  */
+  if (!Element.prototype.closest) {
+      Element.prototype.closest = function(s) {
+          var el = this;
+          if (!document.documentElement.contains(el)) return null;
+          do {
+              if (el.matches(s)) return el;
+              el = el.parentElement || el.parentNode;
+          } while (el !== null && el.nodeType === 1);
+          return null;
+      };
+  }
+
+  /*
+  * Polyfil for String method `padStart` for use in ie 9
+  */
+  // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+  if (!String.prototype.padStart) {
+      String.prototype.padStart = function padStart(targetLength,padString) {
+          targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+          padString = String((typeof padString !== 'undefined' ? padString : ' '));
+          if (this.length > targetLength) {
+              return String(this);
+          }
+          else {
+              targetLength = targetLength-this.length;
+              if (targetLength > padString.length) {
+                  padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+              }
+              return padString.slice(0,targetLength) + String(this);
+          }
+      };
+  }
+
+  /*
+  * Polyfil for Array method `includes` for use in ie 9
+  */
+  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+  if (!Array.prototype.includes) {
+    Object.defineProperty(Array.prototype, 'includes', {
+      value: function(searchElement, fromIndex) {
+
+        if (this == null) {
+          throw new TypeError('"this" is null or not defined');
+        }
+
+        // 1. Let O be ? ToObject(this value).
+        var o = Object(this);
+
+        // 2. Let len be ? ToLength(? Get(O, "length")).
+        var len = o.length >>> 0;
+
+        // 3. If len is 0, return false.
+        if (len === 0) {
+          return false;
+        }
+
+        // 4. Let n be ? ToInteger(fromIndex).
+        //    (If fromIndex is undefined, this step produces the value 0.)
+        var n = fromIndex | 0;
+
+        // 5. If n ≥ 0, then
+        //  a. Let k be n.
+        // 6. Else n < 0,
+        //  a. Let k be len + n.
+        //  b. If k < 0, let k be 0.
+        var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+        function sameValueZero(x, y) {
+          return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+        }
+
+        // 7. Repeat, while k < len
+        while (k < len) {
+          // a. Let elementK be the result of ? Get(O, ! ToString(k)).
+          // b. If SameValueZero(searchElement, elementK) is true, return true.
+          if (sameValueZero(o[k], searchElement)) {
+            return true;
+          }
+          // c. Increase k by 1.
+          k++;
+        }
+
+        // 8. Return false
+        return false;
+      }
+    });
+  }
+
+  function createDataTable() {
+    // use dataSet to filter and group controls
+    var table;
+    if (results_json.profile_name.split(';')[0] == 'result') {
+      table = $('#results_table').DataTable( {
+           "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+           "iDisplayLength": 25,
+
+            "rowCallback": function( row, data, index ) {
+              if ( data.result == "NotAFinding" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-success" style="width:120px" >Not A Finding</button> ' );
+              }
+              if ( data.result == "Open" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-danger" style="width:120px">Open</button> ' );
+              }
+              if ( data.result ==  "Not_Applicable") {
+                $('td:eq(0)', row).html( '<button class="btn btn-primary" style="width:120px">Not Applicable</button> ' );
+              }
+              if ( data.result == "Not_Reviewed" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px">Not Reviewed</button> ' );
+              }
+              if ( data.result == "Profile_Error" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-info" style="width:120px">Profile Error</button> ' );
+              }
+
+            },
+            data: dataSet,
+            "columns": get_data_table_columns(),
+            "order": [[2, 'asc']]
+      } );
+    } else {
+      table = $('#results_table').DataTable( {
+           "iDisplayLength": 10,
+
+            "rowCallback": function( row, data, index ) {
+              if ( data.severity == "low" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-success" style="width:120px" >Low</button> ' );
+              }
+              if ( data.severity == "medium" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-warning" style="width:120px" >Medium</button> ' );
+              }
+              if ( data.severity == "high" ) {
+                $('td:eq(0)', row).html( '<button class="btn btn-danger" style="width:120px" >high</button> ' );
+              }
+            },
+            data: dataSet,
+            "columns": get_data_table_columns(),
+            "order": [[2, 'asc']]
+      } );
+    }
+    return table;
+  }
+
+  function set_results_table_thead() {
+    if (results_json.profile_name.split(';')[0] == 'result') {
+      document.getElementById("results_table").tHead.innerHTML = "<tr>" +
+          "<th>Status</th>" +
+          "<th>Title</th>" +
+          "<th>Control ID</th>" +
+          "<th>Severity</th>" +
+          "<th>NIST SP 800-53</th>" +
+          '<th class="hidden_column">Code</th>' +
+      "</tr>";
+      document.getElementById("results_table").tFoot.innerHTML = "<tr>" +
+          "<th>Status</th>" +
+          "<th>Title</th>" +
+          "<th>Control ID</th>" +
+          "<th>Severity</th>" +
+          "<th>NIST SP 800-53</th>" +
+          '<th class="hidden_column">Code</th>' +
+      "</tr>";
+    } else {
+      document.getElementById("results_table").tHead.innerHTML = "<tr>" +
+          "<th>Severity</th>" +
+          "<th>Title</th>" +
+          "<th>Control ID</th>" +
+          "<th>NIST SP 800-53</th>" +
+          '<th class="hidden_column">Code</th>' +
+      "</tr>";
+      document.getElementById("results_table").tFoot.innerHTML = "<tr>" +
+          "<th>Severity</th>" +
+          "<th>Title</th>" +
+          "<th>Control ID</th>" +
+          "<th>NIST SP 800-53</th>" +
+          '<th class="hidden_column">Code</th>' +
+      "</tr>";
+    }
+  }
+
+  function get_data_table_columns() {
+    if (results_json.profile_name.split(';')[0] == 'result') {
+       return [
+          {
+            "className":      'table_row',
+            "data":           "result",
+            "defaultContent": ''
+          },
+          {
+            // Title
+            "data": "rule_title"
+          },
+          {
+            // Control ID
+            "data": "vuln_num"
+          },
+          {
+            // Severity row
+            "data": "severity"
+          },
+          {
+            // "className": 'table_row',
+            "data": "nist"
+          },
+          {
+            "className": 'hidden_column',
+            "data": "code"
+          }
+      ];
+    } else {
+      return [
+         {
+           // Severity row
+           "className": 'table_row',
+           "data":      "severity"
+         },
+         {
+           // Title
+           "data": "rule_title"
+         },
+         {
+           // Control ID
+           "data": "vuln_num"
+         },
+         {
+           // "className": 'table_row',
+           "data": "nist"
+         },
+         {
+           "className": 'hidden_column',
+           "data": "code"
+         }
+     ];
+    }
+  }
+
+  function update_banners() {
+    document.getElementById("not_a_finding").innerHTML  = status_count.not_a_finding_count;
+    document.getElementById("open").innerHTML           = status_count.open_count;
+    document.getElementById("not_applicable").innerHTML = status_count.not_applicable_count;
+    document.getElementById("not_reviewed").innerHTML   = status_count.not_reviewed_count;
+    if (status_count.profile_error_count != 0) {
+      profile_error_banner = document.getElementById("profile_error");
+      profile_error_banner.innerHTML   = status_count.profile_error_count;
+      $("#profile_error_banner").attr('class', 'col-lg-4 col-md-12');
+      $("#not_a_finding_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#not_reviewed_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#not_applicable_banner").attr('class', 'col-lg-2 col-md-6');
+      $("#open_banner").attr('class', 'col-lg-2 col-md-6');
+      $('#profile_error_banner').show();
+    } else {
+      $("#not_a_finding_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#not_reviewed_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#not_applicable_banner").attr('class', 'col-lg-3 col-md-6');
+      $("#open_banner").attr('class', 'col-lg-3 col-md-6');
+      $('#profile_error_banner').hide();
+    }
+    $(".panel-footer").each(function(){
+        $(this).css('height',"");           // clear height values
+    });
+    $(".panel-heading.res-chart").each(function(){
+        $(this).css('height',"");           // clear height values
+    });
+    resizeId = setTimeout(evenfooters, 250);
+    resizeId = setTimeout(evenheaders, 250);
+    evenfooters();
+    evenheaders();
+  }
+
+  function draw_status_pie_chart()
+  {
+    status_data = [
+                    ['Not A Finding',  status_count.not_a_finding_count],
+                    ['Open',           status_count.open_count],
+                    ['Not Applicable', status_count.not_applicable_count],
+                    ['Not Reviewed',   status_count.not_reviewed_count],
+                    ['Profile Error',  status_count.profile_error_count]
+                  ];
+
+    var status_pie = c3.generate({
+      bindto: '#status_pie',
+      data: {
+          columns: status_data,
+          type : 'donut',
+          onclick: function (d, i) {
+            document.getElementById("clear_filters_button").style.visibility = "visible";
+            if (d.id == 'Not A Finding'){
+              data_filter.result = 'NotAFinding';
+            }else if (d.id == 'Open'){
+              data_filter.result = 'Open';
+            }else if (d.id == 'Not Applicable'){
+              data_filter.result = 'Not_Applicable';
+            }else if (d.id == 'Not Reviewed'){
+              data_filter.result = 'Not_Reviewed';
+            }else if (d.id == 'Profile Error'){
+              data_filter.result = 'Profile_Error';
+            }
+            load_views();
+          }
+      },
+      color: {
+        pattern: ['rgb(137, 204, 81)', 'rgb(255, 0, 41)', '#4579B2', 'rgb(255, 200, 87)', '#DDEDF6']
+      },
+      size: {
+        height: 300
+      },
+      donut: {
+        title: "Control Status",
+        label: {
+          format: function (value, ratio, id) {
+            return value;
+          }
+        }
+      }
+    });
+  }
+
+  function draw_severity_pie_chart()
+  {
+    severity_data = [
+              ['CAT I',   severity_count['CAT I']],
+              ['CAT II',  severity_count['CAT II']],
+              ['CAT III', severity_count['CAT III']],
+          ];
+    var pie_element = '';
+    if (results_json.profile_name.split(';')[0] == 'result') {
+      pie_element = '#severity_pie_results';
+    } else {
+      pie_element = '#severity_pie_profile';
+    }
+
+
+    c3.generate({
+      bindto: pie_element,
+      data: {
+        columns: severity_data,
+        type : 'donut',
+        onclick: function (d, i) {
+          document.getElementById("clear_filters_button").style.visibility = "visible";
+          if (d.id == 'CAT I'){
+            data_filter.severity = 'high';
+          }else if (d.id == 'CAT II'){
+            data_filter.severity = 'medium';
+          }else if (d.id == 'CAT III'){
+            data_filter.severity = 'low';
+          }
+          load_views();
+        }
+      },
+      color: {
+          pattern: ['rgb(255, 0, 41)','rgb(255, 200, 87)','rgb(137, 204, 81)' ]
+      },
+      size: {
+        height: 300
+      },
+      donut: {
+        title: "Control Severity",
+        label: {
+          format: function (value, ratio, id) {
+            return value;
+          }
+        }
+      }
+    });
+  }
+
+  var previousPartitionFilterResult = '';
+
+  /*
+  * This function calculates the compliance level
+  */
+  function score () {
+    return (status_count.not_a_finding_count/(status_count.open_count + status_count.not_a_finding_count + status_count.not_reviewed_count + status_count.profile_error_count))*100;
+  }
+
+  function draw_compliance_pie_chart() {
+    compliance_data = [['data', score ()]];
+    c3.generate({
+      bindto: '#profile_gauge',
+      data: {
+        columns: compliance_data,
+        type: 'gauge',
+      },
+      color: {
+          pattern: ['#FF0000', '#F97600', '#F6C600', '#60B044'], // the three color levels for the percentage values.
+          threshold: {
+              values: [30, 60, 90, 100]
+          }
+      },
+      size: {
+          height: 300
+      }
+    });
+  }
+
+  function draw_partition_map() {
+    var divWidth = 900;
+    document.getElementById('partition-layout-div').innerHTML = "";
+
+    if(document.getElementById('partition-layout-div').offsetWidth != 0) {
+      divWidth = document.getElementById('partition-layout-div').offsetWidth;
+    } else if (document.getElementById('nist_treemap_results') && document.getElementById('nist_treemap_results').offsetWidth != 0) {
+      divWidth = document.getElementById('nist_treemap_results').offsetWidth;
+    } else if (document.getElementById('profileChartLegend').offsetWidth != 0) {
+      divWidth = document.getElementById('profileChartLegend').offsetWidth;
+    }
+
+
+    var margin = {top: 0, right: 0, bottom: 20, left: 0};
+    var w = divWidth - 25,
+        h = 540 - margin.top - margin.bottom,
+        x = d3.scale.linear().range([0, w]),
+        y = d3.scale.linear().range([0, h]),
+        root = getPartitionMapData();
+
+
+    var color_quantize = d3.scale.quantize().domain([0,4]).range(['#BA3E35', '#E39F49', '#4579B2', '#DDEDF6', '#73B566']);
+    var color_linear = d3.scale.linear().domain([0, dataSet.length]).range(['#BA3E35', '#73B566']);
+
+    var vis = d3.select("#partition-layout-div").append("div")
+        .attr("class", "chart")
+        .style("width", w + "px")
+        .style("height", h + "px")
+      .append("svg:svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    var partition = d3.layout.partition()
+        .value(function(d) { return d.size; });
+
+    var g = vis.selectAll("g")
+        .data(partition.nodes(root))
+      .enter().append("svg:g")
+        .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+        .on("click", click);
+
+    var kx = w / root.dx,
+        ky = h / 1;
+
+    g.append("svg:rect")
+        .attr("width", root.dy * kx)
+        .attr("height", function(d) { return d.dx * ky; })
+        .attr("class", function(d) { return d.children ? "parent partitionRect" : "child partitionRect"; })
+        .style("fill", function(d) { return d.name.match(/[A-Za-z][A-Za-z]-/) ? d3.scale.linear().domain([0,d.value]).range(['#73B566', '#BA3E35'])(d.color): color_quantize(d.color); });
+
+
+    g.append("svg:text")
+        .attr("transform", transform)
+        .attr("dy", ".35em")
+        .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
+        .text(function(d) { return d.name; });
+
+    // d3.select(window)
+    //     .on("click", function() { click(root); })
+
+    function click(d) {
+      // if (!d.children) return;
+
+      if (results_json.profile_name.split(';')[0] == 'result') {
+        if( d.name.match(/\w-\d/) || d.name.match(/^\w\w$/)) {
+          data_filter.nist_families = d.name;
+          if (previousPartitionFilterResult != '') {
+            data_filter.result = previousPartitionFilterResult;
+            previousPartitionFilterResult = '';
+          }
+        } else {
+          previousPartitionFilterResult = data_filter.result;
+          data_filter.result = d.name;
+        }
+      } else {
+        if( d.name.match(/\w-\d/)) {
+          data_filter.nist_families = d.name;
+        }
+      }
+
+      document.getElementById("clear_filters_button").style.visibility = "visible";
+      load_all_but_tree_map();
+
+      kx = (d.y ? w - 40 : w) / (1 - d.y);
+      ky = h / d.dx;
+      x.domain([d.y, 1]).range([d.y ? 40 : 0, w]);
+      y.domain([d.x, d.x + d.dx]);
+
+      var t = g.transition()
+          .duration(d3.event.altKey ? 7500 : 750)
+          .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
+
+      t.select("rect")
+          .attr("width", d.dy * kx)
+          .attr("height", function(d) { return d.dx * ky; });
+
+      t.select("text")
+          .attr("transform", transform)
+          .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; });
+
+      d3.event.stopPropagation();
+    }
+
+    function transform(d) {
+      return "translate(8," + d.dx * ky / 2 + ")";
+    }
+
+  }
+
+
+  function draw_tree_map()
+  {
+    google.charts.load('current', {
+                                    'packages': ['treemap']
+                                  });
+
+    google.charts.setOnLoadCallback(drawTreeMapChart);
+
+    var treemapData;
+    if (results_json.profile_name.split(';')[0] == 'result') {
+      treemapData = getTreeMapData();
+    } else {
+      treemapData = getTreeMapDataProfile();
+    }
+
+    function drawTreeMapChart()
+    {
+      data_table = new google.visualization.DataTable();
+      data_table.addColumn('string', 'ID');
+      data_table.addColumn('string', 'Parent');
+      data_table.addColumn('number', 'Number Of Lines');
+      data_table.addRows(treemapData);
+
+      var tree;
+
+      if (results_json.profile_name.split(';')[0] == 'result') {
+        tree = new google.visualization.TreeMap(document.getElementById('nist_treemap_results'));
+      } else {
+        tree = new google.visualization.TreeMap(document.getElementById('nist_treemap_profile'));
+      }
+
+      var divWidth = 0;
+
+      if(document.getElementById('partition-layout-div').offsetWidth != 0) {
+        divWidth = document.getElementById('partition-layout-div').offsetWidth;
+      } else if (document.getElementById('nist_treemap_results').offsetWidth != 0) {
+        divWidth = document.getElementById('nist_treemap_results').offsetWidth;
+      } else {
+        divWidth = document.getElementById('profileChartLegend').offsetWidth;
+      }
+
+      var options = {
+        highlightOnMouseOver: true,
+        maxDepth: 1,
+        maxPostDepth: 2,
+        noColor: "#FFFFFF",
+
+        minColor: '#FFFFFF', // WHITE
+        midColor: '#FF0000', // RED/OPEN
+        maxColor: '#00FF00', // YELLOW/Not Reviewed
+        headerHeight: 15,
+        showScale: false,
+        height: 300,
+        width: divWidth,
+        useWeightedAverageForAggregation: true
+      };
+      function myOnClickFunction() {
+        if (results_json.profile_name.split(';')[0] == 'result') {
+          data_filter.nist_families = data_table.getFormattedValue(tree.getSelection()[0].row, 0);
+          document.getElementById("clear_filters_button").style.visibility = "visible";
+          load_all_but_tree_map();
+          update_treemap_colors();
+        } else {
+          data_filter.nist_families = data_table.getFormattedValue(tree.getSelection()[0].row, 0);
+          document.getElementById("clear_filters_button").style.visibility = "visible";
+          load_all_but_tree_map();
+          update_treemap_colors_profile();
+        }
+      }
+      google.visualization.events.addListener(tree, 'select', myOnClickFunction);
+      tree.draw(data_table, options);
+
+      if (results_json.profile_name.split(';')[0] == 'result') {
+        update_treemap_colors();
+      } else {
+        update_treemap_colors_profile();
+      }
+    }
+  }
+
+  function update_treemap_colors() {
+    // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
+    // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
+    $('#nist_treemap_results').children('div').children('div').children('div').children('svg').children('g').each(function() {
+      var default_block_color = $(this).children('rect').attr('fill');
+      switch(data_filter.result) {
+          case '*':
+              switch(default_block_color) {
+                  case '#cc3300': //Default Not Applicable
+                      $(this).children('rect').css({fill: '#4579B2'});
+                      break;
+                  case '#ff3333': //Default Not Reviewed
+                      $(this).children('rect').css({fill: '#ffC857'});
+                      break;
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#89cc51'});
+                      break;
+                  case '#ff9999': //Default Open
+                      $(this).children('rect').css({fill: '#ff0029'});
+                      break;
+                  case '#669900': //Default Profile Error
+                      $(this).children('rect').css({fill: '#DDEDF6'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+          case 'Open':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#ff0029'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+          case 'NotAFinding':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#89cc51'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+          case 'Not_Reviewed':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#ffC857'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+          case 'Not_Applicable':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#4579B2'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+          case 'Profile_Error':
+              switch(default_block_color) {
+                  case '#00ff00': //Default Not A Finding
+                      $(this).children('rect').css({fill: '#DDEDF6'});
+                      break;
+                  default: // Everything else
+                      $(this).children('rect').css({fill: '#FFFFFF'});
+                      break;
+              }
+              break;
+      }
+    });
+  }
+
+  function getPartitionMapData() {
+    var partitionMapData = jQuery.extend(true, {}, nist_80053);
+     var id = 1;
+
+     applicabilityBuckets = [
+       {'name': 'Profile_Error', 'color': 3},
+       {'name': 'NotAFinding', 'color': 4},
+       {'name': 'Not_Reviewed', 'color': 1},
+       {'name': 'Open', 'color': -1},
+       {'name': 'Not_Applicable', 'color': 2},
+     ];
+
+
+
+     for (var i = 0; i < dataSet.length; i++) {
+       var control = dataSet[i];
+       if (control.nist) {
+         for(var j = 0; j < control.nist.length; j++) {
+           // standard nist style format is ['AC-1', 'Rev_4']
+           if (!control.nist[j].match(/Rev/)) {
+             var record = {};
+             record.name = control.vuln_num;
+             record.status = control.result;
+             record.size = 1;
+             record.value = 1;
+             // record['value'] = control.result
+
+             if (control.result === 'Profile_Error') {
+                 record.color = 3;
+             }
+             if (control.result === 'NotAFinding') {
+                 record.color = 4;
+             }
+             if (control.result === 'Not_Reviewed') {
+                 record.color = 1;
+             }
+             if (control.result === 'Open') {
+                 record.color = -1;
+             }
+             if (control.result === 'Not_Applicable') {
+                 record.color = 2;
+             }
+
+             for(var k = 0; k < partitionMapData.children.length; k++) { // AC, UM
+               for(var f = 0; f < partitionMapData.children[k].children.length; f++) { // AC-1, AC-2
+                 if(control.nist[j].indexOf(partitionMapData.children[k].children[f].name) != -1 ) {
+                   if (partitionMapData.children[k].children[f].children == null) {
+                     partitionMapData.children[k].children[f].children = jQuery.extend(true, [], applicabilityBuckets);
+                   }
+                   switch(control.result) {
+                     case 'Profile_Error':
+                        if (partitionMapData.children[k].children[f].children[0].children == null) { partitionMapData.children[k].children[f].children[0].children = []; }
+                        partitionMapData.children[k].children[f].children[0].children.push(record);
+                        break;
+                     case 'NotAFinding':
+                        if (partitionMapData.children[k].children[f].children[1].children == null) { partitionMapData.children[k].children[f].children[1].children = []; }
+                        partitionMapData.children[k].children[f].children[1].children.push(record);
+                        break;
+                     case 'Not_Reviewed':
+                        if (partitionMapData.children[k].children[f].children[2].children == null) { partitionMapData.children[k].children[f].children[2].children = []; }
+                        partitionMapData.children[k].children[f].children[2].children.push(record);
+                        break;
+                     case 'Open':
+                        if (partitionMapData.children[k].children[f].children[3].children == null) { partitionMapData.children[k].children[f].children[3].children = []; }
+                        partitionMapData.children[k].children[f].children[3].children.push(record);
+                        break;
+                     case 'Not_Applicable':
+                        if (partitionMapData.children[k].children[f].children[4].children == null) { partitionMapData.children[k].children[f].children[4].children = []; }
+                        partitionMapData.children[k].children[f].children[4].children.push(record);
+                        break;
+                   }
+                 }
+               }
+             }
+           }
+         }
+       }
+     }
+     // for(var x = 0; x < partitionMapData.children.length; x++) { //AC, CS, AU...
+     //     for(var y = 0; y < partitionMapData.children[x].children.length; y++) { // AC-1, AC-2 ...
+     //       for(var z = 0; z < partitionMapData.children[x].children[y].children.length; z++) { // Open, Not Applicable, NotAFinding...
+     //         if (partitionMapData.children[x].children[y].children[z].children != null) {
+     //            partitionMapData.children[x].children[y].children[z].size = 1;
+     //         } else {}
+     //       }
+     //
+     //
+     //
+     //         if (partitionMapData.children[x].children[y].children == null) {
+     //            partitionMapData.children[x].children[y].color = 5;
+     //         } else {
+     //             var successLen = 0;
+     //             var failLen = 0;
+     //             for (var z = 0; z < partitionMapData.children[x].children[y].children.length; z++) {
+     //                 if (partitionMapData.children[x].children[y].children[z].status == 'NotAFinding') { successLen++; }
+     //                 if (partitionMapData.children[x].children[y].children[z].status == 'Open') { failLen++; }
+     //             }
+     //             partitionMapData.children[x].children[y].value = successLen;
+     //             partitionMapData.children[x].children[y].color = failLen;
+     //         }
+     //     }
+     // }
+     var newPartitionMapData = jQuery.extend(true, {}, partitionMapData);
+
+     return newPartitionMapData;
+  }
+
+  function getTreeMapData() {
+    // https://developers.google.com/chart/interactive/docs/gallery/treemap
+   var treeMapData = [['NIST SP 800-53',null,0],['AC','NIST SP 800-53',null],['AU','NIST SP 800-53',null],['AT','NIST SP 800-53',null],['CM','NIST SP 800-53',null],['CP','NIST SP 800-53',null],['IA','NIST SP 800-53',null],['IR','NIST SP 800-53',null],['MA','NIST SP 800-53',null],['MP','NIST SP 800-53',null],['PS','NIST SP 800-53',null],['PE','NIST SP 800-53',null],['PL','NIST SP 800-53',null],['PM','NIST SP 800-53',null],['RA','NIST SP 800-53',null],['CA','NIST SP 800-53',null],['SC','NIST SP 800-53',null],['SI','NIST SP 800-53',null],['SA','NIST SP 800-53',null],['UM','NIST SP 800-53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]];
+      var id = 1;
+      for (var i = 0; i < dataSet.length; i++) {
+        var control = dataSet[i];
+        if (control.nist) {
+          for(var j = 0; j < control.nist.length; j++) {
+            // standard nist style format is ['AC=1', 'Rev_4']
+            if (!control.nist[j].match(/Rev/)) {
+              var record = [];
+              var hash = {};
+              hash.v = (id++).toString();
+              hash.f = control.vuln_num;
+              record.push(hash);
+
+              // if item does not match format 'AC-1' it is marked unmapped
+              nist_tag = control.nist[j].match(/[a-zA-Z][a-zA-Z]-\d+/);
+              if(nist_tag) {
+                record.push(nist_tag[0]);
+              }
+              else {
+                record.push('UM');
+              }
+              if (control.result === 'Profile_Error') {
+                  record.push(1.4);
+              }
+              if (control.result === 'NotAFinding') {
+                  record.push(1.5);
+              }
+              if (control.result === 'Not_Reviewed') {
+                  record.push(1.2);
+              }
+              if (control.result === 'Open') {
+                  record.push(1.1);
+              }
+              if (control.result === 'Not_Applicable') {
+                  record.push(1.3);
+              }
+              treeMapData.push(record);
+            }
+          }
+        }
+      }
+      return treeMapData;
+  }
+
+  function update_treemap_colors_profile() {
+
+    // Logic to fix color if there is only one type of severity
+    if (severity_count['CAT I'] == 0 && severity_count['CAT II'] == 0) {
+      data_filter.severity = 'low';
+    } else if (severity_count['CAT I'] == 0 && severity_count['CAT III'] == 0) {
+      data_filter.severity = 'medium';
+    } else if (severity_count['CAT II'] == 0 && severity_count['CAT III'] == 0) {
+      data_filter.severity = 'high';
+    }
+    // the google treemap generates predictable colors based on the value of the block assigned by getTreeMapData()
+    // each block color is updated to its appropirate status color if it does not have status it is replaced to white(FFFFFF)
+    $('#nist_treemap_profile').children('div').children('div').children('div').children('svg').children('g').each(function() {
+      var default_block_color = $(this).children('rect').attr('fill');
+      // console.log(data_table.getFormattedValue($(this).children('rect').attr('x'), $(this).children('rect').attr('y')));
+      switch(data_filter.severity) {
+          case "*":
+              switch(default_block_color) {
+                  case '#aa5500':
+                      $(this).children('rect').css({fill: "#FFC857"});
+                      break;
+                  case '#ff5555':
+                      $(this).children('rect').css({fill: "#89CC51"});
+                      break;
+                  case '#00ff00': // High
+                      $(this).children('rect').css({fill: "#FF0029"});
+                      break;
+                  default:
+                      $(this).children('rect').css({fill: "#FFFFFF"});
+                      break;
+              }
+              break;
+          case 'high':
+              switch(default_block_color) {
+                  case '#00ff00':
+                      $(this).children('rect').css({fill: "#FF0029"});
+                      break;
+                  default:
+                      $(this).children('rect').css({fill: "#FFFFFF"});
+                      break;
+              }
+              break;
+          case "medium":
+              switch(default_block_color) {
+                  case '#00ff00':
+                      $(this).children('rect').css({fill: "#FFC857"});
+                      break;
+                  default:
+                      $(this).children('rect').css({fill: "#FFFFFF"});
+                      break;
+              }
+              break;
+          case "low":
+              switch(default_block_color) {
+                  case '#00ff00':
+                      $(this).children('rect').css({fill: "#89CC51"});
+                      break;
+                  default:
+                      $(this).children('rect').css({fill: "#FFFFFF"});
+                      break;
+              }
+      }
+    });
+  }
+
+  function getTreeMapDataProfile() {
+    // https://developers.google.com/chart/interactive/docs/gallery/treemap
+    var treeMapData = [['NIST SP 800-53',null,0],['AC','NIST SP 800-53',null],['AU','NIST SP 800-53',null],['AT','NIST SP 800-53',null],['CM','NIST SP 800-53',null],['CP','NIST SP 800-53',null],['IA','NIST SP 800-53',null],['IR','NIST SP 800-53',null],['MA','NIST SP 800-53',null],['MP','NIST SP 800-53',null],['PS','NIST SP 800-53',null],['PE','NIST SP 800-53',null],['PL','NIST SP 800-53',null],['PM','NIST SP 800-53',null],['RA','NIST SP 800-53',null],['CA','NIST SP 800-53',null],['SC','NIST SP 800-53',null],['SI','NIST SP 800-53',null],['SA','NIST SP 800-53',null],['UM','NIST SP 800-53',null],['AC-1','AC',1],['AC-2','AC',1],['AC-3','AC',1],['AC-4','AC',1],['AC-5','AC',1],['AC-6','AC',1],['AC-7','AC',1],['AC-8','AC',1],['AC-9','AC',1],['AC-10','AC',1],['AC-11','AC',1],['AC-12','AC',1],['AC-13','AC',1],['AC-14','AC',1],['AC-15','AC',1],['AC-16','AC',1],['AC-17','AC',1],['AC-18','AC',1],['AC-19','AC',1],['AC-20','AC',1],['AC-21','AC',1],['AC-22','AC',1],['AC-23','AC',1],['AC-24','AC',1],['AC-25','AC',1],['AU-1','AU',1],['AU-2','AU',1],['AU-3','AU',1],['AU-4','AU',1],['AU-5','AU',1],['AU-6','AU',1],['AU-7','AU',1],['AU-8','AU',1],['AU-9','AU',1],['AU-10','AU',1],['AU-11','AU',1],['AU-12','AU',1],['AU-13','AU',1],['AU-14','AU',1],['AU-15','AU',1],['AU-16','AU',1],['AT-1','AT',1],['AT-2','AT',1],['AT-3','AT',1],['AT-4','AT',1],['AT-5','AT',1],['CM-1','CM',1],['CM-2','CM',1],['CM-3','CM',1],['CM-4','CM',1],['CM-5','CM',1],['CM-6','CM',1],['CM-7','CM',1],['CM-8','CM',1],['CM-9','CM',1],['CM-10','CM',1],['CM-11','CM',1],['CP-1','CP',1],['CP-2','CP',1],['CP-3','CP',1],['CP-4','CP',1],['CP-5','CP',1],['CP-6','CP',1],['CP-7','CP',1],['CP-8','CP',1],['CP-9','CP',1],['CP-10','CP',1],['CP-11','CP',1],['CP-12','CP',1],['CP-13','CP',1],['IA-1','IA',1],['IA-2','IA',1],['IA-3','IA',1],['IA-4','IA',1],['IA-5','IA',1],['IA-6','IA',1],['IA-7','IA',1],['IA-8','IA',1],['IA-9','IA',1],['IA-10','IA',1],['IA-11','IA',1],['IR-1','IR',1],['IR-2','IR',1],['IR-3','IR',1],['IR-4','IR',1],['IR-5','IR',1],['IR-6','IR',1],['IR-7','IR',1],['IR-8','IR',1],['IR-9','IR',1],['IR-10','IR',1],['MA-1','MA',1],['MA-2','MA',1],['MA-3','MA',1],['MA-4','MA',1],['MA-5','MA',1],['MA-6','MA',1],['MP-1','MP',1],['MP-2','MP',1],['MP-3','MP',1],['MP-4','MP',1],['MP-5','MP',1],['MP-6','MP',1],['MP-7','MP',1],['MP-8','MP',1],['PS-1','PS',1],['PS-2','PS',1],['PS-3','PS',1],['PS-4','PS',1],['PS-5','PS',1],['PS-6','PS',1],['PS-7','PS',1],['PS-8','PS',1],['PE-1','PE',1],['PE-2','PE',1],['PE-3','PE',1],['PE-4','PE',1],['PE-5','PE',1],['PE-6','PE',1],['PE-7','PE',1],['PE-8','PE',1],['PE-9','PE',1],['PE-10','PE',1],['PE-11','PE',1],['PE-12','PE',1],['PE-13','PE',1],['PE-14','PE',1],['PE-15','PE',1],['PE-16','PE',1],['PE-17','PE',1],['PE-18','PE',1],['PE-19','PE',1],['PE-20','PE',1],['PL-1','PL',1],['PL-2','PL',1],['PL-3','PL',1],['PL-4','PL',1],['PL-5','PL',1],['PL-6','PL',1],['PL-7','PL',1],['PL-8','PL',1],['PL-9','PL',1],['PM-1','PM',1],['PM-2','PM',1],['PM-3','PM',1],['PM-4','PM',1],['PM-5','PM',1],['PM-6','PM',1],['PM-7','PM',1],['PM-8','PM',1],['PM-9','PM',1],['PM-10','PM',1],['PM-11','PM',1],['PM-12','PM',1],['PM-13','PM',1],['PM-14','PM',1],['PM-15','PM',1],['PM-16','PM',1],['RA-1','RA',1],['RA-2','RA',1],['RA-3','RA',1],['RA-4','RA',1],['RA-5','RA',1],['RA-6','RA',1],['CA-1','CA',1],['CA-2','CA',1],['CA-3','CA',1],['CA-4','CA',1],['CA-5','CA',1],['CA-6','CA',1],['CA-7','CA',1],['CA-8','CA',1],['CA-9','CA',1],['SC-1','SC',1],['SC-2','SC',1],['SC-3','SC',1],['SC-4','SC',1],['SC-5','SC',1],['SC-6','SC',1],['SC-7','SC',1],['SC-8','SC',1],['SC-9','SC',1],['SC-10','SC',1],['SC-11','SC',1],['SC-12','SC',1],['SC-13','SC',1],['SC-14','SC',1],['SC-15','SC',1],['SC-16','SC',1],['SC-17','SC',1],['SC-18','SC',1],['SC-19','SC',1],['SC-20','SC',1],['SC-21','SC',1],['SC-22','SC',1],['SC-23','SC',1],['SC-24','SC',1],['SC-25','SC',1],['SC-26','SC',1],['SC-27','SC',1],['SC-28','SC',1],['SC-29','SC',1],['SC-30','SC',1],['SC-31','SC',1],['SC-32','SC',1],['SC-33','SC',1],['SC-34','SC',1],['SC-35','SC',1],['SC-36','SC',1],['SC-37','SC',1],['SC-38','SC',1],['SC-39','SC',1],['SC-40','SC',1],['SC-41','SC',1],['SC-42','SC',1],['SC-43','SC',1],['SC-44','SC',1],['SI-1','SI',1],['SI-2','SI',1],['SI-3','SI',1],['SI-4','SI',1],['SI-5','SI',1],['SI-6','SI',1],['SI-7','SI',1],['SI-8','SI',1],['SI-9','SI',1],['SI-10','SI',1],['SI-11','SI',1],['SI-12','SI',1],['SI-13','SI',1],['SI-14','SI',1],['SI-15','SI',1],['SI-16','SI',1],['SI-17','SI',1],['SA-1','SA',1],['SA-2','SA',1],['SA-3','SA',1],['SA-4','SA',1],['SA-5','SA',1],['SA-6','SA',1],['SA-7','SA',1],['SA-8','SA',1],['SA-9','SA',1],['SA-10','SA',1],['SA-11','SA',1],['SA-12','SA',1],['SA-13','SA',1],['SA-14','SA',1],['SA-15','SA',1],['SA-16','SA',1],['SA-17','SA',1],['SA-18','SA',1],['SA-19','SA',1],['SA-20','SA',1],['SA-21','SA',1],['SA-22','SA',1]];
+      var id = 1;
+      for (var i = 0; i < dataSet.length; i++) {
+          var control = dataSet[i];
+          for(var j = 0; j < control.nist.length; j++) {
+              if (!control.nist[j].match(/Rev/)) {
+                  var record = [];
+                  var hash = {};
+
+                  hash.v = (id++).toString();
+                  hash.f = control.vuln_num;
+                  record.push(hash);
+                  nist_tag = control.nist[j].match(/[a-zA-Z][a-zA-Z]-\d+/);
+                  if(nist_tag) {
+                      record.push(nist_tag[0]);
+                  } else {
+                      record.push('UM');
+                  }
+                  if (control.severity === 'low') {
+                      record.push(1.1);
+                  }
+                  if (control.severity === 'medium') {
+                      record.push(1.2);
+                  }
+                  if (control.severity === 'high') {
+                      record.push(1.3);
+                  }
+                  if (control.severity === DATA_NOT_FOUND_MESSAGE) {
+                      record.push(1.0);
+                  }
+                  treeMapData.push(record);
+              }
+          }
+      }
+      return treeMapData;
+  }
+
+  var data_filter = {
+                      'result' : '*',
+                      'severity' : '*',
+                      'nist_families' : '*',
+                    };
+
+  function filterDataset () {
+    dataSet = raw_dataSet;
+    if (data_filter.nist_families === 'NIST SP 800-53') {
+      data_filter.nist_families = '*';
+    }
+    if (data_filter.result != '*') {
+      dataSet = $(dataSet).filter(function (i,n){return n.result === data_filter.result ;});
+    }
+    if (data_filter.severity != '*') {
+      dataSet = $(dataSet).filter(function (i,n){return n.severity === data_filter.severity ;});
+    }
+    if (data_filter.nist_families != '*') {
+      dataSet = $(dataSet).filter(function (i,n) {
+        for (var j = 0; j < n.nist.length; j++) {
+          if (n.nist[j].indexOf(data_filter.nist_families) != -1) {
+            return true;
+          }
+        }
+      });
+      if (dataSet[0] == undefined) { // If displaying only one control, filter by the gid/vuln_number
+        dataSet = raw_dataSet;
+        dataSet = $(dataSet).filter(function (i,n){ return n.gid.indexOf(data_filter.nist_families) != -1; });
+      }
+      if (dataSet[0] == undefined) { // If filter still is undefined, filter by vuln num
+        dataSet = raw_dataSet;
+        dataSet = $(dataSet).filter(function (i,n){ return n.vuln_num.indexOf(data_filter.nist_families) != -1; });
+      }
+    }
+    return dataSet;
+  }
+
+  $("#clear_filters_button").click(function() {
+    document.getElementById("clear_filters_button").style.visibility = "hidden";
+    data_filter = {
+                    'result' : '*',
+                    'severity' : '*',
+                    'nist_families' : '*'
+                  };
+    load_views();
+  });
+
+
+  function filter(keyword) {
+    dataSet.filter(function (i,n) {
+      return n.result==='keyword';
+    });
+  }
+
+  $("#export-caat").click(function(){
+
+    dataSet = filterDataset();
+    controls = getAllNistControls(dataSet);
+
+    var caat = [['Control Number','Finding Title','Date Identified','Finding ID','Information System or Program Name','Repeat Findings','Repeat Finding Weakness ID','Finding Description','Weakness Description','Control Weakness Type','Source','Assessment/Audit Company','Test Method','Test Objective','Test Result Description','Test Result','Recommended Corrective Action(s)','Effect on Business','Likelihood','Impact']];
+    vulnList = [];
+
+    for (var family in controls) {
+      family = controls[family];
+      for (var subFamily in family){
+        family[subFamily].forEach(function (control) {
+          field = [];
+          impact = parseFloat(control.impact);
+
+          if (impact != 0.0 && !vulnList.includes(control.vuln_num)) {
+            vulnList.push(control.vuln_num)
+            field.push(subFamily);                  // Control Number
+            field.push(br2nl(control.rule_title));  // Finding Title
+            field.push(convertDate(new Date(control.profile.split(':').slice(1).join(':').trim()),'/')); // Date Identified
+            field.push('');                          // Finding ID
+            field.push('');                          // Information System or Program Name
+            field.push('');                          // Repeat Findings
+            field.push('');                          // Repeat Finding CFACTS Weakness ID
+            field.push(br2nl(control.rule_title));   // Finding Description
+            field.push(br2nl(control.vuln_discuss)); // Weakness Description
+            field.push('Security');                  // Control Weakness Type
+            field.push('Self-Assessment ');          // Source
+            field.push('InSpec');                    // Assessment/Audit Company
+            field.push('Test');                      // Test Method
+            field.push(br2nl(control.check_content)) ;  // Test Objective
+            field.push(br2nl(control.finding_details)); // Test Result Description
+            result = control.result == "NotAFinding" ? 'Satisfied' : 'Other Than Satisfied';
+            field.push(result); // Test Result
+            field.push(br2nl(control.fix_text));        // Recommended Corrective Action(s)
+            field.push('');                                // Effect on Business
+            field.push('');                                // Likelihood
+
+            if (impact >= 0.1 && impact <= 0.3) {  // Impact
+              field.push('Low');
+            } else if (impact >= 0.4 && impact <= 0.6) {
+              field.push('Moderate');
+            } else if (impact >= 0.7 && impact <= 1.0) {
+              field.push('High');
+            }
+            caat.push(field);
+          }
+
+        });
+      }
+    }
+
+
+    function convertDate(inputFormat,delimiter) {
+      function pad(s) { return (s < 10) ? '0' + s : s; }
+      var d = new Date(inputFormat);
+      return [pad(d.getMonth()+1), pad(d.getDate()), d.getFullYear()].join(delimiter);
+    }
+
+    function br2nl(str) {
+      if (str == null)
+        return 'Not Available';
+      return str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767);
+    }
+
+    var wb = XLSX.utils.book_new();
+
+    wb.Props = {
+              Title: "Compliance Assessment/Audit Tracking (CAAT) Spreadsheet",
+              Subject: "Assessment Data",
+              Author: "Heimdall-lite",
+              CreatedDate: new Date()
+    };
+
+    wb.SheetNames.push("Assessment Data");
+
+    var ws = XLSX.utils.aoa_to_sheet(caat);
+    wb.Sheets["Assessment Data"] = ws;
+
+    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+    function s2ab(s) {
+              var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+              var view = new Uint8Array(buf);  //create uint8array as viewer
+              for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+              return buf;
+    }
+
+     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'CAAT-'+ convertDate(new Date(),'-')+ '.xlsx');
+  });
+
+
+
+  function draw_ssp_table() {
+      dataSet = filterDataset();
+      controls = getAllNistControls(dataSet);
+
+      //Add elements to the list
+      var ssp_ul = document.getElementById("sspList");
+      ssp_ul.classList.add('list-group');
+      ssp_ul.style.marginLeft = '0px';
+      // Create the panel group
+      var link_counter = 0;
+      var title_counter = 0;
+
+      //Create high level panel group and panel which everything will be appended too
+      var panel_group_ul = document.createElement('ul');
+      panel_group_ul.classList.add('list-group');
+      // panel_group_ul.style.marginLeft = '-10px';
+      panel_group_ul.classList.add('panel-group');
+      ssp_ul.appendChild(panel_group_ul);
+
+      for (var family in controls) {
+          var panel_li = create_collapsable_list_item('<h4>' + family + '</h4>', family, panel_group_ul);
+          //Create the family div and append it to the panel
+          var control_ul = document.createElement('ul');
+          control_ul.classList.add('list-group');
+          // control_ul.style.marginLeft = '20px';
+          control_ul.setAttribute('id', family + "_div");
+          control_ul.classList.add('panel-collapse');
+          control_ul.classList.add('collapse');
+          panel_li.appendChild(control_ul);
+
+          for (var control in controls[family]) {
+            control_li = create_collapsable_list_item(control, control, control_ul);
+            //Create the family div and append it to the panel
+            var test_ul = document.createElement('ul');
+            test_ul.classList.add('list-group');
+            // test_ul.style.marginLeft = '20px';
+            test_ul.setAttribute('id', control + "_div");
+            test_ul.classList.add('panel-collapse');
+            test_ul.classList.add('collapse');
+            control_li.appendChild(test_ul);
+
+            link_counter += 1;
+            var counter = 1;
+            controls[family][control].forEach(function (test) {
+              var result = get_test_result_label(test.result);
+              var test_li = create_collapsable_list_item(result + " " + counter.toString() + ": " + test.rule_title, 'title' + title_counter.toString(), test_ul);
+              counter += 1;
+              add_test_data(title_counter, test, test_li);
+
+              title_counter += 1;
+            });
+          }
+      }
+  }
+
+  function get_test_result_label(result) {
+     var span = '';
+     switch(result) {
+        case 'NotAFinding':
+            span = '<span class="label label-success">Not A Finding</span>';
+            break;
+        case 'Open':
+            span = '<span class="label label-danger">Open</span>';
+            break;
+        case 'Not_Reviewed':
+            span = '<span class="label label-warning">Not Reviewed</span>';
+            break;
+        case 'Not_Applicable':
+            span = '<span class="label label-primary">Not Applicable</span>';
+            break;
+        case 'Profile_Error':
+            span = '<span class="label label-info">Profile Error</span>';
+            break;
+     }
+     return span;
+  }
+
+  function create_collapsable_list_item(item, item_name, appendItem) {
+      //Create high level panel group and panel which everything will be appended too
+      var panel_li = document.createElement('li');
+      panel_li.classList.add('list-group-item');
+      panel_li.classList.add('panel');
+      panel_li.classList.add('panel-default');
+      appendItem.appendChild(panel_li);
+
+      var item_a = document.createElement("a");
+      item_a.setAttribute('data-toggle', "collapse");
+      item_a.classList.add('sspItem');
+      item_a.setAttribute('aria-expanded', 'false');
+      item_a.setAttribute('href', "#" + item_name + "_div");
+      item_a.innerHTML = item;
+      panel_li.appendChild(item_a);
+      return panel_li;
+  }
+
+  function add_test_data(title_counter, test, tests_div) {
+    //create the list of objects that will be opened when the title is clicked
+    var attributes_panel_div = document.createElement('div');
+    attributes_panel_div.classList.add('panel-collapse');
+    attributes_panel_div.classList.add('collapse');
+    attributes_panel_div.setAttribute('id', 'title' + title_counter.toString() + '_div' );
+    title_counter += 1;
+    tests_div.appendChild(attributes_panel_div);
+
+    // Create the list group and append it to the attributes_panel_div
+    var attributes_list_group = document.createElement('ul');
+    attributes_list_group.classList.add('list-group');
+    attributes_list_group.style.marginLeft = '20px';
+    attributes_panel_div.appendChild(attributes_list_group);
+
+    var disc_li = document.createElement('li');
+    disc_li.classList.add('list-group-item');
+    disc_li.appendChild(document.createTextNode("Discussion: " + test.vuln_discuss.replace(/<br>/g, '\n')));
+    disc_li.style = "white-space: pre;";
+    attributes_list_group.appendChild(disc_li);
+    var check_li = document.createElement('li');
+    check_li.classList.add('list-group-item');
+    check_li.appendChild(document.createTextNode("Check: " + test.check_content.replace(/<br>/g, '\n')));
+    check_li.style = "white-space: pre;";
+    attributes_list_group.appendChild(check_li);
+    var fix_li = document.createElement('li');
+    fix_li.classList.add('list-group-item');
+    fix_li.appendChild(document.createTextNode("Fix: " + test.fix_text.replace(/<br>/g, '\n')));
+    fix_li.style = "white-space: pre;";
+    attributes_list_group.appendChild(fix_li);
+  }
+
+  // DEPRECATED
+  function draw_ssp_table_old() {
+      dataSet = filterDataset();
+      controls = getAllNistControls(dataSet);
+      //groupedControls = getGroupedControls(controls, dataSet)
+
+      //Add elements to the list
+      var ssp_ul = document.getElementById("sspList");
+
+      // Create the panel group
+      var link_counter = 0;
+      var title_counter = 0;
+      for(var control in controls) {
+          //Create panel for each control
+          var panel_group_div = document.createElement('div');
+          panel_group_div.classList.add('panel-group');
+          ssp_ul.appendChild(panel_group_div);
+          var panel_div = document.createElement('div');
+          panel_div.classList.add('panel');
+          panel_div.classList.add('panel-default');
+          panel_group_div.appendChild(panel_div);
+
+          var family_heading_div = document.createElement('div');
+          family_heading_div.classList.add('panel_heading');
+          panel_div.appendChild(family_heading_div);
+          var family_title_h = document.createElement('h4');
+          family_title_h.classList.add('panel-title');
+          family_heading_div.appendChild(family_title_h);
+          var family_a = document.createElement("a");
+          family_a.setAttribute('data-toggle', "collapse");
+          family_a.setAttribute('href', "#" + control + "_div");
+          family_a.innerHTML = control;
+          family_title_h.appendChild(family_a);
+
+          //Create the family div and append it to the panel
+          var family_div = document.createElement('div');
+          family_div.setAttribute('id', control+ "_div");
+          family_div.classList.add('panel-collapse');
+          family_div.classList.add('collapse');
+          panel_div.appendChild(family_div);
+
+          //Create the heading for the system name and append it to the family_div
+          var system_heading_div = document.createElement('div');
+          system_heading_div.classList.add('panel-heading');
+          family_div.appendChild(system_heading_div);
+
+          //Create the system title and append it to the system_heading_div
+          var system_title_h = document.createElement('h4');
+          system_title_h.classList.add('panel-title');
+          system_heading_div.appendChild(system_title_h);
+
+          //Create the title object a and append it to the system_title_h
+          var system_name_a = document.createElement('a');
+          system_name_a.setAttribute("data-toggle", "collapse");
+          system_name_a.setAttribute("href", "#" + link_counter.toString());
+          // system_name_a.innerHTML = document.getElementById('profile_name').innerHTML;
+          system_name_a.innerHTML = profile_name;
+          system_title_h.appendChild(system_name_a);
+
+          // Create the tests_div and append it to the family_div
+          var tests_div = document.createElement('div');
+          tests_div.classList.add('panel-collapse');
+          tests_div.classList.add('collapse');
+          tests_div.setAttribute("id", link_counter.toString());
+          family_div.appendChild(tests_div);
+          link_counter += 1;
+
+          var counter = 1;
+          // alert(JSON.stringify(family.controls[0]));
+          //Loop through each control test. Create a heading and div for each test
+          controls[control].forEach(function (test) {
+              // var result = '';
+              if (test.result == 'Open') {
+                  result = 'Open';
+              } else if (test.result == 'NotAFinding') {
+                  result = 'Not A Finding';
+              } else if (test.result == 'Not_Reviewed"') {
+                  result = "Not Reviewed";
+              } else if (test.result == 'Not_Applicable') {
+                  result = 'Not Applicable';
+              } else if (test.result == 'Profile_Error') {
+                  result = 'Profile Error';
+              }
+              //Create the title heading dive
+              var test_heading_div = document.createElement('div');
+              test_heading_div.classList.add('panel-heading');
+              tests_div.appendChild(test_heading_div);
+
+              //create the title panel-title and append it to the test_heading div
+              var test_title_h = document.createElement('h4');
+              test_title_h.classList.add('panel-title');
+              test_heading_div.appendChild(test_title_h);
+
+              //Create the test a element and append it to the test_title_h
+              var test_title_a = document.createElement('a');
+              test_title_a.setAttribute('data-toggle', 'collapse');
+              test_title_a.setAttribute('href', "#title" + title_counter.toString());
+              test_title_a.appendChild(document.createTextNode(counter.toString() + '. (' + test.result + ') ' +  test.rule_title));
+              test_title_h.appendChild(test_title_a);
+              counter += 1;
+
+              //create the list of objects that will be opened when the title is clicked
+              var attributes_panel_div = document.createElement('div');
+              attributes_panel_div.classList.add('panel-collapse');
+              attributes_panel_div.classList.add('collapse');
+              attributes_panel_div.setAttribute('id', 'title' + title_counter.toString() );
+              title_counter += 1;
+              tests_div.appendChild(attributes_panel_div);
+
+              // Create the list group and append it to the attributes_panel_div
+              var attributes_list_group = document.createElement('ul');
+              attributes_list_group.classList.add('list-group');
+              attributes_list_group.style.marginLeft = '20px';
+              attributes_panel_div.appendChild(attributes_list_group);
+
+              var disc_li = document.createElement('li');
+              disc_li.classList.add('list-group-item');
+              disc_li.appendChild(document.createTextNode("Discussion: " + test.vuln_discuss.replace(/<br>/g, '\n')));
+              disc_li.style = "white-space: pre;";
+              attributes_list_group.appendChild(disc_li);
+              var check_li = document.createElement('li');
+              check_li.classList.add('list-group-item');
+              check_li.appendChild(document.createTextNode("Check: " + test.check_content.replace(/<br>/g, '\n')));
+              check_li.style = "white-space: pre;";
+              attributes_list_group.appendChild(check_li);
+              var fix_li = document.createElement('li');
+              fix_li.classList.add('list-group-item');
+              fix_li.appendChild(document.createTextNode("Fix: " + test.fix_text.replace(/<br>/g, '\n')));
+              fix_li.style = "white-space: pre;";
+              attributes_list_group.appendChild(fix_li);
+          });
+      }
+  }
+
+  // DEPRECATED
+  function getGroupedControls(controls, dataSet) {
+      var groupedControls = [];
+      for (var i = 0; i < controls.length; i ++) {
+          var groupedControl = {'name': controls[i], 'controls': []};
+          dataSet.forEach(function(test) {
+              if (test.nist[0] == controls[i]) {
+                  groupedControl.controls.push(test);
+              }
+          });
+          groupedControls.push(groupedControl);
+      }
+      return groupedControls;
+  }
+
+  function nistFamilySort(ary) {
+      control_numbers = [];
+      ary.forEach(function(nist) {
+          control_numbers.push(nist.split('-')[1]);
+      });
+      control_numbers = control_numbers.sort(function(a, b){return a-b;});
+      sorted = [];
+      control_numbers.forEach(function(num) {
+          sorted.push(ary[0].split('-')[0] + '-' + num);
+      });
+      return sorted;
+  }
+
+  function getAllNistControls(dataSet) {
+      var controls = {};
+      Array.from(dataSet).forEach(function(test) {
+          if (test.nist[0] != 'unmapped') {
+            test.nist.slice(0, -1).forEach(function(nist) {
+              nist_family = nist.match(/\w\w/)[0];
+              if (!controls[nist_family]) {
+                controls[nist_family] = {};
+              }
+              nist_tag = nist.match(/\w\w-\d*/)[0];
+              nist_tag = nist_tag.split('-')[0] + '-' + nist_tag.split('-')[1].padStart(2, '0');
+
+
+              if (controls[nist_family][nist_tag]) {
+                if (!controls[nist_family][nist_tag].includes(test)) {
+                  controls[nist_family][nist_tag].push(test);
+                }
+              } else {
+                controls[nist_family][nist_tag] = [];
+                controls[nist_family][nist_tag].push(test);
+              }
+            });
+          }
+      });
+      var ordered = {};
+      Object.keys(controls).sort().forEach(function(key) {
+        ordered[key] = {};
+        nistFamilySort(Object.keys(controls[key])).forEach(function(nistCont) {
+          ordered[key][nistCont] = controls[key][nistCont];
+        });
+      });
+      return ordered;
+  }
+
+  nist_80053 = {"name":"NIST SP 800-53","children":[{"name":"UM","desc":"Unmapped","children":[{"name":"UM-1","value":1}]},{"name":"AC","desc":"Access Control","children":[{"name":"AC-1","value":1},{"name":"AC-2","value":1},{"name":"AC-3","value":1},{"name":"AC-4","value":1},{"name":"AC-5","value":1},{"name":"AC-6","value":1},{"name":"AC-7","value":1},{"name":"AC-8","value":1},{"name":"AC-9","value":1},{"name":"AC-10","value":1},{"name":"AC-11","value":1},{"name":"AC-12","value":1},{"name":"AC-13","value":1},{"name":"AC-14","value":1},{"name":"AC-15","value":1},{"name":"AC-16","value":1},{"name":"AC-17","value":1},{"name":"AC-18","value":1},{"name":"AC-18","value":1},{"name":"AC-19","value":1},{"name":"AC-20","value":1},{"name":"AC-21","value":1},{"name":"AC-22","value":1},{"name":"AC-23","value":1},{"name":"AC-24","value":1},{"name":"AC-25","value":1}]},{"name":"AU","desc":"Audit and Accountability","children":[{"name":"AU-1","value":1},{"name":"AU-2","value":1},{"name":"AU-3","value":1},{"name":"AU-4","value":1},{"name":"AU-5","value":1},{"name":"AU-6","value":1},{"name":"AU-7","value":1},{"name":"AU-8","value":1},{"name":"AU-9","value":1},{"name":"AU-10","value":1},{"name":"AU-11","value":1},{"name":"AU-12","value":1},{"name":"AU-13","value":1},{"name":"AU-14","value":1},{"name":"AU-15","value":1},{"name":"AU-16","value":1}]},{"name":"AT","desc":"Awareness and Training","children":[{"name":"AT-1","value":1},{"name":"AT-2","value":1},{"name":"AT-3","value":1},{"name":"AT-4","value":1},{"name":"AT-5","value":1}]},{"name":"CM","desc":"Configuration Management","children":[{"name":"CM-1","value":1},{"name":"CM-2","value":1},{"name":"CM-3","value":1},{"name":"CM-4","value":1},{"name":"CM-5","value":1},{"name":"CM-6","value":1},{"name":"CM-7","value":1},{"name":"CM-8","value":1},{"name":"CM-9","value":1},{"name":"CM-10","value":1},{"name":"CM-11","value":1}]},{"name":"CP","desc":"Contingency Planning","children":[{"name":"CP-1","value":1},{"name":"CP-2","value":1},{"name":"CP-3","value":1},{"name":"CP-4","value":1},{"name":"CP-5","value":1},{"name":"CP-6","value":1},{"name":"CP-7","value":1},{"name":"CP-8","value":1},{"name":"CP-9","value":1},{"name":"CP-10","value":1},{"name":"CP-11","value":1},{"name":"CP-12","value":1},{"name":"CP-13","value":1}]},{"name":"IA","desc":"Identification and Authentication","children":[{"name":"IA-1","value":1},{"name":"IA-2","value":1},{"name":"IA-3","value":1},{"name":"IA-4","value":1},{"name":"IA-5","value":1},{"name":"IA-6","value":1},{"name":"IA-7","value":1},{"name":"IA-8","value":1},{"name":"IA-9","value":1},{"name":"IA-10","value":1},{"name":"IA-11","value":1}]},{"name":"IR","desc":"Incident Response","children":[{"name":"IR-1","value":1},{"name":"IR-2","value":1},{"name":"IR-3","value":1},{"name":"IR-4","value":1},{"name":"IR-5","value":1},{"name":"IR-6","value":1},{"name":"IR-7","value":1},{"name":"IR-8","value":1},{"name":"IR-9","value":1},{"name":"IR-10","value":1}]},{"name":"MA","desc":"Maintenance","children":[{"name":"MA-1","value":1},{"name":"MA-2","value":1},{"name":"MA-3","value":1},{"name":"MA-4","value":1},{"name":"MA-5","value":1},{"name":"MA-6","value":1}]},{"name":"MP","desc":"Media Protection","children":[{"name":"MP-1","value":1},{"name":"MP-2","value":1},{"name":"MP-3","value":1},{"name":"MP-4","value":1},{"name":"MP-5","value":1},{"name":"MP-6","value":1},{"name":"MP-7","value":1},{"name":"MP-8","value":1}]},{"name":"PS","desc":"Personnel Security","children":[{"name":"PS-1","value":1},{"name":"PS-2","value":1},{"name":"PS-3","value":1},{"name":"PS-4","value":1},{"name":"PS-5","value":1},{"name":"PS-6","value":1},{"name":"PS-7","value":1},{"name":"PS-8","value":1}]},{"name":"PE","desc":"Physical and Environmental Protection","children":[{"name":"PE-1","value":1},{"name":"PE-2","value":1},{"name":"PE-3","value":1},{"name":"PE-4","value":1},{"name":"PE-5","value":1},{"name":"PE-6","value":1},{"name":"PE-7","value":1},{"name":"PE-8","value":1},{"name":"PE-9","value":1},{"name":"PE-10","value":1},{"name":"PE-11","value":1},{"name":"PE-12","value":1},{"name":"PE-13","value":1},{"name":"PE-14","value":1},{"name":"PE-15","value":1},{"name":"PE-16","value":1},{"name":"PE-17","value":1},{"name":"PE-18","value":1},{"name":"PE-19","value":1},{"name":"PE-20","value":1}]},{"name":"PL","desc":"Planning","children":[{"name":"PL-1","value":1},{"name":"PL-2","value":1},{"name":"PL-3","value":1},{"name":"PL-4","value":1},{"name":"PL-5","value":1},{"name":"PL-6","value":1},{"name":"PL-7","value":1},{"name":"PL-8","value":1},{"name":"PL-9","value":1}]},{"name":"PM","desc":"Program Management","children":[{"name":"PM-1","value":1},{"name":"PM-2","value":1},{"name":"PM-3","value":1},{"name":"PM-4","value":1},{"name":"PM-5","value":1},{"name":"PM-6","value":1},{"name":"PM-7","value":1},{"name":"PM-8","value":1},{"name":"PM-9","value":1},{"name":"PM-10","value":1},{"name":"PM-11","value":1},{"name":"PM-12","value":1},{"name":"PM-13","value":1},{"name":"PM-14","value":1},{"name":"PM-15","value":1},{"name":"PM-16","value":1}]},{"name":"RA","desc":"Risk Assessment","children":[{"name":"RA-1","value":1},{"name":"RA-2","value":1},{"name":"RA-3","value":1},{"name":"RA-4","value":1},{"name":"RA-5","value":1},{"name":"RA-6","value":1}]},{"name":"CA","desc":"Security Assessment and Authorization","children":[{"name":"CA-1","value":1},{"name":"CA-2","value":1},{"name":"CA-3","value":1},{"name":"CA-4","value":1},{"name":"CA-5","value":1},{"name":"CA-6","value":1},{"name":"CA-7","value":1},{"name":"CA-8","value":1},{"name":"CA-9","value":1}]},{"name":"SC","desc":"System and Communications Protection","children":[{"name":"SC-1","value":1},{"name":"SC-2","value":1},{"name":"SC-3","value":1},{"name":"SC-4","value":1},{"name":"SC-5","value":1},{"name":"SC-6","value":1},{"name":"SC-7","value":1},{"name":"SC-8","value":1},{"name":"SC-9","value":1},{"name":"SC-10","value":1},{"name":"SC-11","value":1},{"name":"SC-12","value":1},{"name":"SC-13","value":1},{"name":"SC-14","value":1},{"name":"SC-15","value":1},{"name":"SC-16","value":1},{"name":"SC-17","value":1},{"name":"SC-18","value":1},{"name":"SC-19","value":1},{"name":"SC-20","value":1},{"name":"SC-21","value":1},{"name":"SC-22","value":1},{"name":"SC-23","value":1},{"name":"SC-24","value":1},{"name":"SC-25","value":1},{"name":"SC-26","value":1},{"name":"SC-27","value":1},{"name":"SC-28","value":1},{"name":"SC-29","value":1},{"name":"SC-30","value":1},{"name":"SC-31","value":1},{"name":"SC-32","value":1},{"name":"SC-33","value":1},{"name":"SC-34","value":1},{"name":"SC-35","value":1},{"name":"SC-36","value":1},{"name":"SC-37","value":1},{"name":"SC-38","value":1},{"name":"SC-39","value":1},{"name":"SC-40","value":1},{"name":"SC-41","value":1},{"name":"SC-42","value":1},{"name":"SC-43","value":1},{"name":"SC-44","value":1}]},{"name":"SI","desc":"System and Information Integrity","children":[{"name":"SI-1","value":1},{"name":"SI-2","value":1},{"name":"SI-3","value":1},{"name":"SI-4","value":1},{"name":"SI-5","value":1},{"name":"SI-6","value":1},{"name":"SI-7","value":1},{"name":"SI-8","value":1},{"name":"SI-9","value":1},{"name":"SI-10","value":1},{"name":"SI-11","value":1},{"name":"SI-12","value":1},{"name":"SI-13","value":1},{"name":"SI-14","value":1},{"name":"SI-15","value":1},{"name":"SI-16","value":1},{"name":"SI-17","value":1}]},{"name":"SA","desc":"System and Services Acquisition","children":[{"name":"SA-1","value":1},{"name":"SA-2","value":1},{"name":"SA-3","value":1},{"name":"SA-4","value":1},{"name":"SA-5","value":1},{"name":"SA-6","value":1},{"name":"SA-7","value":1},{"name":"SA-8","value":1},{"name":"SA-9","value":1},{"name":"SA-10","value":1},{"name":"SA-11","value":1},{"name":"SA-12","value":1},{"name":"SA-13","value":1},{"name":"SA-14","value":1},{"name":"SA-15","value":1},{"name":"SA-16","value":1},{"name":"SA-17","value":1},{"name":"SA-18","value":1},{"name":"SA-19","value":1},{"name":"SA-20","value":1},{"name":"SA-21","value":1},{"name":"SA-22","value":1}]}]};
+
+  </script>
+
+</body>
+
+<footer class="main-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class='pull-right hidden-xs'>Version: v1.0.1-10-g41c0bc7</div>
+            </div>
+            <strong>Copyright &copy; 2018 <a href="https://www.mitre.org/">MITRE</a>.</strong> All rights reserved.
+        </div>
+    </div>
+</footer>
+
+</html>
