@@ -734,6 +734,8 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
             <div class="headline">
                 <div class="container" style="background: #99b3ff;">
                     <h1>Welcome to Heimdall-lite!</h1>
+                    <h3><br><br> <a href="/beta.html">Try Heimdall-Lite Beta</a></h3>
+
                 </div>
             </div>
         </header>
@@ -744,7 +746,7 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
 
             <!-- First Featurette -->
             <div class="featurette" id="about">
-              
+                <h2 class="featurette-heading">Try Heimdall-Lite.</h2>
                 <h2 class="featurette-heading">View the results of an InSpec execution json.</h2>
                 <p class="lead">Easily see how many controls passed and failed.</p>
                 <p class="lead">Click on the donut charts to filter the controls by status and severity.</p>
@@ -1187,6 +1189,20 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
               assign_data_attributes(data, control, results_json.profile_name);
             });
           });
+          for(var i = json.profiles.length; i--;){
+            json.profiles[i].controls.forEach(function(control) {
+              assign_code_bloacks(data, control, json.profiles[i].name);
+            });
+          }
+
+          json.profiles[0].controls.forEach(function(control) {
+            code_block = ''
+            for(var i = data[control.id].code.length; i--;){
+              code_block += data[control.id].code[i]['profile_name']+'\n' + data[control.id].code[i]['code'] +'\n';
+            }
+            data[control.id].code = code_block
+          });
+
           $('#welcome_div').hide();
           $('#navDiv').show();
           $('#profile_charts').hide();
@@ -1246,6 +1262,7 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
 
         data[c_id].impact          = String(control.impact)                                        || DATA_NOT_FOUND_MESSAGE;
 
+
         if (data[c_id].code === undefined )
         {
           data[c_id].code            =  String(control.code)                                          || DATA_NOT_FOUND_MESSAGE;      
@@ -1271,6 +1288,31 @@ var saveAs=saveAs||function(e){"use strict";if(typeof e==="undefined"||typeof na
         data[c_id].result           = clk_status(data[c_id]);
         data[c_id].finding_details  = clk_finding_details(data[c_id]);
       }
+
+      function assign_code_bloacks(data,control,raw_profile_name)
+      {
+        var c_id = control.id;
+
+        if ( !Array.isArray(data[c_id].code) )
+        {
+          data[c_id].code = [];
+        }
+        
+        current_code_blocks = []
+        for(var i = data[c_id].code.length; i--;)
+        {
+          current_code_blocks.push(data[c_id].code[i]['code']);
+        }
+
+        if (!current_code_blocks.includes(String(control.code)) && String(control.code) != "" )
+        {
+          code_block = {}
+          code_block['profile_name'] = 'Profile Name: '+raw_profile_name+'\n'+'=============================================================';
+          code_block['code'] = String(control.code)
+          data[c_id].code.push(code_block);      
+        }
+      }
+
 
       function compute_severity(impact) {
         severity = '';
