@@ -527,6 +527,7 @@
           $('#profile_charts').show();
           $('#profile_results_id').show();
           $('#title_id').show();
+          $('#export-caat').show();
         }
         else {
           results_json.profile_name = 'result;' + profile_name + ': ' + grab_start_time(json);
@@ -633,25 +634,29 @@
           // View required finding details
           control.results.forEach(function(result) {
             data[c_id].status.push(result.status);
-            if (result.status == 'failed') {
-              data[c_id].finding_details +=`<tr>
-                <td>${result.status.toUpperCase()}</td>
-                <td style="max-width:300px; word-wrap:break-word">Test: ${result.code_desc.replace(/(.{100})/g, "$1\n").replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}</td>
-                <td style="max-width:300px; word-wrap:break-word">Message: ${result.message.replace(/(.{100})/g, "$1\n").replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}</td>
-              </tr>`
-            }
-            else
-            {
-              data[c_id].finding_details +=`<tr>
-                <td>${result.status.toUpperCase()}</td>
-                <td style="max-width:300px; word-wrap:break-word">Test: ${result.code_desc.replace(/(.{100})/g, "$1\n").replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}</td>
-                <td style="max-width:300px; word-wrap:break-word"></td>
-              </tr>`
-            }
+            data[c_id].finding_details +=`<tr>
+              <td>${result.status.toUpperCase()}</td>
+                <td style="max-width:300px; word-wrap:break-word">
+                  <code id="code" class="language-ruby" style="white-space: pre-line;max-width:300px; word-wrap:break-word">
+                    Test: ${result.code_desc.replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}
+                  </code>
+                </td>`
+              if (result.message)
+              {
+                data[c_id].finding_details +=
+                `<td style="max-width:300px; word-wrap:break-word">
+                  <code id="code" class="language-ruby" style="white-space: pre-line;max-width:300px; word-wrap:break-word">
+                    Message: ${result.message.replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}
+                  </code>
+                 </td>`
+              }
+              else
+              {
+                data[c_id].finding_details +=`<td style="max-width:300px; word-wrap:break-word"></td>`
+              }
+             data[c_id].finding_details += `</tr>`;
           });
         }
-
-
 
 
         data[c_id].result           = clk_status(data[c_id]);
@@ -2786,7 +2791,18 @@
             field.push(br2nl(control.vuln_discuss)); // Weakness Description
             field.push('Security');                  // Control Weakness Type
             field.push('Self-Assessment ');          // Source
-            field.push('InSpec');                    // Assessment/Audit Company
+
+            if (control.profile.match(/Fortify Static Analyzer Scan/)) {
+              field.push('Fortify Static Analyzer'); // Assessment/Audit Company
+            } 
+            else if (control.profile.match(/OWASP ZAP Scan/)) {
+              field.push('OWASP ZAP');               // Assessment/Audit Company
+            }
+            else {
+              field.push('InSpec');                    // Assessment/Audit Company
+            }
+
+            // field.push('InSpec');                    // Assessment/Audit Company
             field.push('Test');                      // Test Method
             field.push(br2nl(control.check_content)) ;  // Test Objective
             field.push(br2nl(control.caat_details)); // Test Result Description
@@ -2796,9 +2812,9 @@
             field.push('');                                // Effect on Business
             field.push('');                                // Likelihood
 
-            if (impact >= 0.1 && impact <= 0.3) {  // Impact
+            if (impact >= 0.1 && impact < 0.4) {  // Impact
               field.push('Low');
-            } else if (impact >= 0.4 && impact <= 0.6) {
+            } else if (impact >= 0.4 && impact < 0.7) {
               field.push('Moderate');
             } else if (impact >= 0.7 && impact <= 1.0) {
               field.push('High');
@@ -2820,7 +2836,14 @@
     function br2nl(str) {
       if (str == null)
         return 'Not Available';
-      return str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767);
+      return stripHtml(str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767));
+    }
+
+    function stripHtml(str)
+    {
+      var temporalDivElement = document.createElement("div");
+      temporalDivElement.innerHTML = str;
+      return temporalDivElement.textContent || temporalDivElement.innerText || "";
     }
 
     var wb = XLSX.utils.book_new();
