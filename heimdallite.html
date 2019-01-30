@@ -2791,18 +2791,7 @@
             field.push(br2nl(control.vuln_discuss)); // Weakness Description
             field.push('Security');                  // Control Weakness Type
             field.push('Self-Assessment ');          // Source
-
-            if (control.profile.match(/Fortify Static Analyzer Scan/)) {
-              field.push('Fortify Static Analyzer'); // Assessment/Audit Company
-            } 
-            else if (control.profile.match(/OWASP ZAP Scan/)) {
-              field.push('OWASP ZAP');               // Assessment/Audit Company
-            }
-            else {
-              field.push('InSpec');                    // Assessment/Audit Company
-            }
-
-            // field.push('InSpec');                    // Assessment/Audit Company
+            field.push('');                          // Assessment/Audit Company
             field.push('Test');                      // Test Method
             field.push(br2nl(control.check_content)) ;  // Test Objective
             field.push(br2nl(control.caat_details)); // Test Result Description
