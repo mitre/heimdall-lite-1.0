@@ -1,0 +1,334 @@
+
+  .floating {
+      position: fixed;
+      top: 95px;
+      right: 20px;
+      visibility: hidden;
+  }
+  .floating2 {
+      position: fixed;
+      top: 8px;
+      right: 20px;
+  }
+  #nist_treemap_profile rect {
+        stroke: black;
+        stroke-width: 0.25;
+      }
+  #nist_treemap_results rect {
+        stroke: black;
+        stroke-width: 0.25;
+      }
+
+  .chart {
+    width: 100%;
+    min-height: 300px;
+  }
+  .hidden_column {
+   display: none;
+  }
+  .c3-event-rects {
+     display: none;
+  }
+  .header-image {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #99b3ff;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      background-size: cover;
+      -o-background-size: cover;
+  }
+
+  .headline {
+      padding: 120px 0;
+  }
+
+  .headline h1 {
+      font-size: 130px;
+      background: #99b3ff;
+  }
+
+  .headline h2 {
+      font-size: 77px;
+      background: #99b3ff;
+      background: rgba(255,255,255,0.9);
+  }
+
+  .featurette-divider {
+      margin: 80px 0;
+  }
+
+  .featurette {
+      overflow: hidden;
+  }
+
+  .featurette-image.pull-left {
+      margin-right: 40px;
+  }
+
+  .featurette-image.pull-right {
+      margin-left: 40px;
+  }
+
+  .featurette-heading {
+      font-size: 50px;
+  }
+
+  footer {
+      margin: 50px 0;
+  }
+
+  @media(max-width:1200px) {
+      .headline h1 {
+          font-size: 140px;
+      }
+
+      .headline h2 {
+          font-size: 63px;
+      }
+
+      .featurette-divider {
+          margin: 50px 0;
+      }
+
+      .featurette-image.pull-left {
+          margin-right: 20px;
+      }
+
+      .featurette-image.pull-right {
+          margin-left: 20px;
+      }
+
+      .featurette-heading {
+          font-size: 35px;
+      }
+  }
+
+  @media(max-width:991px) {
+      .headline h1 {
+          font-size: 105px;
+      }
+
+      .headline h2 {
+          font-size: 50px;
+      }
+
+      .featurette-divider {
+          margin: 40px 0;
+      }
+
+      .featurette-image.pull-left {
+          margin-right: 10px;
+      }
+
+      .featurette-image.pull-right {
+          margin-left: 10px;
+      }
+
+      .featurette-heading {
+          font-size: 30px;
+      }
+  }
+
+  @media(max-width:768px) {
+      .container {
+          margin: 0 15px;
+      }
+
+      .featurette-divider {
+          margin: 40px 0;
+      }
+
+      .featurette-heading {
+          font-size: 25px;
+      }
+  }
+
+  @media(max-width:668px) {
+      .headline h1 {
+          font-size: 70px;
+      }
+
+      .headline h2 {
+          font-size: 32px;
+      }
+
+      .featurette-divider {
+          margin: 30px 0;
+      }
+  }
+
+  @media(max-width:640px) {
+      .headline {
+          padding: 75px 0 25px 0;
+      }
+
+      .headline h1 {
+          font-size: 60px;
+      }
+
+      .headline h2 {
+          font-size: 30px;
+      }
+  }
+
+  @media(max-width:375px) {
+      .featurette-divider {
+          margin: 10px 0;
+      }
+
+      .featurette-image {
+          max-width: 100%;
+      }
+
+      .featurette-image.pull-left {
+          margin-right: 0;
+          margin-bottom: 10px;
+      }
+
+      .featurette-image.pull-right {
+          margin-bottom: 10px;
+          margin-left: 0;
+      }
+  }
+
+  /* .node {
+    cursor: pointer;
+  }
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+  }
+
+  .node text {
+    font: 12px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  } */
+
+  /*
+   * Styles of the components of the tree
+   */
+  #tree-container {
+    position: absolute;
+    left: 0px;
+    width: 100%;
+  }
+
+  .svgContainer {
+    display: block;
+      margin: auto;
+  }
+
+  .node {
+    cursor: pointer;
+  }
+
+  .node-rect {
+  }
+
+  .node-rect-closed {
+    stroke-width: 2px;
+    stroke: rgb(0,0,0);
+  }
+
+  .link {
+    fill: none;
+    stroke: lightsteelblue;
+    stroke-width: 2px;
+  }
+
+  .linkselected {
+    fill: none;
+    stroke: tomato;
+    stroke-width: 2px;
+  }
+
+  .arrow {
+    fill: lightsteelblue;
+    stroke-width: 1px;
+  }
+
+  .arrowselected {
+    fill: tomato;
+    stroke-width: 2px;
+  }
+
+  .link text {
+    font: 7px sans-serif;
+    fill: #CC0000;
+  }
+
+  .wordwrap {
+    white-space: pre-wrap; /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap; /* Opera <7 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* IE */
+  }
+
+  .node-text {
+    font: 7px sans-serif;
+    color: white;
+  }
+
+  .tooltip-text-container {
+      height: 100%;
+    width: 100%;
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    font: 7px sans-serif;
+    color: white;
+    display: block;
+    padding: 5px;
+  }
+
+  .tooltip-box {
+    background: rgba(0, 0, 0, 0.7);
+    visibility: hidden;
+    position: absolute;
+    border-style: solid;
+      border-width: 1px;
+      border-color: black;
+      border-top-right-radius: 0.5em;
+  }
+
+  p {
+    display: inline;
+  }
+
+  .textcolored {
+    color: orange;
+  }
+
+  a.exchangeName {
+    color: orange;
+  }
+
+  rect.partitionRect {
+    stroke: #eee;
+    fill: #aaa;
+    fill-opacity: .8;
+  }
+
+  rect.parent {
+    cursor: pointer;
+    fill: steelblue;
+  }
+
+  pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}

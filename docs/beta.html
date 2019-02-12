@@ -527,7 +527,6 @@
           $('#profile_charts').show();
           $('#profile_results_id').show();
           $('#title_id').show();
-          $('#export-caat').show();
         }
         else {
           results_json.profile_name = 'result;' + profile_name + ': ' + grab_start_time(json);
@@ -617,50 +616,23 @@
 
         data[c_id].status = [];
         data[c_id].message = '';
-        data[c_id].caat_details = '';
-        data[c_id].finding_details = '';
 
-        if (control.results) {
-          // View required for CAT file
-          control.results.forEach(function(result) {
-            data[c_id].status.push(result.status);
-            if (result.status == 'skipped') { data[c_id].caat_details += 'SKIP -- ' + result.skip_message + '\n'; }
-            if (result.status == 'failed')  { data[c_id].caat_details += 'FAILED -- Test: ' + result.code_desc + '\nMessage: ' + result.message + '\n'; }
-            if (result.status == 'passed')  { data[c_id].caat_details += 'PASS -- ' + result.code_desc + '\n'; }
-          });
+        if (parseFloat(data[c_id].impact) == 0) {
+            data[c_id].message = data[c_id].vuln_discuss + "\n\n";
         }
 
         if (control.results) {
-          // View required finding details
+          // Contanate all of the results messages
           control.results.forEach(function(result) {
             data[c_id].status.push(result.status);
-            data[c_id].finding_details +=`<tr>
-              <td>${result.status.toUpperCase()}</td>
-                <td style="max-width:300px; word-wrap:break-word">
-                  <code id="code" class="language-ruby" style="white-space: pre-line;max-width:300px; word-wrap:break-word">
-                    Test: ${result.code_desc.replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}
-                  </code>
-                </td>`
-              if (result.message)
-              {
-                data[c_id].finding_details +=
-                `<td style="max-width:300px; word-wrap:break-word">
-                  <code id="code" class="language-ruby" style="white-space: pre-line;max-width:300px; word-wrap:break-word">
-                    Message: ${result.message.replace(/(?:>)/g, '&gt;').replace(/(?:<)/g, '&lt;')}
-                  </code>
-                 </td>`
-              }
-              else
-              {
-                data[c_id].finding_details +=`<td style="max-width:300px; word-wrap:break-word"></td>`
-              }
-             data[c_id].finding_details += `</tr>`;
+            if (result.status == 'skipped') { data[c_id].message += 'SKIP -- ' + result.skip_message + '\n'; }
+            if (result.status == 'failed')  { data[c_id].message += 'FAILED -- Test: ' + result.code_desc + '\nMessage: ' + result.message + '\n'; }
+            if (result.status == 'passed')  { data[c_id].message += 'PASS -- ' + result.code_desc + '\n'; }
           });
         }
-
 
         data[c_id].result           = clk_status(data[c_id]);
-        data[c_id].result_message   = getResultMessage(data[c_id]);
+        data[c_id].finding_details  = clk_finding_details(data[c_id]);
       }
 
       function assign_code_bloacks(data,control,raw_profile_name)
@@ -744,16 +716,15 @@
         return result;
       }
 
-      function getResultMessage(control) {
+      function clk_finding_details(control) {
         var result = '';
-        if (control.result == 'Open') { result = 'One or more of the automated tests failed or was inconclusive for the control :<br><br>'+ control.vuln_discuss ; }
-        if (control.result == 'NotAFinding') { result = 'All Automated tests passed for the control :<br><br>'+ control.vuln_discuss ; }
-        if (control.result == 'Not_Reviewed') { result = 'Automated test skipped due to known accepted condition in the control :<br><br>'+ control.vuln_discuss ; }
-        if (control.result == 'Not_Applicable') { result = 'Justification :<br><br>'+ control.vuln_discuss ; }
-        if (control.result == 'Profile_Error') { result = 'No test available for this control :<br><br>'+ control.vuln_discuss ; }
+        if (control.result == 'Open') { result = 'One or more of the automated tests failed or was inconclusive for the control \n\n ' + control.message; }
+        if (control.result == 'NotAFinding') { result = 'All Automated tests passed for the control \n\n ' + control.message; }
+        if (control.result == 'Not_Reviewed') { result = 'Automated test skipped due to known accepted condition in the control : \n\n' + control.message; }
+        if (control.result == 'Not_Applicable') { result = 'Justification: \n\n' + control.message + '\n'; }
+        if (control.result == 'Profile_Error') { result = 'No test available for this control'; }
         return result;
       }
-
   </script>
 
 
@@ -1591,9 +1562,10 @@
     '</ul>'+
     '<div class="tab-content">'+
       '<div id="fdetails" class="tab-pane active">'+
-        '<table class="table table-bordered table-striped">'+
-        '<tr><td colspan="3"><br>'+ d.result_message+'<br></td><tr>' +
-        d.finding_details +
+        '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+          '<tr>'+
+              '<td>'+d.finding_details.replace(/(?:\r\n|\r|\n)/g, '<br>')+'</td>'+
+          '</tr>'+
         '</table>'+
       '</div>'+
       '<div id="details" class="tab-pane">'+
@@ -1665,15 +1637,10 @@
           <th>Inspec Code</th>
         </tr>
         <tr valign="top">
-          <td style="max-width:600px; width:600px; word-wrap:break-word">        
-          <table class="table table-bordered table-striped">
-            <tr><td colspan="3"><br>${d.result_message}<br></td><tr>
-              ${d.finding_details}
-          </table>
-          </td>
-          <td style="max-width:600px; width:600px; word-wrap:break-word">${control_details}</td>
+          <td width="33.33%"><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">${d.finding_details.replace(/(?:\r\n|\r|\n)/g, '<br>')}</code></pre></td>
+          <td width="33.33%">${control_details}</td>
 
-          <td style="max-width:600px; width:600px; word-wrap:break-word"><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">${d.code}</code></pre></td>
+          <td width="33.33%"><pre id="precode" class="line-numbers"><code id="code" class="language-ruby">${d.code}</code></pre></td>
         </tr>
       </table>`;
 
@@ -2791,19 +2758,19 @@
             field.push(br2nl(control.vuln_discuss)); // Weakness Description
             field.push('Security');                  // Control Weakness Type
             field.push('Self-Assessment ');          // Source
-            field.push('');                          // Assessment/Audit Company
+            field.push('InSpec');                    // Assessment/Audit Company
             field.push('Test');                      // Test Method
             field.push(br2nl(control.check_content)) ;  // Test Objective
-            field.push(br2nl(control.caat_details)); // Test Result Description
+            field.push(br2nl(control.finding_details)); // Test Result Description
             result = control.result == "NotAFinding" ? 'Satisfied' : 'Other Than Satisfied';
             field.push(result); // Test Result
             field.push(br2nl(control.fix_text));        // Recommended Corrective Action(s)
             field.push('');                                // Effect on Business
             field.push('');                                // Likelihood
 
-            if (impact >= 0.1 && impact < 0.4) {  // Impact
+            if (impact >= 0.1 && impact <= 0.3) {  // Impact
               field.push('Low');
-            } else if (impact >= 0.4 && impact < 0.7) {
+            } else if (impact >= 0.4 && impact <= 0.6) {
               field.push('Moderate');
             } else if (impact >= 0.7 && impact <= 1.0) {
               field.push('High');
@@ -2825,14 +2792,7 @@
     function br2nl(str) {
       if (str == null)
         return 'Not Available';
-      return stripHtml(str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767));
-    }
-
-    function stripHtml(str)
-    {
-      var temporalDivElement = document.createElement("div");
-      temporalDivElement.innerHTML = str;
-      return temporalDivElement.textContent || temporalDivElement.innerText || "";
+      return str.replace(/<br ?\/?>/g, "\r\n").substring(0,32767);
     }
 
     var wb = XLSX.utils.book_new();
