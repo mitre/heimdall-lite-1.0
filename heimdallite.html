@@ -166,7 +166,7 @@
                               </div>
                               <div class="col-xs-9 text-right">
                                   <div id = "not_a_finding" class="huge"></div>
-                                  <div>Not A Finding</div>
+                                  <div>Pass</div>
                               </div>
                           </div>
                       </div>
@@ -184,7 +184,7 @@
                               </div>
                               <div class="col-xs-9 text-right">
                                   <div id = "open" class="huge"></div>
-                                  <div>Open</div>
+                                  <div>Fail</div>
                               </div>
                           </div>
                       </div>
@@ -278,7 +278,7 @@
                 <div class="col-lg-4" id='compliance_level_id'>
                     <div class="panel panel-default">
                         <div class="panel-heading res-chart">
-                            <i class="fa fa-tachometer-alt fa-fw"></i> Compliance Level [Not A Finding / (Not A Finding + Open + Not Reviewed + Profile Error) * 100]
+                            <i class="fa fa-tachometer-alt fa-fw"></i> Compliance Level [Pass / (Pass + Fail + Not Reviewed + Profile Error) * 100]
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -622,14 +622,23 @@
 
         if (control.results) {
           // View required for CAT file
-          control.results.forEach(function(result) {
+          control.results.forEach(function (result) {
+            if (result.exception != null) {
+              result.status = 'error';
+              data[c_id].caat_details += 'FAILED -- Test: ' + result.code_desc + '\nException: ' + result.message + '\n';
+            }
+            if (result.status == 'skipped') {
+              data[c_id].caat_details += 'SKIP -- ' + result.skip_message + '\n';
+            }
+            if (result.status == 'failed') {
+              data[c_id].caat_details += 'FAILED -- Test: ' + result.code_desc + '\nMessage: ' + result.message + '\n';
+            }
+            if (result.status == 'passed') {
+              data[c_id].caat_details += 'PASS -- ' + result.code_desc + '\n';
+            }
             data[c_id].status.push(result.status);
-            if (result.status == 'skipped') { data[c_id].caat_details += 'SKIP -- ' + result.skip_message + '\n'; }
-            if (result.status == 'failed')  { data[c_id].caat_details += 'FAILED -- Test: ' + result.code_desc + '\nMessage: ' + result.message + '\n'; }
-            if (result.status == 'passed')  { data[c_id].caat_details += 'PASS -- ' + result.code_desc + '\n'; }
           });
         }
-
         if (control.results) {
           // View required finding details
           control.results.forEach(function(result) {
@@ -730,7 +739,9 @@
       function clk_status(control) {
         var status_list = control.status;
         result = '';
-        if (parseFloat(control.impact) == 0) {
+        if (includes('error', status_list)) {
+          result = 'Profile_Error';
+        } else if (parseFloat(control.impact) == 0) {
           result = 'Not_Applicable';
         } else if (includes('failed', status_list)) {
           result = 'Open';
@@ -1885,10 +1896,10 @@
 
             "rowCallback": function( row, data, index ) {
               if ( data.result == "NotAFinding" ) {
-                $('td:eq(0)', row).html( '<button class="btn btn-success" style="width:120px" >Not A Finding</button> ' );
+                $('td:eq(0)', row).html( '<button class="btn btn-success" style="width:120px" >Pass</button> ' );
               }
               if ( data.result == "Open" ) {
-                $('td:eq(0)', row).html( '<button class="btn btn-danger" style="width:120px">Open</button> ' );
+                $('td:eq(0)', row).html( '<button class="btn btn-danger" style="width:120px">Fail</button> ' );
               }
               if ( data.result ==  "Not_Applicable") {
                 $('td:eq(0)', row).html( '<button class="btn btn-primary" style="width:120px">Not Applicable</button> ' );
@@ -2056,8 +2067,8 @@
   function draw_status_pie_chart()
   {
     status_data = [
-                    ['Not A Finding',  status_count.not_a_finding_count],
-                    ['Open',           status_count.open_count],
+                    ['Pass',  status_count.not_a_finding_count],
+                    ['Fail',           status_count.open_count],
                     ['Not Applicable', status_count.not_applicable_count],
                     ['Not Reviewed',   status_count.not_reviewed_count],
                     ['Profile Error',  status_count.profile_error_count]
@@ -2070,9 +2081,9 @@
           type : 'donut',
           onclick: function (d, i) {
             document.getElementById("clear_filters_button").style.visibility = "visible";
-            if (d.id == 'Not A Finding'){
+            if (d.id == 'Pass'){
               data_filter.result = 'NotAFinding';
-            }else if (d.id == 'Open'){
+            }else if (d.id == 'Fail'){
               data_filter.result = 'Open';
             }else if (d.id == 'Not Applicable'){
               data_filter.result = 'Not_Applicable';
@@ -2104,9 +2115,9 @@
   function draw_severity_pie_chart()
   {
     severity_data = [
-              ['CAT I',   severity_count['CAT I']],
-              ['CAT II',  severity_count['CAT II']],
-              ['CAT III', severity_count['CAT III']],
+              ['High',   severity_count['CAT I']],
+              ['Medium',  severity_count['CAT II']],
+              ['Low', severity_count['CAT III']],
           ];
     var pie_element = '';
     if (results_json.profile_name.split(';')[0] == 'result') {
@@ -2123,11 +2134,11 @@
         type : 'donut',
         onclick: function (d, i) {
           document.getElementById("clear_filters_button").style.visibility = "visible";
-          if (d.id == 'CAT I'){
+          if (d.id == 'High'){
             data_filter.severity = 'high';
-          }else if (d.id == 'CAT II'){
+          }else if (d.id == 'Medium'){
             data_filter.severity = 'medium';
-          }else if (d.id == 'CAT III'){
+          }else if (d.id == 'Low'){
             data_filter.severity = 'low';
           }
           load_views();
@@ -2922,10 +2933,10 @@
      var span = '';
      switch(result) {
         case 'NotAFinding':
-            span = '<span class="label label-success">Not A Finding</span>';
+            span = '<span class="label label-success">Pass</span>';
             break;
         case 'Open':
-            span = '<span class="label label-danger">Open</span>';
+            span = '<span class="label label-danger">Fail</span>';
             break;
         case 'Not_Reviewed':
             span = '<span class="label label-warning">Not Reviewed</span>';
