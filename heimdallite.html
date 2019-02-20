@@ -243,7 +243,7 @@
                           </div>
                       </div>
                       <div class="panel-footer">
-                          (no result from test - check profile run privileges or author of profile)
+                          (errors running test - check profile run privileges or check with the author of profile)
                       </div>
                   </div>
               </div>
@@ -623,7 +623,7 @@
         if (control.results) {
           // View required for CAT file
           control.results.forEach(function (result) {
-            if (result.exception != null) {
+            if (result.backtrace != null) {
               result.status = 'error';
               data[c_id].caat_details += 'FAILED -- Test: ' + result.code_desc + '\nException: ' + result.message + '\n';
             }
