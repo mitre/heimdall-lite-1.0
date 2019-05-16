@@ -2792,7 +2792,7 @@
           if (impact != 0.0 && !vulnList.includes(control.vuln_num)) {
             vulnList.push(control.vuln_num)
             field.push(subFamily);                  // Control Number
-            field.push(br2nl(control.rule_title));  // Finding Title
+            field.push(br2nl(`(Test ${control.vuln_num}) -  ${control.rule_title}`));  // Finding Title
             field.push(convertDate(new Date(control.profile.split(':').slice(1).join(':').trim()),'/')); // Date Identified
             field.push('');                          // Finding ID
             field.push('');                          // Information System or Program Name
