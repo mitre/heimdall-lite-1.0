@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "dependencies": {
+    "yaml-front-matter": "^4.0.0"
+  }
+}

@@ -17,10 +17,9 @@ module.exports = {
       { text: "Developers", link: "/developers/" },
 
       {
-        text: "Github project",
-        link: "https://github.com/mitre/heimdall-lite"
-      },
-      { text: "Use it now", link: "https://heimdall-vue.netlify.com/#/" }
+        text: "Check out the demo",
+        link: "https://heimdall-vue.netlify.com/#/"
+      }
     ]
   },
   logo: "./logo.png",

@@ -9,7 +9,7 @@ features:
   - title: Compare
     details: Compare InSpec evaluations graphically and textually.
   - title: Control
-    details: Filter out controls which have not changed between evaluations.
+    details: Filter evaluations based on desired factors.
 footer: © 2018 The MITRE Corporation.
 navBar: false
 ---
@@ -18,15 +18,15 @@ navBar: false
 
 ## Results Summary
 
-Easy to read and concise evaluation results
+Easily see how many controls passed and failed. Click on the donut charts to filter the controls by status and severity.
 ![An image](/Results_summary.png)
 
 ## NIST Coverage Map
 
-Graphically view InSpec results
+Graphically view InSpec results and use the treemap or datatable to navigate through your controls.
 ![Coverage](/Nist_coverage.png)
 
-## Inspec Results Details
+## Filter InSpec evaluations.
 
-Compare and filter InSpec evaluations using Heimdall
+Click on a control to detect which tests passed or failed, or see its details and code.
 ![Results](/Results_List.png)
