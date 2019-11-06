@@ -1,21 +1,21 @@
-![Docker Pulls](https://img.shields.io/docker/pulls/mitre/heimdall-lite?label=Docker%20Hub%20Pulls)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/mitre/heimdall-lite)
+![Docker Pulls](https://img.shields.io/docker/pulls/mitre/heimdall-lite-1.0?label=Docker%20Hub%20Pulls)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/mitre/heimdall-lite-1.0)
 
-# [Heimdall-Lite](https://github.com/mitre/heimdall-lite/)
+# [Heimdall-Lite 1.0](https://github.com/mitre/heimdall-lite-1.0/)
 
 A small but powerful single page JavaScript implementation of the MITRE Heimdall InSpec results viewer.
 
 # Installation & Use
 
-As a single-page javascript app - you can run [Heimdall-Lite](https://github.com/mitre/heimdall-lite/) from any web-server, a _secured_ S3 bucket or directly via GitHub Pages (as it is here). [Heimdall-Lite](https://github.com/mitre/heimdall-lite/) gives you the ability to easily review and produce reports about your InSpec run, filter the results for easy review and hot-wash, print out reports, generate System Security Plan (SSP) content, and much more.
+As a single-page javascript app - you can run [Heimdall-Lite 1.0](https://github.com/mitre/heimdall-lite-1.0/) from any web-server, a _secured_ S3 bucket or directly via GitHub Pages (as it is here). [Heimdall-Lite 1.0](https://github.com/mitre/heimdall-lite/) gives you the ability to easily review and produce reports about your InSpec run, filter the results for easy review and hot-wash, print out reports, generate System Security Plan (SSP) content, and much more.
 
-## Heimdall vs Heimdall-Lite
+## Heimdall vs Heimdall-Lite 1.0
 
-There are two versions of the MITRE Heimdall Viewer - the full [Heimdall](https://github.com/mitre/heimdall/) and the [Heimdall-Lite](https://github.com/mitre/heimdall-lite/) version. We produced each to meet different needs and use-cases.
+There are two versions of the MITRE Heimdall Viewer - the full [Heimdall](https://github.com/mitre/heimdall/) and the [Heimdall-Lite 1.0](https://github.com/mitre/heimdall-lite/) version. We produced each to meet different needs and use-cases.
 
 ### Features
 
-|                                                                                | [Heimdall-Lite](https://github.com/mitre/heimdall-lite/) | [Heimdall](https://github.com/mitre/heimdall/)                                |
+|                                                                                | [Heimdall-Lite](https://github.com/mitre/heimdall-lite-1.0/) | [Heimdall](https://github.com/mitre/heimdall/)                                |
 | :----------------------------------------------------------------------------- | :------------------------------------------------------- | :---------------------------------------------------------------------------- |
 | Installation Requirements                                                      | any web server                                           | rails 5.x Server <br /> MongoDB instance                                      |
 | Overview Dashboard & Counts                                                    | x                                                        | x                                                                             |
