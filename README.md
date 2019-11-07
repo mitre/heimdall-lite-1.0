@@ -70,6 +70,18 @@ This project uses the [Semantic Versioning Policy](https://semver.org/)
 
 Please feel free to look through our issues, make a fork and submit _PRs_ and improvements. We love hearing from our end-users and the community and will be happy to engage with you on suggestions, updates, fixes or new capabilities.
 
+## Generating a Single Page
+
+Currently, heimdall-lite is setup with references to assets which need to be inlined to create a true single page app. This can be done with the npm package [inliner](https://github.com/remy/inliner).
+
+``` bash
+npm install -g inliner
+inliner -m --iesafe index.html > single-page.html
+npm uninstall -g inliner
+```
+
+The inliner package does not appear to be receiving further updates, so it is advised to uninstall it after usage.
+
 ## Issues and Support
 
 Please feel free to contact us by **opening an issue** on the issue board, or, at [inspec@mitre.org](mailto:inspec@mitre.org) should you have any suggestions, questions or issues. If you have more general questions about the use of our software or other concerns, please contact us at [opensource@mitre.org](mailto:opensource@mitre.org).
